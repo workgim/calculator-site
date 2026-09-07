@@ -26,5 +26,5 @@ export const SITE = {
    * 값이 있으면 Analytics.astro 가 스크립트를 삽입하고, privacy.astro 에 쿠키 고지가 나온다.
    * 비워두면 분석 코드가 전혀 로드되지 않는다.
    */
-  gaId: '',
+  gaId: 'G-64XL4FTB03',
 } as const;
