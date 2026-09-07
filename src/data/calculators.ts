@@ -87,6 +87,16 @@ export const CALCULATORS: Calculator[] = [
     updated: '2026-09-07',
   },
   {
+    slug: 'severance-pay',
+    title: '퇴직금 계산기',
+    shortDescription: '입사일·퇴사일과 퇴직 전 3개월 임금으로 법정 퇴직금을 계산합니다.',
+    description:
+      '입사일, 퇴사일, 퇴직 전 3개월 기본급·수당·상여금·연차수당을 입력하면 1일 평균임금과 법정 퇴직금(세전)을 계산하는 무료 계산기입니다.',
+    category: 'finance',
+    keywords: ['퇴직금 계산기', '퇴직금 계산 방법', '평균임금 계산', '법정 퇴직금'],
+    updated: '2026-09-07',
+  },
+  {
     slug: 'loan',
     title: '대출 이자 계산기',
     shortDescription: '원리금균등·원금균등·만기일시 상환 방식별 월 상환액과 총 이자를 계산합니다.',

@@ -1,0 +1,160 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import AmountInput from '../../components/AmountInput.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('severance-pay')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <form id="sev-form">
+      <div class="calc-row">
+        <div class="calc-field">
+          <label for="hire">입사일</label>
+          <input type="date" id="hire" required />
+        </div>
+        <div class="calc-field">
+          <label for="leave">퇴사일</label>
+          <input type="date" id="leave" required />
+          <small class="calc-hint">마지막 근무일</small>
+        </div>
+      </div>
+
+      <AmountInput
+        id="base"
+        label="월 기본급 (원)"
+        placeholder="예: 3000000"
+        steps={[100_000, 1_000_000]}
+      />
+      <AmountInput
+        id="allowance"
+        label="월 고정수당 (원)"
+        hint="매달 정기적으로 받는 수당 합계. 없으면 0"
+        value={0}
+        required={false}
+        steps={[100_000, 500_000]}
+      />
+      <AmountInput
+        id="bonus"
+        label="연간 상여금 총액 (원)"
+        hint="퇴직 전 1년간 받은 상여금 전체. 없으면 0"
+        value={0}
+        required={false}
+        steps={[1_000_000, 5_000_000]}
+      />
+      <AmountInput
+        id="leavepay"
+        label="연차수당 (원)"
+        hint="퇴직 전 1년간 받은 연차수당. 없으면 0"
+        value={0}
+        required={false}
+        steps={[100_000, 1_000_000]}
+      />
+
+      <button type="submit" class="btn">계산하기</button>
+    </form>
+
+    <output id="sev-result" class="calc-result" hidden></output>
+    <p id="sev-error" class="calc-error" role="alert" hidden></p>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>
+      입사일·퇴사일과 퇴직 전 3개월 기준 임금을 입력하세요. 매달 임금이 달랐다면 3개월 평균값을
+      넣으면 됩니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>계산 방법</h2>
+    <p><strong>퇴직금 = 1일 평균임금 × 30 × (재직일수 ÷ 365)</strong></p>
+    <p>1일 평균임금은 퇴직 전 3개월간 받은 임금을 그 기간의 총 일수로 나눈 값입니다.</p>
+    <ul>
+      <li>3개월 임금총액 = (월 기본급 + 월 고정수당) × 3</li>
+      <li>+ 연간 상여금 × 3/12</li>
+      <li>+ 연차수당 × 3/12</li>
+      <li>÷ 퇴직 전 3개월의 달력 일수(89~92일)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>평균임금에 포함되는 것</h2>
+    <p>
+      기본급, 정기적으로 지급되는 각종 수당, 상여금, 연차수당 등 근로의 대가로 지급된 <strong>모든
+      임금</strong>이 포함됩니다. 실비 변상 성격의 금품(출장비 등)이나 일시적·우발적 급여는
+      제외됩니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>주의사항</h2>
+    <ul>
+      <li>계속 근로기간이 <strong>1년 미만</strong>이면 법정 퇴직금이 발생하지 않습니다.</li>
+      <li>
+        평균임금이 통상임금보다 적으면 통상임금을 기준으로 해야 합니다(근로기준법). 이 계산기는
+        <strong>평균임금 기준 개략값</strong>만 제공합니다.
+      </li>
+      <li>결과는 <strong>세전</strong> 금액입니다. 실제 지급액에서는 퇴직소득세가 공제됩니다.</li>
+      <li>주휴·연장근로수당 포함 여부, 회사 규정(누진제 등)에 따라 실제 금액이 달라질 수 있습니다.</li>
+    </ul>
+    <p>근거: 근로자퇴직급여 보장법, 고용노동부 퇴직금 산정 기준.</p>
+  </section>
+</CalculatorLayout>
+
+<script>
+  import { calcSeverance, type SeveranceInput } from '../../lib/severance';
+  import { parseAmount } from '../../lib/format';
+  import { enhanceInputs } from '../../scripts/enhance-inputs';
+
+  enhanceInputs();
+
+  const form = document.getElementById('sev-form') as HTMLFormElement;
+  const resultEl = document.getElementById('sev-result') as HTMLElement;
+  const errorEl = document.getElementById('sev-error') as HTMLElement;
+  const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+  const amt = (id: string) => parseAmount((document.getElementById(id) as HTMLInputElement).value);
+
+  function calculate() {
+    try {
+      const input: SeveranceInput = {
+        hireDate: (document.getElementById('hire') as HTMLInputElement).value,
+        leaveDate: (document.getElementById('leave') as HTMLInputElement).value,
+        monthlyBasePay: amt('base'),
+        monthlyAllowance: amt('allowance') || 0,
+        annualBonus: amt('bonus') || 0,
+        annualLeaveAllowance: amt('leavepay') || 0,
+      };
+      if (!input.hireDate || !input.leaveDate) throw new Error('입사일과 퇴사일을 입력하세요.');
+      const r = calcSeverance(input);
+
+      const notice = r.eligible
+        ? ''
+        : '<p class="calc-error" style="margin-top:var(--space-3)">계속 근로기간이 1년 미만이라 법정 퇴직금은 발생하지 않습니다. 아래는 참고용 산식 결과입니다.</p>';
+
+      resultEl.innerHTML = `
+        <dl>
+          <dt>재직 기간</dt><dd>${r.tenureText} (${r.tenureDays.toLocaleString()}일)</dd>
+          <dt>3개월 총일수</dt><dd>${r.threeMonthDays}일</dd>
+          <dt>1일 평균임금</dt><dd>${won(r.avgDailyWage)}</dd>
+          <dt>예상 퇴직금 (세전)</dt><dd><strong>${won(r.severancePay)}</strong></dd>
+        </dl>${notice}`;
+      resultEl.hidden = false;
+      errorEl.hidden = true;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '계산할 수 없습니다.';
+      errorEl.hidden = false;
+      resultEl.hidden = true;
+    }
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculate();
+  });
+  form?.addEventListener('input', () => {
+    if (!resultEl.hidden) calculate();
+  });
+</script>
