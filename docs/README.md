@@ -8,13 +8,14 @@
   카테고리 5개(finance/realestate/health/date/living).
   인프라: 금액칸 콤마·증감 버튼, 관련 계산기 내부 링크, sitemap lastmod, 커스텀 도메인,
   GA4(`G-64XL4FTB03`, 지연 로드), about/contact/privacy, Vitest(`npm test`, 137케이스), Lighthouse 모바일 100.
-  다음: Tier 2~3 나머지 계산기.
+- **다음 세션**: ① 디자인 보강 ② 계산기 종류 확대 (FAQ는 후순위). → [01-roadmap.md](./01-roadmap.md)
 
 ## 목차
 
 | 파일 | 내용 | 상태 |
 |------|------|------|
 | [00-overview.md](./00-overview.md) | 사이트 목표 / 타겟 사용자 / 1차 버전 범위 | 작성됨 |
+| [01-roadmap.md](./01-roadmap.md) | 완료 현황 + 다음 순서 (디자인 → 계산기 → FAQ → 애드센스) | 작성됨 |
 | [02-calculator-catalog.md](./02-calculator-catalog.md) | 만들 계산기 후보 목록 (카테고리 · 검색 키워드 · 공식 출처) | 작성됨 (계속 갱신) |
 | [10-tech-stack.md](./10-tech-stack.md) | 사용할 기술과 이유, 설치 도구 | 작성됨 |
 | [11-folder-structure.md](./11-folder-structure.md) | 폴더 구조, 파일=URL 규칙, 계산기 추가 절차 | 작성됨 |
@@ -25,7 +26,7 @@
 
 ## 아직 안 만든 문서 (나중에 채움)
 
-`01-roadmap`, `13-coding-conventions`, `14-workflow`,
+`13-coding-conventions`, `14-workflow`,
 `22-seo-page-checklist`, `23-content-guide`,
 `31-responsive-guide`, `32-accessibility`,
 `40-legal-pages`, `41-ads-adsense`, `42-analytics`, `43-performance`, `44-deployment`

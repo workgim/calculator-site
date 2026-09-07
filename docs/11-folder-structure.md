@@ -36,17 +36,18 @@ calculator-site/
 │  │  ├─ AdSlot.astro          #  광고 자리 (빈 상자 + "광고" 라벨, 높이 예약)
 │  │  ├─ CalculatorCard.astro  #  홈 목록 카드
 │  │  ├─ Breadcrumb.astro      #  홈 > 카테고리 > 계산기 (+ BreadcrumbList JSON-LD)
+│  │  ├─ Analytics.astro       #  GA4 지연 로드 (site.ts gaId 있을 때만)
 │  │  └─ AmountInput.astro     #  금액(원) 입력 필드: 세 자리 콤마 + 빠른 증감 버튼
-│  │     (Faq.astro 는 아직 미작성 — 계산기 페이지에 일반 텍스트로 FAQ 작성 중)
+│  │     (Faq.astro 는 아직 미작성 — 후순위. 계산기 페이지에 일반 텍스트로 사용법/공식/주의)
 │  │
 │  ├─ pages/                   # ★ 파일 = URL  (astro.config: trailingSlash 'never', build.format 'file')
-│  │  ├─ index.astro           # →  /
-│  │  ├─ about.astro           # →  /about
-│  │  ├─ privacy.astro         # →  /privacy
-│  │  ├─ 404.astro
-│  │  └─ calc/
-│  │     ├─ bmi.astro  percentage.astro  vat.astro
-│  │     └─ dday.astro  loan.astro  salary-net.astro
+│  │  ├─ index.astro  about.astro  contact.astro  privacy.astro  404.astro
+│  │  └─ calc/                 # 계산기 16개 (slug = 파일명)
+│  │     ├─ 금융·세금 : salary-net  loan  savings  severance-pay  vat  hourly-wage
+│  │     ├─ 부동산    : broker-fee  acquisition-tax
+│  │     ├─ 건강      : bmi  bmr
+│  │     ├─ 날짜      : dday  age  date-add
+│  │     └─ 생활·단위 : percentage  pyeong  char-count
 │  │
 │  ├─ lib/                     # 순수 함수 (DOM·astro import 없음) + 각 파일의 *.test.ts (vitest)
 │  │  ├─ bmi  percentage  vat  dday  loan  salary  savings  severance

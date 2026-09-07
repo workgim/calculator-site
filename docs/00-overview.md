@@ -87,7 +87,6 @@
 - [x] Search Console + 서치어드바이저에 사이트가 등록되고 사이트맵이 제출됨 (소유확인 완료)
 - [x] 새 계산기 1개를 추가할 때 만지는 파일이 [11-folder-structure.md](./11-folder-structure.md) §4 의 3개뿐이다
 
-> 1차 이후 진행: 계산기 6개(`bmi` `percentage` `vat` `dday` `loan` `salary-net`),
-> 금액칸 콤마·빠른 증감 버튼, 기본 OG 이미지, **커스텀 도메인 `lifecalcmate.com` 연결**
-> (검색엔진 재등록은 [20](./20-seo-google.md) §7 / [21](./21-seo-naver.md) §4 참고).
-> 다음은 [02-calculator-catalog.md](./02-calculator-catalog.md) 순서대로.
+> 1차 이후 진행(2026-09-07): 계산기 **16개** (목표 "3개월 내 15~20개" 조기 달성),
+> 커스텀 도메인 `lifecalcmate.com`, GA4, about/contact/privacy, Vitest, Lighthouse 100.
+> 앞으로의 순서는 [01-roadmap.md](./01-roadmap.md) — ① 디자인 보강 ② 계산기 확대 ③ FAQ(후순위) ④ 애드센스.
