@@ -121,7 +121,7 @@ title/description(→ `BaseLayout`), breadcrumb, `<h1>`, 리드 문장, `Softwar
 | 6~9 | 사용법 / 계산 방법 / 계산 예시 / 주의사항·근거 | 페이지 → 기본 `<slot>` (`<section><h2>…`) | 짧은 설명 텍스트 + 공식 출처 | 페이지 |
 | 10 | 최종 업데이트 날짜 | `CalculatorLayout` | `calculator.updated` | 자동 |
 | 11 | FAQ | 페이지 (일반 `<section>`, `Faq.astro` 아직 없음) | 자주 묻는 질문 2~5개 | 일부 페이지 |
-| 12 | 관련 계산기 | — | 같은 카테고리 링크 | 나중 |
+| 12 | 관련 계산기 | `CalculatorLayout` (`<nav aria-label="관련 계산기">`) | 같은 분류 계산기 링크 + "전체 계산기 목록" | ✅ 자동 |
 
 > 6~9번의 "설명 텍스트"는 SEO·신뢰도·애드센스 심사에 중요하다. 위젯만 있고 글이 없는 페이지는 검색에서 약하다.
 

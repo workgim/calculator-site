@@ -7,6 +7,7 @@
  * 계산기 페이지는 이 레이아웃에 calculator 데이터만 넘기면 된다.
  */
 import type { Calculator } from '../data/calculators';
+import { getCalculatorsByCategory } from '../data/calculators';
 import { getCategory } from '../data/categories';
 import { SITE } from '../config/site';
 import BaseLayout from './BaseLayout.astro';
@@ -19,6 +20,11 @@ interface Props {
 const { calculator } = Astro.props;
 const category = getCategory(calculator.category);
 const path = `/calc/${calculator.slug}`;
+
+// 같은 분류의 다른 계산기 (내부 링크 — docs/12-page-structure.md §5, docs/20-seo-google.md §3 #19)
+const related = getCalculatorsByCategory(calculator.category)
+  .filter((c) => c.slug !== calculator.slug)
+  .slice(0, 6);
 
 const crumbs = [
   { name: '홈', href: '/' },
@@ -53,6 +59,16 @@ const jsonLd = {
     <slot />
   </div>
 
+  <nav class="related" aria-label="관련 계산기">
+    <h2>{related.length > 0 ? `${category?.name ?? ''} 계산기 더 보기` : '다른 계산기'}</h2>
+    <ul>
+      {related.map((c) => (
+        <li><a href={`/calc/${c.slug}`}>{c.title}</a></li>
+      ))}
+      <li><a href="/">전체 계산기 목록</a></li>
+    </ul>
+  </nav>
+
   <p class="calc-updated">최종 업데이트: {calculator.updated}</p>
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
@@ -62,8 +78,27 @@ const jsonLd = {
   .calc-content {
     max-width: var(--measure);
   }
-  .calc-updated {
+  .related {
     margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: var(--border-width) solid var(--color-border);
+  }
+  .related h2 {
+    margin-top: 0;
+    font-size: var(--fs-lg);
+  }
+  .related ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+  }
+  .related li {
+    margin: 0;
+  }
+  .calc-updated {
+    margin-top: var(--space-6);
     font-size: var(--fs-xs);
     color: var(--color-text-muted);
   }

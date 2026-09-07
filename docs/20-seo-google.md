@@ -79,7 +79,7 @@
 | 6 | robots 메타 | 기본 `index,follow`. 얇은/중복만 `noindex` | `Head.astro` ← props(기본 index; 404 만 noindex) | ✅ |
 | 7 | Open Graph | og:title/description/type/url/image(1200×630) | `Head.astro` + `public/images/og-default.png` (`scripts/generate-og.mjs`) | ✅ |
 | 8 | Twitter 카드 | `summary_large_image` | `Head.astro` | ✅ |
-| 9 | sitemap | 전체 URL 자동 수집 | `@astrojs/sitemap` (`astro.config.mjs` `site`) → `/sitemap-index.xml` | ✅ |
+| 9 | sitemap | 전체 URL 자동 수집 + `lastmod`(계산기는 `calculators.ts` 의 `updated`) | `@astrojs/sitemap` + `serialize`(`astro.config.mjs`) → `/sitemap-index.xml` | ✅ |
 | 10 | robots.txt | 전체 허용 + `Sitemap:` 절대경로 | `public/robots.txt` | ✅ |
 | 11 | 트레일링 슬래시 | 전역 1가지로 통일 (`/calc/bmi`) | `astro.config.mjs` `trailingSlash:'never'` + `build.format:'file'` + `vercel.json` `cleanUrls` | ✅ |
 | 12 | HTTPS | 강제 | Vercel 자동 | ✅ |
@@ -89,7 +89,7 @@
 | 16 | 구조화 데이터: 계산기 | `SoftwareApplication`, `UtilitiesApplication`, `offers.price:0` | `CalculatorLayout.astro` | ✅ |
 | 17 | 구조화 데이터: FAQ | §4 — 마크업 둬도 되나 리치결과 기대 안 함 | (미도입) `Faq.astro` 예정 | 나중 |
 | 18 | 이미지 | `alt` 필수, 크기 지정, 지연 로딩 | 규칙 — 현재 본문 이미지 거의 없음 | 규칙만 |
-| 19 | 내부 링크 | breadcrumb + 홈↔계산기 | `Nav.astro`, `Breadcrumb.astro`, `index.astro` | ✅ (관련 계산기 링크는 나중) |
+| 19 | 내부 링크 | breadcrumb + 홈↔계산기 + 같은 분류 관련 계산기 | `Nav.astro`, `Breadcrumb.astro`, `index.astro`, `CalculatorLayout.astro`(관련 계산기) | ✅ |
 | 20 | 페이지당 h1 | 정확히 1개 | `CalculatorLayout`(자동 1개) / 정적 페이지 각각 1개 | ✅ |
 | 21 | 모바일 대응 | 반응형, 가로 스크롤 없음, 터치 타겟 | `global.css` — [30-design-guide.md](./30-design-guide.md) | ✅ |
 | 22 | 성능(CWV) | §6 목표치 | 시스템 폰트, JS 최소, `AdSlot` 높이 예약 | ⏳ 배포 후 Search Console 로 측정 |
