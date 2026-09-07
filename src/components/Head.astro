@@ -51,6 +51,9 @@ const jsonLd = {
 <link rel="canonical" href={canonical} />
 <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
 
+{SITE.verification.google && <meta name="google-site-verification" content={SITE.verification.google} />}
+{SITE.verification.naver && <meta name="naver-site-verification" content={SITE.verification.naver} />}
+
 <meta property="og:type" content={path === '/' ? 'website' : 'article'} />
 <meta property="og:site_name" content={SITE.name} />
 <meta property="og:title" content={pageTitle} />

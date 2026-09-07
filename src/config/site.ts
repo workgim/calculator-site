@@ -13,4 +13,12 @@ export const SITE = {
   author: 'WorkGim',
   /** 기본 Open Graph 이미지 (public/ 기준 절대경로) */
   ogImage: '/images/og-default.png',
+  /**
+   * 검색엔진 소유확인용 HTML 태그의 content 값. (docs/20 §7, docs/21 §4)
+   * 값이 있으면 Head.astro 가 <meta> 를 출력한다. 확인 후에도 그대로 두면 된다.
+   */
+  verification: {
+    google: '', // Google Search Console > HTML 태그 방식의 content
+    naver: '', // 네이버 서치어드바이저 > HTML 태그 방식의 content
+  },
 } as const;
