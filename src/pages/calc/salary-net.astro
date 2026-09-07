@@ -1,0 +1,157 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('salary-net')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <form id="salary-form">
+      <div class="calc-field">
+        <label for="annual">연봉 (원, 세전)</label>
+        <input
+          type="number"
+          id="annual"
+          inputmode="numeric"
+          step="1"
+          min="1"
+          placeholder="예: 36000000"
+          required
+        />
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label for="nontax">월 비과세액 (원)</label>
+          <input type="number" id="nontax" inputmode="numeric" step="1" min="0" value="200000" />
+          <small class="calc-hint">식대 등. 기본 20만원</small>
+        </div>
+        <div class="calc-field">
+          <label for="dependents">부양가족 수</label>
+          <input type="number" id="dependents" inputmode="numeric" step="1" min="1" value="1" />
+          <small class="calc-hint">본인 포함</small>
+        </div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label for="children">8~20세 자녀 수</label>
+          <input type="number" id="children" inputmode="numeric" step="1" min="0" value="0" />
+          <small class="calc-hint">자녀 세액공제용</small>
+        </div>
+        <div class="calc-field">
+          <label for="withholding">원천징수 비율</label>
+          <select id="withholding">
+            <option value="0.8">80%</option>
+            <option value="1" selected>100% (기본)</option>
+            <option value="1.2">120%</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn">계산하기</button>
+    </form>
+
+    <output id="salary-result" class="calc-result" hidden></output>
+    <p id="salary-error" class="calc-error" role="alert" hidden></p>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>
+      세전 연봉을 입력하면 4대보험과 세금을 공제한 <strong>월 실수령액</strong>을 계산합니다. 비과세액,
+      부양가족 수, 8~20세 자녀 수, 원천징수 비율은 필요에 따라 조정하세요.
+    </p>
+  </section>
+
+  <section>
+    <h2>2026년 공제 기준</h2>
+    <table>
+      <thead>
+        <tr><th>항목</th><th>근로자 부담</th><th>부과 기준</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>국민연금</td><td>4.75%</td><td>기준소득월액(상한 637만·하한 40만)</td></tr>
+        <tr><td>건강보험</td><td>3.595%</td><td>월 과세소득</td></tr>
+        <tr><td>장기요양보험</td><td>건강보험료 × 13.14%</td><td>—</td></tr>
+        <tr><td>고용보험</td><td>0.9%</td><td>월 과세소득</td></tr>
+        <tr><td>근로소득세</td><td>간이세액표 근사</td><td>아래 설명</td></tr>
+        <tr><td>지방소득세</td><td>근로소득세 × 10%</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>근로소득세는 어떻게 구하나</h2>
+    <p>실제 매월 떼는 세금은 국세청 <strong>근로소득 간이세액표</strong>를 따릅니다. 이 계산기는 그 표를 그대로 쓰지 않고, 연간 세액을 구해 12로 나눈 <strong>근사값</strong>을 씁니다.</p>
+    <ol>
+      <li>연 과세대상 총급여 = 연봉 − (월 비과세액 × 12)</li>
+      <li>근로소득공제를 빼서 근로소득금액을 구함</li>
+      <li>인적공제(부양가족 1인당 150만원) · 국민연금 보험료 공제를 빼서 과세표준을 구함</li>
+      <li>과세표준에 종합소득세율(6~45%, 누진공제)을 적용해 산출세액 계산</li>
+      <li>근로소득세액공제, 8~20세 자녀 세액공제를 빼서 결정세액 계산</li>
+      <li>결정세액 ÷ 12 × 원천징수 비율 = 월 근로소득세</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>주의사항</h2>
+    <ul>
+      <li>
+        <strong>예상치입니다.</strong> 실제 원천징수는 간이세액표를 따르며, 연말정산에서 각종
+        공제(신용카드·의료비·기부금 등)를 반영해 최종 정산됩니다.
+      </li>
+      <li>비과세 항목, 상여금 지급 방식, 회사 규정에 따라 실수령액이 달라질 수 있습니다.</li>
+      <li>
+        요율은 <strong>2026년 기준</strong>입니다. 4대보험 요율은 매년 1월, 국민연금 기준소득월액은
+        매년 7월에 바뀝니다.
+      </li>
+    </ul>
+    <p>
+      근거: 국민연금공단, 국민건강보험공단, 보건복지부 2026년 고시, 고용노동부, 국세청 근로소득
+      간이세액표(nts.go.kr), 소득세법.
+    </p>
+  </section>
+</CalculatorLayout>
+
+<script>
+  import { calcSalary, type SalaryInput } from '../../lib/salary';
+
+  const form = document.getElementById('salary-form') as HTMLFormElement;
+  const resultEl = document.getElementById('salary-result') as HTMLElement;
+  const errorEl = document.getElementById('salary-error') as HTMLElement;
+  const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+  const numVal = (id: string) => parseFloat((document.getElementById(id) as HTMLInputElement).value);
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    try {
+      const input: SalaryInput = {
+        annualSalary: numVal('annual'),
+        monthlyNonTax: numVal('nontax') || 0,
+        dependents: numVal('dependents'),
+        childrenForCredit: numVal('children') || 0,
+        withholdingRate: parseFloat((document.getElementById('withholding') as HTMLSelectElement).value),
+      };
+      const r = calcSalary(input);
+      resultEl.innerHTML = `
+        <dl>
+          <dt>월 세전 급여</dt><dd>${won(r.monthlyGross)}</dd>
+          <dt>국민연금</dt><dd>− ${won(r.nationalPension)}</dd>
+          <dt>건강보험</dt><dd>− ${won(r.healthInsurance)}</dd>
+          <dt>장기요양보험</dt><dd>− ${won(r.longTermCare)}</dd>
+          <dt>고용보험</dt><dd>− ${won(r.employmentInsurance)}</dd>
+          <dt>근로소득세</dt><dd>− ${won(r.incomeTax)}</dd>
+          <dt>지방소득세</dt><dd>− ${won(r.localIncomeTax)}</dd>
+          <dt>공제 합계</dt><dd>− ${won(r.totalDeduction)}</dd>
+          <dt>월 실수령액</dt><dd><strong>${won(r.monthlyNet)}</strong></dd>
+          <dt>연 실수령액</dt><dd>${won(r.annualNet)}</dd>
+        </dl>`;
+      resultEl.hidden = false;
+      errorEl.hidden = true;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '계산할 수 없습니다.';
+      errorEl.hidden = false;
+      resultEl.hidden = true;
+    }
+  });
+</script>

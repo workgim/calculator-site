@@ -47,6 +47,16 @@ export const CALCULATORS: Calculator[] = [
     updated: '2026-09-07',
   },
   {
+    slug: 'salary-net',
+    title: '연봉 실수령액 계산기',
+    shortDescription: '세전 연봉에서 4대보험과 세금을 공제한 월·연 실수령액을 계산합니다.',
+    description:
+      '세전 연봉을 입력하면 국민연금·건강보험·장기요양·고용보험과 근로소득세·지방소득세를 공제한 2026년 기준 월 실수령액과 연 실수령액을 계산하는 무료 계산기입니다.',
+    category: 'finance',
+    keywords: ['연봉 실수령액', '월급 실수령액 계산기', '실수령액 계산기', '세후 월급'],
+    updated: '2026-09-07',
+  },
+  {
     slug: 'vat',
     title: '부가가치세(VAT) 계산기',
     shortDescription: '공급가액·합계금액·부가세액 중 하나만 넣으면 나머지를 계산합니다.',
