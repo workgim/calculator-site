@@ -62,7 +62,7 @@
 공통 항목(title, description, canonical, 모바일, HTTPS, sitemap.xml, 404, 구조화 데이터 등)은
 [20-seo-google.md](./20-seo-google.md) §3 매핑표를 그대로 따른다. **아래는 네이버 때문에 추가로 필요한 것**만.
 
-배포 도메인: `https://calculator-site-lilac.vercel.app`
+배포 도메인: `https://lifecalcmate.com`
 
 | # | 항목 | 권장값 / 규칙 | 구현 위치 | 현재 상태 |
 |---|------|----------------|-----------|-----------|
@@ -74,7 +74,7 @@
 | N6 | `<link rel="alternate" type="application/rss+xml">` | RSS 도입 시 head 추가 | `Head.astro` | 나중 |
 | N7 | 모바일 대응 | 반응형(동일 URL), "모바일 친화도" 통과 | `global.css` — [30-design-guide.md](./30-design-guide.md) | ✅ |
 | N8 | 웹 표준 | 유효한 HTML, "웹 표준 검증" 통과 | 전역 마크업 (Astro 빌드 유효 HTML) | ⏳ 서치어드바이저 도구로 재확인 |
-| N9 | 프로토콜/호스트 통일 | https 단일, canonical 일치 | Vercel(https 강제) + `canonical`(`site.ts`) | ✅ (`.vercel.app` 단일 호스트) |
+| N9 | 프로토콜/호스트 통일 | https 단일, canonical 일치 | Vercel(https 강제) + `canonical`(`site.ts`) | ✅ (`lifecalcmate.com` 단일 호스트, www 미사용, `.vercel.app`→기본 도메인 리다이렉트) |
 | N10 | title/description | 낚시·과장 금지, 페이지 고유 | `Head.astro` (§20 §2 패턴 공유) | ✅ |
 | N11 | 대표 이미지 | 페이지별 대표 이미지(없으면 기본 OG) | 현재 전 페이지 기본 OG 공용 | ✅ (기본), 페이지별은 나중 |
 
@@ -82,19 +82,22 @@
 
 ## 4. 서치어드바이저 등록 절차
 
-### 완료 (2026-09-07)
+### 현황
 
-- 사이트 등록 `https://calculator-site-lilac.vercel.app`, **HTML 태그** 방식 소유확인 완료
-  (코드: `src/config/site.ts` `verification.naver`).
-- `sitemap-index.xml` 제출 완료.
+- ✅ (2026-09-07) `calculator-site-lilac.vercel.app` 등록·HTML 태그 소유확인·사이트맵 제출 완료, 페이지 수집 요청함.
+  확인 코드: `src/config/site.ts` `verification.naver` (새 도메인에서도 그대로 동작).
+- ⏳ **`https://lifecalcmate.com` 재등록 필요** (커스텀 도메인 전환):
+  1. 서치어드바이저 → 사이트 등록 → `https://lifecalcmate.com`
+  2. HTML 태그 방식 → 이미 `Head.astro`가 meta 출력 중이므로 배포 후 바로 "소유확인"
+  3. robots.txt 확인 → `sitemap-index.xml` 제출 → 주요 URL 수집 요청
+  4. 구 호스트 등록은 남겨둔다(유입 데이터 추적용).
 
-### 남은 것 / 정기
+### 정기 / 남은 것
 
-1. **웹페이지 수집 요청**: 요청 > 웹페이지 수집 → 새 계산기 URL 등록. **하루 약 50 URL 한도**.
-2. **진단 도구**: 검증 > 웹 표준 검증 / 모바일 친화도 실행, 경고 정리.
-3. **RSS 제출**: 피드 도입(N5) 후.
+1. 새 계산기 URL 수집 요청 (하루 약 50 URL 한도).
+2. 검증 도구: 웹 표준 검증 / 모바일 친화도 실행, 경고 정리.
+3. RSS 제출: 피드 도입(N5) 후.
 4. 색인까지 보통 **1~4주**.
-5. 커스텀 도메인 연결 시: 새 호스트로 사이트 다시 등록(구 호스트도 남겨두면 유입 데이터가 잡힌다).
 
 ---
 

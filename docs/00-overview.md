@@ -80,7 +80,7 @@
 
 ### 1차 완료 판정 (Definition of Done) — ✅ 2026-09-07 전부 충족
 
-- [x] 배포된 URL에서 홈 + 계산기 + about + privacy 가 열린다 (<https://calculator-site-lilac.vercel.app>)
+- [x] 배포된 URL에서 홈 + 계산기 + about + privacy 가 열린다 (<https://lifecalcmate.com>)
 - [x] 모바일 폭(375px)과 PC 폭(1280px)에서 레이아웃이 깨지지 않는다
 - [x] 각 페이지에 고유한 title / description 이 들어간다
 - [x] `/sitemap-index.xml`, `/robots.txt` 가 정상 응답한다
@@ -88,4 +88,6 @@
 - [x] 새 계산기 1개를 추가할 때 만지는 파일이 [11-folder-structure.md](./11-folder-structure.md) §4 의 3개뿐이다
 
 > 1차 이후 진행: 계산기 6개(`bmi` `percentage` `vat` `dday` `loan` `salary-net`),
-> 금액칸 콤마·빠른 증감 버튼, 기본 OG 이미지. 다음은 [02-calculator-catalog.md](./02-calculator-catalog.md) 순서대로.
+> 금액칸 콤마·빠른 증감 버튼, 기본 OG 이미지, **커스텀 도메인 `lifecalcmate.com` 연결**
+> (검색엔진 재등록은 [20](./20-seo-google.md) §7 / [21](./21-seo-naver.md) §4 참고).
+> 다음은 [02-calculator-catalog.md](./02-calculator-catalog.md) 순서대로.

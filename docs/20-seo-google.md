@@ -66,7 +66,7 @@
 ## 3. 구현 매핑표 (기술 요구사항 → 코드 위치)
 
 가이드가 바뀌면 "권장값"을 고치고 "구현 위치" 파일을 수정한다.
-배포 도메인은 `https://calculator-site-lilac.vercel.app` (커스텀 도메인 연결 시 `astro.config.mjs` `site`,
+배포 도메인은 `https://lifecalcmate.com` (커스텀 도메인 연결 시 `astro.config.mjs` `site`,
 `src/config/site.ts` `url`, `public/robots.txt` 세 곳 교체).
 
 | # | 항목 | 권장값 / 규칙 | 구현 위치 | 현재 상태 |
@@ -160,12 +160,15 @@ Article, Breadcrumb, Carousel, Course List, Dataset, Discussion Forum, Education
 
 ## 7. 등록 및 정기 점검
 
-### 최초 등록 — ✅ 2026-09-07 완료
+### 등록 현황
 
-- **URL 접두어 속성** 으로 `https://calculator-site-lilac.vercel.app` 등록, **HTML 태그** 방식 소유확인.
-  - 확인 코드는 `src/config/site.ts` 의 `verification.google` → `Head.astro` 가 meta 출력.
-- `sitemap-index.xml` 제출, 주요 페이지 색인 요청 완료.
-- 커스텀 도메인 연결 시: 새 도메인으로 속성 다시 만들고(또는 도메인 속성 + DNS TXT), 이전 URL → 새 URL 301.
+- ✅ (2026-09-07) `calculator-site-lilac.vercel.app` **URL 접두어 속성** 등록·HTML 태그 소유확인·사이트맵 제출 완료.
+  확인 코드: `src/config/site.ts` `verification.google` → `Head.astro` meta 출력 (새 도메인에서도 그대로 동작).
+- ⏳ **`lifecalcmate.com` 재등록 필요** (커스텀 도메인 전환):
+  1. Search Console → 속성 추가 → **도메인 속성** 선택 → `lifecalcmate.com` 입력
+  2. 안내되는 **DNS TXT 레코드**를 Vercel의 도메인 DNS에 추가 (Vercel Domains → `lifecalcmate.com` → DNS Records) → 확인
+  3. `sitemap-index.xml` 다시 제출, 주요 URL 색인 요청
+  4. 기존 vercel.app 속성은 지우지 말고 유지 (전환 추적용). Vercel에서 vercel.app → 기본 도메인 리다이렉트를 켜두면 구 URL 색인은 자연 소멸.
 
 ### 정기 점검 체크리스트 (분기 1회 + 구글 발표 있을 때)
 

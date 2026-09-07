@@ -7,4 +7,4 @@ User-agent: Yeti
 Allow: /
 
 # 커스텀 도메인 연결 시 이 줄도 교체
-Sitemap: https://calculator-site-lilac.vercel.app/sitemap-index.xml
+Sitemap: https://lifecalcmate.com/sitemap-index.xml

@@ -10,7 +10,7 @@ import sitemap from '@astrojs/sitemap';
 //   (docs/11-folder-structure.md §3, docs/20-seo-google.md §3 #11)
 // ─────────────────────────────────────────────────────────────
 export default defineConfig({
-  site: 'https://calculator-site-lilac.vercel.app',
+  site: 'https://lifecalcmate.com',
   trailingSlash: 'never',
   build: {
     format: 'file',
