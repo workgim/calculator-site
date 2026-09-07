@@ -8,15 +8,18 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "gen:og": "node scripts/generate-og.mjs"
+    "gen:og": "node scripts/generate-og.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "astro": "^7.3.1",
-    "@astrojs/sitemap": "^3.7.4"
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.1"
   },
   "devDependencies": {
     "prettier": "^3.9.6",
-    "prettier-plugin-astro": "^0.14.1"
+    "prettier-plugin-astro": "^0.14.1",
+    "vitest": "^5.0.0"
   },
   "allowScripts": {
     "esbuild@0.28.2": true

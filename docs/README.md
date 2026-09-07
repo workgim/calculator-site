@@ -4,9 +4,10 @@
 코드보다 이 문서가 먼저입니다. 규칙이 바뀌면 **먼저 이 문서를 고치고**, 그 다음 코드를 맞춥니다.
 
 - 배포 주소: <https://lifecalcmate.com> (커스텀 도메인, `.vercel.app` → 308 리다이렉트)
-- 진행 상황(2026-09-07): 1~12단계 완료. 계산기 6개(`bmi` `percentage` `vat` `dday` `loan` `salary-net`).
+- 진행 상황(2026-09-07): 1~12단계 완료. 계산기 7개(`bmi` `percentage` `vat` `dday` `loan` `salary-net` `savings`).
   이후: 금액칸 콤마·증감 버튼, 관련 계산기 내부 링크, sitemap lastmod, 커스텀 도메인,
-  GA4 플러밍(`site.ts` `gaId` 채우면 활성). 다음: `savings` 계산기, GA4 측정 ID 입력.
+  GA4 활성(`G-64XL4FTB03`), about/contact/privacy, Vitest 테스트(`npm test`, 72케이스).
+  다음: `severance-pay`(퇴직금) 등 계산기 추가, Lighthouse 실측.
 
 ## 목차
 

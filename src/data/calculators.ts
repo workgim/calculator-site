@@ -77,6 +77,16 @@ export const CALCULATORS: Calculator[] = [
     updated: '2026-09-07',
   },
   {
+    slug: 'savings',
+    title: '예금·적금 이자 계산기',
+    shortDescription: '예금·적금의 만기 이자와 이자소득세를 뗀 세후 수령액을 계산합니다.',
+    description:
+      '예금(거치식) 또는 적금(정기적립)의 원금·연이율·기간을 입력하면 단리·월복리 방식별 세전 이자, 이자소득세(15.4% 등), 세후 만기 수령액을 계산하는 무료 계산기입니다.',
+    category: 'finance',
+    keywords: ['적금 이자 계산기', '예금 이자 계산기', '만기 수령액', '적금 계산기'],
+    updated: '2026-09-07',
+  },
+  {
     slug: 'loan',
     title: '대출 이자 계산기',
     shortDescription: '원리금균등·원금균등·만기일시 상환 방식별 월 상환액과 총 이자를 계산합니다.',

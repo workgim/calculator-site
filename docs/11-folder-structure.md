@@ -48,10 +48,10 @@ calculator-site/
 │  │     ├─ bmi.astro  percentage.astro  vat.astro
 │  │     └─ dday.astro  loan.astro  salary-net.astro
 │  │
-│  ├─ lib/                     # 순수 함수 (DOM·astro import 없음)
-│  │  ├─ bmi.ts  percentage.ts  vat.ts  dday.ts  loan.ts  salary.ts
-│  │  └─ format.ts             #  parseAmount / formatThousands / moneyStepLabel
-│  │     (*.test.ts 는 테스트 러너 도입 후)
+│  ├─ lib/                     # 순수 함수 (DOM·astro import 없음) + 각 파일의 *.test.ts (vitest)
+│  │  ├─ bmi.ts  percentage.ts  vat.ts  dday.ts  loan.ts  salary.ts  savings.ts
+│  │  ├─ format.ts             #  parseAmount / formatThousands / moneyStepLabel
+│  │  └─ *.test.ts             #  `npm test` (vitest run). 계산 함수 회귀 방지
 │  │
 │  ├─ scripts/                 # 브라우저에서 실행되는 공유 스크립트
 │  │  └─ enhance-inputs.ts     #  data-money 콤마 포맷 + .stepper 버튼 처리 (페이지가 import)
@@ -114,7 +114,7 @@ calculator-site/
 
 새 계산기 `example`을 추가한다고 하자.
 
-1. **`src/lib/example.ts`** — 계산 공식 함수 작성
+1. **`src/lib/example.ts`** — 계산 공식 함수 작성 (+ `example.test.ts` 로 값 검증)
    ```
    export function calcExample(a: number, b: number) { ... }
    ```

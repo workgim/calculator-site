@@ -93,7 +93,7 @@ Tailwind 같은 도구도 좋지만, 초보 단계에서는 CSS 자체(레이아
 | `prettier` + `prettier-plugin-astro` | 코드 자동 정렬 | 권장 |
 | (나중) `@astrojs/rss` | 네이버용 RSS 피드 생성 | 콘텐츠/글이 쌓이면 |
 | (나중) 날짜 라이브러리 | 날짜 계산기용. 우선 표준 `Date`로 시도, 부족하면 도입 | 조건부 |
-| (나중) 테스트 러너(Vitest) | 계산 함수 자동 테스트 | 계산기 10개 넘어가면 |
+| `vitest` (dev) | `src/lib/*.test.ts` 계산 함수 테스트. `npm test` | 도입됨 (금융 계산 회귀 방지) |
 
 ---
 
@@ -106,6 +106,7 @@ Tailwind 같은 도구도 좋지만, 초보 단계에서는 CSS 자체(레이아
 | astro | ^7.3.1 | `import { defineConfig } from 'astro/config'` |
 | @astrojs/sitemap | ^3.7.4 | `sitemap-index.xml` + `sitemap-0.xml` 생성 |
 | prettier / prettier-plugin-astro | ^3.9.6 / ^0.14.1 | |
+| vitest | ^5.0.0 | `npm test` → `vitest run`. 테스트 파일: `src/lib/*.test.ts` |
 | sharp | (astro 의존성) | `scripts/generate-og.mjs` 에서 OG 이미지 생성에 사용 |
 
 - `package.json` 에 `allowScripts: { "esbuild@0.28.2": true }` — npm 11+ 의 설치 스크립트 승인 기능.
@@ -129,3 +130,4 @@ Tailwind 같은 도구도 좋지만, 초보 단계에서는 CSS 자체(레이아
 |------|-----------|
 | 2026-09-07 | 최초 작성. Astro + 순수 CSS + Vercel로 확정 |
 | 2026-09-07 | 설치 완료(§6): Node 24.20.0 / Astro 7.3.1. Vercel 배포, `vercel.json` 추가. OG 이미지 생성에 sharp 사용 |
+| 2026-09-07 | vitest 도입. `src/lib/*.test.ts` (8파일 72케이스). GA4·커스텀 도메인·관련 계산기 링크 반영 |
