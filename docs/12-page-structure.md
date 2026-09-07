@@ -48,7 +48,7 @@
 | `<meta name="twitter:card" content="summary_large_image">` | 고정 | 트위터/X 공유 카드 | 고정 |
 | `<meta name="robots" content="index,follow">` | 기본 index / 특정 페이지만 noindex | 색인 허용 여부 | props(기본값 index) |
 | `<meta name="google-site-verification">` / `<meta name="naver-site-verification">` | 소유확인 코드 | 검색엔진 소유확인 | `site.ts` 의 `verification.google` / `.naver` (값 있을 때만 출력) |
-| GA4 스크립트 (`gtag/js`) | `Analytics.astro` | 방문 통계 | `site.ts` 의 `gaId` (값 있을 때만 로드). 쿠키 고지는 `privacy.astro` 가 `gaId` 유무로 분기 |
+| GA4 스크립트 (`gtag/js`) | `Analytics.astro` | 방문 통계 | `site.ts` 의 `gaId` (값 있을 때만). **지연 로드**: idle(≤3초) 또는 첫 상호작용 시 삽입 → 성능 점수 영향 없음. 쿠키 고지는 `privacy.astro` 가 `gaId` 유무로 분기 |
 | `<link rel="icon" href="/favicon.svg">` | 고정 | 탭 아이콘 | 고정 |
 | `<link rel="alternate" type="application/rss+xml" ...>` | RSS 도입 후 | 네이버 RSS | 조건부 |
 | 구조화 데이터 `<script type="application/ld+json">` | `WebSite`, `BreadcrumbList`, `SoftwareApplication` 등 | 검색엔진에 의미 전달 | [20-seo-google.md](./20-seo-google.md) 매핑표 |
