@@ -50,9 +50,9 @@ calculator-site/
 │  │
 │  ├─ lib/                     # 순수 함수 (DOM·astro import 없음) + 각 파일의 *.test.ts (vitest)
 │  │  ├─ bmi  percentage  vat  dday  loan  salary  savings  severance
-│  │  ├─ brokerFee  acquisitionTax  wage  age   (.ts)
+│  │  ├─ brokerFee  acquisitionTax  wage  age  dateAdd  pyeong  charCount  bmr   (.ts)
 │  │  ├─ format.ts             #  parseAmount / formatThousands / moneyStepLabel
-│  │  └─ *.test.ts             #  `npm test` (vitest run). 계산 함수 회귀 방지
+│  │  └─ *.test.ts             #  `npm test` (vitest run). 17파일 137케이스
 │  │
 │  ├─ scripts/                 # 브라우저에서 실행되는 공유 스크립트
 │  │  └─ enhance-inputs.ts     #  data-money 콤마 포맷 + .stepper 버튼 처리 (페이지가 import)

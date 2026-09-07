@@ -4,11 +4,11 @@
 코드보다 이 문서가 먼저입니다. 규칙이 바뀌면 **먼저 이 문서를 고치고**, 그 다음 코드를 맞춥니다.
 
 - 배포 주소: <https://lifecalcmate.com> (커스텀 도메인, `.vercel.app` → 308 리다이렉트)
-- 진행 상황(2026-09-07): 1~12단계 완료. **계산기 12개** — 카탈로그 "추천 제작 순서" 1~12 전부.
+- 진행 상황(2026-09-07): 1~12단계 완료. **계산기 16개** (추천 순서 1~12 + Tier 2~3: 날짜/평↔㎡/글자수/기초대사량).
   카테고리 5개(finance/realestate/health/date/living).
   인프라: 금액칸 콤마·증감 버튼, 관련 계산기 내부 링크, sitemap lastmod, 커스텀 도메인,
-  GA4(`G-64XL4FTB03`), about/contact/privacy, Vitest(`npm test`, 111케이스).
-  다음: Tier 2~3 계산기, Lighthouse 실측.
+  GA4(`G-64XL4FTB03`, 지연 로드), about/contact/privacy, Vitest(`npm test`, 137케이스), Lighthouse 모바일 100.
+  다음: Tier 2~3 나머지 계산기.
 
 ## 목차
 

@@ -97,7 +97,10 @@
 | 12 | `age` (만 나이) | ✅ 완료 | 만/연 나이, 다음 생일 D-day, 띠 |
 
 > 첫 12개 완료. 새 카테고리 `realestate`(부동산) 추가됨.
-> 이후: Tier 2~3 (`date-add` `pyeong` `discount` `unit-converter` `electricity-bill` `unemployment-benefit` `jeonse-wolse` `dsr` `income-tax` `bmr`/`tdee` `due-date` `gpa` `char-count` …).
+>
+> **Tier 2~3 진행:**
+> - ✅ `date-add`(날짜 계산기), `pyeong`(평↔㎡), `char-count`(글자 수 세기), `bmr`(기초대사량·권장칼로리) — 2026-09-07
+> - 남음: `discount` `unit-converter` `electricity-bill` `unemployment-benefit` `jeonse-wolse` `dsr` `income-tax` `due-date` `gpa` …
 
 1~4로 트래픽·색인 기반을 빠르게 깔고, 5번부터 수요·수익이 큰 금융/세금으로 넘어간다.
 6·7·9·10·11은 세율·요율이 매년 바뀌므로 "매년 갱신" 관리 대상 → [20-seo-google.md](./20-seo-google.md) §1 "맥락적 최신성".

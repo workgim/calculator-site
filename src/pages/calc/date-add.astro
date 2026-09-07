@@ -1,0 +1,116 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('date-add')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <form id="da-form">
+      <div class="calc-field">
+        <label for="base">기준일</label>
+        <input type="date" id="base" required />
+      </div>
+      <div class="calc-field">
+        <label for="dir">방향</label>
+        <select id="dir">
+          <option value="add">더하기 (이후)</option>
+          <option value="subtract">빼기 (이전)</option>
+        </select>
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label for="years">년</label>
+          <input type="number" id="years" inputmode="numeric" min="0" step="1" value="0" />
+        </div>
+        <div class="calc-field">
+          <label for="months">개월</label>
+          <input type="number" id="months" inputmode="numeric" min="0" step="1" value="0" />
+        </div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label for="weeks">주</label>
+          <input type="number" id="weeks" inputmode="numeric" min="0" step="1" value="0" />
+        </div>
+        <div class="calc-field">
+          <label for="days">일</label>
+          <input type="number" id="days" inputmode="numeric" min="0" step="1" value="0" />
+        </div>
+      </div>
+      <button type="submit" class="btn">계산하기</button>
+    </form>
+
+    <output id="da-result" class="calc-result" hidden></output>
+    <p id="da-error" class="calc-error" role="alert" hidden></p>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>
+      기준일을 정하고 더할지 뺄지 고른 뒤, 년·개월·주·일 칸에 값을 넣으면 됩니다. 여러 칸을 함께
+      쓸 수 있습니다(예: 1년 2개월 10일 후).
+    </p>
+  </section>
+
+  <section>
+    <h2>계산 방법</h2>
+    <p>
+      년·개월을 먼저 반영하고, 그 결과에 주·일을 더합니다. 연·월을 더한 결과가 그 달에 없는
+      날이면(예: 1월 31일 + 1개월) 그 달의 <strong>말일</strong>로 맞춥니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>주의사항</h2>
+    <p>윤년(2월 29일)과 월별 일수 차이는 자동으로 반영됩니다. 공휴일·영업일은 고려하지 않습니다.</p>
+  </section>
+</CalculatorLayout>
+
+<script>
+  import { calcDateAdd, type DateAddInput } from '../../lib/dateAdd';
+
+  const form = document.getElementById('da-form') as HTMLFormElement;
+  const baseEl = document.getElementById('base') as HTMLInputElement;
+  const resultEl = document.getElementById('da-result') as HTMLElement;
+  const errorEl = document.getElementById('da-error') as HTMLElement;
+  const num = (id: string) => parseInt((document.getElementById(id) as HTMLInputElement).value, 10) || 0;
+
+  baseEl.value = new Date().toISOString().slice(0, 10);
+
+  function calculate() {
+    try {
+      if (!baseEl.value) throw new Error('기준일을 입력하세요.');
+      const input: DateAddInput = {
+        base: baseEl.value,
+        direction: (document.getElementById('dir') as HTMLSelectElement).value as DateAddInput['direction'],
+        years: num('years'),
+        months: num('months'),
+        weeks: num('weeks'),
+        days: num('days'),
+      };
+      const r = calcDateAdd(input);
+      resultEl.innerHTML = `
+        <dl>
+          <dt>결과 날짜</dt><dd><strong>${r.date} (${r.weekday})</strong></dd>
+          <dt>기준일과의 차이</dt><dd>${r.diffDays.toLocaleString()}일</dd>
+        </dl>`;
+      resultEl.hidden = false;
+      errorEl.hidden = true;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '계산할 수 없습니다.';
+      errorEl.hidden = false;
+      resultEl.hidden = true;
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculate();
+  });
+  form.addEventListener('input', () => {
+    if (!resultEl.hidden) calculate();
+  });
+</script>

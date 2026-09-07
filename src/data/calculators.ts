@@ -87,6 +87,46 @@ export const CALCULATORS: Calculator[] = [
     updated: '2026-09-07',
   },
   {
+    slug: 'date-add',
+    title: '날짜 계산기',
+    shortDescription: '기준일에 년·개월·주·일을 더하거나 빼서 결과 날짜와 요일을 계산합니다.',
+    description:
+      '기준일에 년·개월·주·일을 더하거나 빼면 결과 날짜, 요일, 기준일로부터의 일수를 알려주는 무료 날짜 계산기입니다. 윤년과 월별 일수 차이를 자동 반영합니다.',
+    category: 'date',
+    keywords: ['날짜 계산기', '며칠 후 날짜', '날짜 더하기', '몇 주 후 날짜'],
+    updated: '2026-09-07',
+  },
+  {
+    slug: 'pyeong',
+    title: '평 ↔ 제곱미터 변환기',
+    shortDescription: '평과 제곱미터(㎡)를 서로 변환합니다. 1평 ≈ 3.3058㎡.',
+    description:
+      '평수를 제곱미터로, 또는 제곱미터를 평으로 변환하는 무료 계산기입니다. 1평 = 400/121 ㎡ ≈ 3.3058㎡ 기준으로 계산합니다.',
+    category: 'living',
+    keywords: ['평수 계산기', '평 제곱미터 변환', '㎡ 평 변환', '평 계산'],
+    updated: '2026-09-07',
+  },
+  {
+    slug: 'char-count',
+    title: '글자 수 세기',
+    shortDescription: '공백 포함/제외 글자 수와 UTF-8·EUC-KR 바이트를 실시간으로 셉니다.',
+    description:
+      '입력하는 즉시 공백 포함·제외 글자 수, UTF-8 및 EUC-KR 바이트, 단어 수, 줄 수를 세는 무료 글자 수 계산기입니다. 자기소개서 글자 수 제한, 게시판 바이트 제한 확인에 사용하세요.',
+    category: 'living',
+    keywords: ['글자수 세기', '자소서 글자수', '바이트 계산', '글자 수 계산기'],
+    updated: '2026-09-07',
+  },
+  {
+    slug: 'bmr',
+    title: '기초대사량·권장 칼로리 계산기',
+    shortDescription: '성별·나이·체중·활동량으로 기초대사량(BMR)과 하루 권장 칼로리를 계산합니다.',
+    description:
+      'Mifflin-St Jeor 공식으로 기초대사량(BMR)을 구하고, 활동 수준을 곱해 체중을 유지·감량·증량하는 데 필요한 하루 칼로리(TDEE)를 계산하는 무료 계산기입니다.',
+    category: 'health',
+    keywords: ['기초대사량 계산기', 'bmr 계산', '하루 권장 칼로리', '유지 칼로리 계산'],
+    updated: '2026-09-07',
+  },
+  {
     slug: 'age',
     title: '만 나이 계산기',
     shortDescription: '생년월일로 만 나이, 연 나이, 다음 생일까지 남은 일수를 계산합니다.',

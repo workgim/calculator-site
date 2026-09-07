@@ -1,0 +1,129 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('bmr')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <form id="bmr-form">
+      <div class="calc-row">
+        <div class="calc-field">
+          <label for="sex">성별</label>
+          <select id="sex">
+            <option value="male">남성</option>
+            <option value="female">여성</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label for="age">나이 (만)</label>
+          <input type="number" id="age" inputmode="numeric" min="1" max="120" step="1" placeholder="예: 30" required />
+        </div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label for="height">키 (cm)</label>
+          <input type="number" id="height" inputmode="decimal" step="0.1" min="50" max="300" placeholder="예: 170" required />
+        </div>
+        <div class="calc-field">
+          <label for="weight">몸무게 (kg)</label>
+          <input type="number" id="weight" inputmode="decimal" step="0.1" min="2" max="500" placeholder="예: 65" required />
+        </div>
+      </div>
+      <div class="calc-field">
+        <label for="activity">활동 수준</label>
+        <select id="activity">
+          <option value="sedentary">거의 운동 안 함 (좌식 생활)</option>
+          <option value="light">가벼운 운동 (주 1~3회)</option>
+          <option value="moderate" selected>보통 운동 (주 3~5회)</option>
+          <option value="active">활발한 운동 (주 6~7회)</option>
+          <option value="veryActive">매우 활발 (육체노동/선수)</option>
+        </select>
+      </div>
+      <button type="submit" class="btn">계산하기</button>
+    </form>
+
+    <output id="bmr-result" class="calc-result" hidden></output>
+    <p id="bmr-error" class="calc-error" role="alert" hidden></p>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>성별·나이·키·몸무게·활동 수준을 입력하면 기초대사량과 하루 권장 칼로리를 계산합니다.</p>
+  </section>
+
+  <section>
+    <h2>용어</h2>
+    <ul>
+      <li><strong>기초대사량(BMR)</strong>: 아무 활동 없이 생명 유지에만 쓰이는 하루 최소 칼로리.</li>
+      <li><strong>활동대사량(TDEE)</strong>: BMR에 활동량을 곱한 값. 체중을 <strong>유지</strong>하는 데 필요한 하루 칼로리.</li>
+      <li>감량 목표는 유지 칼로리 − 500kcal, 증량 목표는 + 500kcal (주 약 0.45kg 변화 기준).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>계산 방법</h2>
+    <p>Mifflin-St Jeor 공식을 사용합니다.</p>
+    <ul>
+      <li>남성: BMR = 10 × 체중(kg) + 6.25 × 키(cm) − 5 × 나이 + 5</li>
+      <li>여성: BMR = 10 × 체중(kg) + 6.25 × 키(cm) − 5 × 나이 − 161</li>
+      <li>TDEE = BMR × 활동계수 (1.2 ~ 1.9)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>주의사항</h2>
+    <p>
+      공식에 따른 추정치입니다. 실제 대사량은 근육량·유전·건강 상태에 따라 다릅니다. 체중 조절은
+      급격한 칼로리 제한보다 점진적 조정이 안전하며, 필요하면 전문가와 상담하세요.
+    </p>
+    <p>근거: Mifflin-St Jeor 공식(1990).</p>
+  </section>
+</CalculatorLayout>
+
+<script>
+  import { calcBmr, type BmrInput } from '../../lib/bmr';
+
+  const form = document.getElementById('bmr-form') as HTMLFormElement;
+  const resultEl = document.getElementById('bmr-result') as HTMLElement;
+  const errorEl = document.getElementById('bmr-error') as HTMLElement;
+  const kcal = (n: number) => n.toLocaleString('ko-KR') + ' kcal';
+  const sel = (id: string) => (document.getElementById(id) as HTMLSelectElement).value;
+  const num = (id: string) => parseFloat((document.getElementById(id) as HTMLInputElement).value);
+
+  function calculate() {
+    try {
+      const input: BmrInput = {
+        sex: sel('sex') as BmrInput['sex'],
+        age: num('age'),
+        heightCm: num('height'),
+        weightKg: num('weight'),
+        activity: sel('activity') as BmrInput['activity'],
+      };
+      const r = calcBmr(input);
+      resultEl.innerHTML = `
+        <dl>
+          <dt>기초대사량 (BMR)</dt><dd>${kcal(r.bmr)}</dd>
+          <dt>유지 칼로리 (TDEE)</dt><dd><strong>${kcal(r.tdee)}</strong></dd>
+          <dt>감량 목표</dt><dd>${kcal(r.loseWeight)}</dd>
+          <dt>증량 목표</dt><dd>${kcal(r.gainWeight)}</dd>
+        </dl>`;
+      resultEl.hidden = false;
+      errorEl.hidden = true;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '계산할 수 없습니다.';
+      errorEl.hidden = false;
+      resultEl.hidden = true;
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculate();
+  });
+  form.addEventListener('input', () => {
+    if (!resultEl.hidden) calculate();
+  });
+</script>

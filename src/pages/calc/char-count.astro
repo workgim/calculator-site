@@ -1,0 +1,85 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('char-count')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <div class="calc-field">
+      <label for="text">텍스트 입력</label>
+      <textarea id="text" rows="8" placeholder="여기에 글을 붙여넣거나 입력하세요"></textarea>
+    </div>
+    <output id="cc-result" class="calc-result"></output>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>
+      입력하는 즉시 글자 수와 바이트가 계산됩니다. 붙여넣기도 됩니다. 자기소개서 글자 수 제한이나
+      게시판 바이트 제한 확인에 쓰세요.
+    </p>
+  </section>
+
+  <section>
+    <h2>바이트 계산 기준</h2>
+    <ul>
+      <li><strong>UTF-8</strong>: 한글 1자 = 3바이트, 영문·숫자·기본 기호 = 1바이트. 대부분의 웹 서비스가 이 기준.</li>
+      <li><strong>EUC-KR</strong>: 한글 1자 = 2바이트, 영문·숫자 = 1바이트. 일부 공공기관 게시판·구형 시스템이 이 기준.</li>
+    </ul>
+    <p>어느 기준인지는 해당 서비스의 안내를 확인하세요.</p>
+  </section>
+
+  <section>
+    <h2>기타</h2>
+    <p>
+      단어 수는 공백으로 나눈 개수, 줄 수는 줄바꿈 기준입니다. 이모지는 1자로 셉니다(바이트는 실제
+      인코딩 크기).
+    </p>
+  </section>
+</CalculatorLayout>
+
+<script>
+  import { countChars } from '../../lib/charCount';
+
+  const textEl = document.getElementById('text') as HTMLTextAreaElement;
+  const resultEl = document.getElementById('cc-result') as HTMLElement;
+  const fmt = (n: number) => n.toLocaleString('ko-KR');
+
+  function render() {
+    const c = countChars(textEl.value);
+    resultEl.innerHTML = `
+      <dl>
+        <dt>글자 수 (공백 포함)</dt><dd><strong>${fmt(c.charsWithSpaces)}</strong></dd>
+        <dt>글자 수 (공백 제외)</dt><dd>${fmt(c.charsWithoutSpaces)}</dd>
+        <dt>바이트 (UTF-8)</dt><dd>${fmt(c.bytesUtf8)}</dd>
+        <dt>바이트 (EUC-KR)</dt><dd>${fmt(c.bytesEucKr)}</dd>
+        <dt>단어 수</dt><dd>${fmt(c.words)}</dd>
+        <dt>줄 수</dt><dd>${fmt(c.lines)}</dd>
+      </dl>`;
+  }
+
+  textEl.addEventListener('input', render);
+  render();
+</script>
+
+<style>
+  textarea {
+    width: 100%;
+    min-height: 10rem;
+    padding: var(--space-3);
+    font: inherit;
+    font-size: var(--fs-base);
+    color: var(--color-text);
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    resize: vertical;
+  }
+  textarea:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+</style>
