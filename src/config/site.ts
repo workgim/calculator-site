@@ -18,7 +18,7 @@ export const SITE = {
    * 값이 있으면 Head.astro 가 <meta> 를 출력한다. 확인 후에도 그대로 두면 된다.
    */
   verification: {
-    google: '', // Google Search Console > HTML 태그 방식의 content
-    naver: '', // 네이버 서치어드바이저 > HTML 태그 방식의 content
+    google: 'WGE39f22aga1LUhyvbQIg1minUZv6tWDgRbt857wW3A',
+    naver: 'e13380b3acd2711f9677cff39d14428b61cf7dca',
   },
 } as const;
