@@ -7,7 +7,7 @@ export const SITE = {
   name: '생활 계산기',
   description:
     '연봉 실수령액, BMI, 부가세, 만 나이 등 일상에 필요한 계산기를 한곳에서 빠르게.',
-  url: 'https://example.com', // TODO(11~12단계): 실제 배포 도메인으로 교체
+  url: 'https://calculator-site-lilac.vercel.app', // 커스텀 도메인 연결 시 이 값 교체 (astro.config.mjs 의 site 와 동일하게)
   locale: 'ko_KR',
   lang: 'ko',
   author: 'WorkGim',

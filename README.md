@@ -2,6 +2,8 @@
 
 다양한 생활 계산기를 제공하는 반응형 정적 웹사이트.
 
+**배포 주소:** https://calculator-site-lilac.vercel.app (GitHub `main` push 시 Vercel 자동 배포)
+
 ## 기술 스택
 
 Astro + 순수 CSS + TypeScript. 자세한 내용은 [docs/10-tech-stack.md](docs/10-tech-stack.md).
