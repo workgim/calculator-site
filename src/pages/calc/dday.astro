@@ -14,7 +14,6 @@ const calculator = getCalculator('dday')!;
         <select id="mode">
           <option value="dday">특정 날짜까지 며칠 남았나 (D-day)</option>
           <option value="counting">시작일부터 며칠째 (시작일 = 1일)</option>
-          <option value="between">두 날짜 사이 일수</option>
         </select>
       </div>
       <div class="calc-row">
@@ -37,9 +36,12 @@ const calculator = getCalculator('dday')!;
   <section>
     <h2>사용법</h2>
     <ul>
-      <li><strong>D-day</strong>: 오늘(기준 날짜)과 목표 날짜를 넣으면 D-N / D-DAY / D+N 으로 표시합니다.</li>
+      <li>
+        <strong>D-day</strong>: 기준 날짜와 목표 날짜를 넣으면 D-N / D-DAY / D+N 과 함께 남은(또는
+        지난) 일수를 표시합니다. 기준 날짜를 바꾸면 <strong>임의의 두 날짜 사이 일수</strong>도 이 방식으로
+        구할 수 있습니다.
+      </li>
       <li><strong>며칠째</strong>: 시작한 날을 1일로 세어 오늘이 며칠째인지 계산합니다. (커플 100일 등)</li>
-      <li><strong>두 날짜 사이</strong>: 두 날짜 사이의 일수를 계산합니다.</li>
     </ul>
     <p>기준 날짜는 기본으로 오늘로 채워집니다. 필요하면 바꾸세요.</p>
   </section>
@@ -63,7 +65,7 @@ const calculator = getCalculator('dday')!;
 </CalculatorLayout>
 
 <script>
-  import { dday, daysCounting, daysBetween } from '../../lib/dday';
+  import { dday, daysCounting } from '../../lib/dday';
 
   const form = document.getElementById('dday-form') as HTMLFormElement;
   const modeEl = document.getElementById('mode') as HTMLSelectElement;
@@ -78,9 +80,8 @@ const calculator = getCalculator('dday')!;
   d1.value = today;
 
   const labels: Record<string, [string, string]> = {
-    dday: ['오늘 (기준 날짜)', '목표 날짜'],
+    dday: ['기준 날짜 (기본: 오늘)', '목표 날짜'],
     counting: ['시작한 날', '기준 날짜 (보통 오늘)'],
-    between: ['첫 번째 날짜', '두 번째 날짜'],
   };
   function syncLabels() {
     const [a, b] = labels[modeEl.value];
@@ -97,13 +98,16 @@ const calculator = getCalculator('dday')!;
       let html = '';
       if (modeEl.value === 'dday') {
         const { diffDays, label } = dday(d2.value, d1.value);
+        const abs = Math.abs(diffDays).toLocaleString();
         const desc =
-          diffDays > 0 ? `${diffDays}일 남았습니다` : diffDays === 0 ? '바로 오늘입니다' : `${Math.abs(diffDays)}일 지났습니다`;
+          diffDays > 0
+            ? `${abs}일 남았습니다`
+            : diffDays === 0
+              ? '바로 오늘입니다'
+              : `${abs}일 지났습니다`;
         html = `<strong>${label}</strong><br>${desc}`;
-      } else if (modeEl.value === 'counting') {
-        html = `오늘은 <strong>${daysCounting(d1.value, d2.value).toLocaleString()}일째</strong>입니다`;
       } else {
-        html = `두 날짜는 <strong>${daysBetween(d1.value, d2.value).toLocaleString()}일</strong> 차이입니다`;
+        html = `오늘은 <strong>${daysCounting(d1.value, d2.value).toLocaleString()}일째</strong>입니다`;
       }
       resultEl.innerHTML = html;
       resultEl.hidden = false;
