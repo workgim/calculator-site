@@ -1,0 +1,60 @@
+---
+/** 홈페이지. 카테고리별로 계산기 카드를 나열한다. (docs/12-page-structure.md §6) */
+import { SITE } from '../config/site';
+import { CATEGORIES } from '../data/categories';
+import { getCalculatorsByCategory } from '../data/calculators';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CalculatorCard from '../components/CalculatorCard.astro';
+---
+
+<BaseLayout title={SITE.name} description={SITE.description} path="/" wide>
+  <h1>생활 계산기 모음</h1>
+  <p class="lead">
+    연봉 실수령액, BMI, 부가세, 만 나이 등 일상에 자주 필요한 계산을 빠르게. 회원가입 없이
+    바로 사용하세요.
+  </p>
+
+  {
+    CATEGORIES.map((category) => {
+      const list = getCalculatorsByCategory(category.id);
+      if (list.length === 0) return null;
+      return (
+        <section id={category.id} class="cat">
+          <h2>{category.name}</h2>
+          <p class="cat__desc">{category.description}</p>
+          <div class="grid">
+            {list.map((calc) => (
+              <CalculatorCard calculator={calc} />
+            ))}
+          </div>
+        </section>
+      );
+    })
+  }
+</BaseLayout>
+
+<style>
+  .cat {
+    margin-top: var(--space-8);
+  }
+  .cat__desc {
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
+    margin-top: calc(-1 * var(--space-2));
+  }
+  .grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 48rem) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

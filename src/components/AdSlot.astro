@@ -1,0 +1,34 @@
+---
+/**
+ * 광고 자리. 지금은 빈 상자(라벨 + 예약 높이)만 렌더한다.
+ * 실제 Google AdSense 코드는 나중에 이 컴포넌트 안에 넣는다. (docs/30-design-guide.md §9, docs/41-ads-adsense.md 예정)
+ *
+ * position: 배치 위치 구분용. (docs/12-page-structure.md §4, §5)
+ */
+interface Props {
+  position?: 'top' | 'bottom' | 'afterResult' | 'inline';
+}
+const { position = 'inline' } = Astro.props;
+---
+
+<aside class="ad-slot" data-position={position} aria-hidden="true">
+  <span class="ad-slot__label">광고</span>
+</aside>
+
+<style>
+  .ad-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px; /* 로드 시 레이아웃 밀림 방지: 미리 높이 확보 (CLS) */
+    margin-block: var(--space-6);
+    background: var(--color-ad-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+  .ad-slot__label {
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+  }
+</style>

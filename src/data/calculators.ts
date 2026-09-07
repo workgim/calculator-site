@@ -1,0 +1,55 @@
+import type { CategoryId } from './categories';
+
+/**
+ * 계산기 목록 = 사이트의 중심 데이터.
+ * 홈 목록 카드 / 내비게이션 / sitemap / 관련 계산기 링크가 모두 이 배열을 참조한다.
+ *
+ * 계산기 추가 절차 (docs/11-folder-structure.md §4):
+ *   1) src/lib/<slug>.ts        계산 함수
+ *   2) src/pages/calc/<slug>.astro  화면
+ *   3) 여기에 항목 한 개 추가
+ */
+export interface Calculator {
+  /** URL 마지막 조각. /calc/<slug> */
+  slug: string;
+  /** 페이지 H1 · 목록 카드 제목 */
+  title: string;
+  /** 카드/리드에 쓰는 한 줄 소개 */
+  shortDescription: string;
+  /** <meta name="description"> 용. 1~2문장 (docs/20-seo-google.md §2) */
+  description: string;
+  category: CategoryId;
+  /** 이 페이지가 노리는 검색어 (docs/02-calculator-catalog.md) */
+  keywords: string[];
+  /** 최종 검토/갱신일 YYYY-MM-DD. sitemap 의 lastmod 로도 쓰인다 */
+  updated: string;
+}
+
+export const CALCULATORS: Calculator[] = [
+  {
+    slug: 'bmi',
+    title: 'BMI 계산기',
+    shortDescription: '키와 몸무게로 체질량지수(BMI)와 비만도를 계산합니다.',
+    description:
+      '키와 몸무게를 입력하면 BMI(체질량지수)와 비만도 분류를 바로 확인할 수 있는 무료 계산기입니다. 아시아-태평양 기준으로 저체중·정상·과체중·비만을 구분합니다.',
+    category: 'health',
+    keywords: ['bmi 계산기', '비만도 계산', '체질량지수', '표준체중'],
+    updated: '2026-09-07',
+  },
+  {
+    slug: 'percentage',
+    title: '퍼센트 계산기',
+    shortDescription: '전체의 몇 %, 비율, 증가율·감소율을 한 번에 계산합니다.',
+    description:
+      'A의 B%는 얼마인지, A는 B의 몇 %인지, 두 값 사이의 증감률은 몇 %인지 세 가지 기본 백분율 계산을 처리하는 무료 퍼센트 계산기입니다.',
+    category: 'living',
+    keywords: ['퍼센트 계산기', '% 계산', '비율 계산', '증가율 계산'],
+    updated: '2026-09-07',
+  },
+];
+
+export const getCalculatorsByCategory = (id: CategoryId): Calculator[] =>
+  CALCULATORS.filter((c) => c.category === id);
+
+export const getCalculator = (slug: string): Calculator | undefined =>
+  CALCULATORS.find((c) => c.slug === slug);

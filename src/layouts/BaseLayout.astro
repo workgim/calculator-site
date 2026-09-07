@@ -1,0 +1,47 @@
+---
+/**
+ * 모든 페이지의 공통 뼈대. (docs/12-page-structure.md §4)
+ * 페이지는 이 레이아웃을 감싸고 <slot/> 자리에 자기 내용만 채운다.
+ */
+import '../styles/global.css';
+import { SITE } from '../config/site';
+import Head from '../components/Head.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  noindex?: boolean;
+  /** 넓은 컨테이너(홈 등)를 쓸지 여부 */
+  wide?: boolean;
+}
+
+const { title, description, path, noindex, wide = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <Head title={title} description={description} path={path} noindex={noindex} />
+  </head>
+  <body>
+    <Header />
+
+    <div class={wide ? 'container container--wide' : 'container'}>
+      <AdSlot position="top" />
+    </div>
+
+    <main id="main" class={wide ? 'container container--wide' : 'container'}>
+      <slot />
+    </main>
+
+    <div class={wide ? 'container container--wide' : 'container'}>
+      <AdSlot position="bottom" />
+    </div>
+
+    <Footer />
+  </body>
+</html>

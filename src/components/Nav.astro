@@ -1,0 +1,42 @@
+---
+/** 주요 내비게이션: 카테고리 목록. (docs/12-page-structure.md §3) */
+import { CATEGORIES } from '../data/categories';
+---
+
+<nav aria-label="주요" class="nav">
+  <ul>
+    <li><a href="/">홈</a></li>
+    {
+      CATEGORIES.map((c) => (
+        <li>
+          <a href={`/#${c.id}`}>{c.name}</a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-4);
+  }
+  .nav li {
+    margin: 0;
+  }
+  .nav a {
+    display: inline-block;
+    padding: var(--space-2) 0;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .nav a:hover {
+    color: var(--color-primary);
+  }
+</style>

@@ -1,0 +1,141 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('bmi')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <form id="bmi-form">
+      <div class="field">
+        <label for="height">키 (cm)</label>
+        <input
+          type="number"
+          id="height"
+          name="height"
+          inputmode="decimal"
+          step="0.1"
+          min="50"
+          max="300"
+          placeholder="예: 170"
+          required
+        />
+      </div>
+      <div class="field">
+        <label for="weight">몸무게 (kg)</label>
+        <input
+          type="number"
+          id="weight"
+          name="weight"
+          inputmode="decimal"
+          step="0.1"
+          min="2"
+          max="500"
+          placeholder="예: 65"
+          required
+        />
+      </div>
+      <button type="submit" class="btn">계산하기</button>
+    </form>
+
+    <output id="bmi-result" class="result" hidden></output>
+    <p id="bmi-error" class="error" role="alert" hidden></p>
+  </section>
+
+  <!-- 설명 섹션 (docs/12-page-structure.md §5) -->
+  <section>
+    <h2>사용법</h2>
+    <p>키(cm)와 몸무게(kg)를 입력하고 <strong>계산하기</strong>를 누르면 BMI와 비만도 분류가 나옵니다.</p>
+  </section>
+
+  <section>
+    <h2>계산 방법</h2>
+    <p>BMI는 몸무게를 키(m)의 제곱으로 나눈 값입니다.</p>
+    <p><strong>BMI = 몸무게(kg) ÷ (키(m) × 키(m))</strong></p>
+    <p>이 계산기는 대한비만학회의 아시아-태평양 기준으로 분류합니다.</p>
+    <table>
+      <thead>
+        <tr><th>BMI</th><th>분류</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>18.5 미만</td><td>저체중</td></tr>
+        <tr><td>18.5 ~ 22.9</td><td>정상</td></tr>
+        <tr><td>23 ~ 24.9</td><td>과체중</td></tr>
+        <tr><td>25 ~ 29.9</td><td>비만 1단계</td></tr>
+        <tr><td>30 ~ 34.9</td><td>비만 2단계</td></tr>
+        <tr><td>35 이상</td><td>비만 3단계</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>계산 예시</h2>
+    <p>키 170cm, 몸무게 65kg → 1.7 × 1.7 = 2.89, 65 ÷ 2.89 ≈ <strong>22.5 (정상)</strong></p>
+  </section>
+
+  <section>
+    <h2>주의사항</h2>
+    <p>
+      BMI는 키와 몸무게만으로 계산하므로 근육량·체지방·나이·성별을 반영하지 않습니다. 운동선수처럼
+      근육량이 많으면 실제 체지방과 무관하게 높게 나올 수 있습니다. 참고 지표로만 사용하고, 정확한
+      평가는 의료기관의 상담을 받으세요.
+    </p>
+    <p>근거: 세계보건기구(WHO) BMI 분류, 대한비만학회 비만 진료지침.</p>
+  </section>
+</CalculatorLayout>
+
+<style>
+  .calc-box {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+  .field {
+    margin-bottom: var(--space-4);
+  }
+  .result {
+    display: block;
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+  .result strong {
+    font-size: var(--fs-2xl);
+    font-variant-numeric: tabular-nums;
+  }
+  .error {
+    margin-top: var(--space-4);
+    color: var(--color-danger);
+    font-size: var(--fs-sm);
+  }
+</style>
+
+<script>
+  import { calcBmi } from '../../lib/bmi';
+
+  const form = document.getElementById('bmi-form') as HTMLFormElement;
+  const resultEl = document.getElementById('bmi-result') as HTMLElement;
+  const errorEl = document.getElementById('bmi-error') as HTMLElement;
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const height = parseFloat((document.getElementById('height') as HTMLInputElement).value);
+    const weight = parseFloat((document.getElementById('weight') as HTMLInputElement).value);
+
+    try {
+      const { bmi, category } = calcBmi(height, weight);
+      resultEl.innerHTML = `회원님의 BMI는 <strong>${bmi}</strong> — <strong>${category}</strong>입니다.`;
+      resultEl.hidden = false;
+      errorEl.hidden = true;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '계산할 수 없습니다.';
+      errorEl.hidden = false;
+      resultEl.hidden = true;
+    }
+  });
+</script>

@@ -1,0 +1,10 @@
+# 모든 검색봇 허용 (docs/20-seo-google.md §3 #10, docs/21-seo-naver.md §3 N3)
+User-agent: *
+Allow: /
+
+# 네이버 크롤러 명시 (docs/21-seo-naver.md §1)
+User-agent: Yeti
+Allow: /
+
+# TODO(11~12단계): 실제 배포 도메인으로 교체
+Sitemap: https://example.com/sitemap-index.xml

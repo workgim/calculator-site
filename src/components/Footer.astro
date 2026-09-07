@@ -1,0 +1,42 @@
+---
+/** 사이트 하단: 링크 + 저작권 + 면책 문구. (docs/12-page-structure.md §3) */
+import { SITE } from '../config/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container container--wide">
+    <nav aria-label="사이트 정보" class="site-footer__links">
+      <a href="/about">사이트 소개</a>
+      <a href="/privacy">개인정보처리방침</a>
+    </nav>
+    <p class="site-footer__disclaimer">
+      본 사이트의 계산 결과는 참고용이며, 법적·재무적 효력이 없습니다. 중요한 결정은 관련
+      기관이나 전문가의 확인을 받으세요.
+    </p>
+    <p class="site-footer__copy">© {year} {SITE.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-10);
+    padding-block: var(--space-6);
+    border-top: var(--border-width) solid var(--color-border);
+    background: var(--color-surface);
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+  }
+  .site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-bottom: var(--space-3);
+  }
+  .site-footer__disclaimer {
+    max-width: var(--measure);
+  }
+  .site-footer__copy {
+    margin: 0;
+  }
+</style>

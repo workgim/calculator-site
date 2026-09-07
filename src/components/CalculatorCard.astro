@@ -1,0 +1,42 @@
+---
+/** 홈 목록에 뿌리는 계산기 카드. (docs/12-page-structure.md §6) */
+import type { Calculator } from '../data/calculators';
+
+interface Props {
+  calculator: Calculator;
+}
+const { calculator } = Astro.props;
+---
+
+<a class="card" href={`/calc/${calculator.slug}`}>
+  <span class="card__title">{calculator.title}</span>
+  <span class="card__desc">{calculator.shortDescription}</span>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    height: 100%;
+    padding: var(--space-4);
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: box-shadow var(--transition), border-color var(--transition);
+  }
+  .card:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+    color: var(--color-text);
+  }
+  .card__title {
+    font-weight: var(--fw-bold);
+  }
+  .card__desc {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+  }
+</style>

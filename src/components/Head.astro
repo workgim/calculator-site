@@ -1,0 +1,68 @@
+---
+/**
+ * <head> 안에 들어가는 모든 것. (docs/12-page-structure.md §2, docs/20-seo-google.md §3)
+ * 페이지마다 title/description/path 를 넘겨서 고유하게 만든다.
+ */
+import { SITE } from '../config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** 현재 페이지 경로. 예: "/calc/bmi" (앞 슬래시 포함, 끝 슬래시 없음) */
+  path: string;
+  /** 색인 제외할 페이지만 true */
+  noindex?: boolean;
+  ogImage?: string;
+}
+
+const { title, description, path, noindex = false, ogImage = SITE.ogImage } = Astro.props;
+
+const pageTitle = path === '/' ? `${SITE.name} - 생활 계산기 모음` : `${title}｜${SITE.name}`;
+const canonical = new URL(path, SITE.url).href;
+const ogImageUrl = new URL(ogImage, SITE.url).href;
+
+// 전역 구조화 데이터: 사이트/운영주체 (docs/20-seo-google.md §4)
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE.url}/#website`,
+      url: `${SITE.url}/`,
+      name: SITE.name,
+      description: SITE.description,
+      inLanguage: 'ko-KR',
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${SITE.url}/#org`,
+      name: SITE.name,
+      url: `${SITE.url}/`,
+    },
+  ],
+};
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
+
+<meta property="og:type" content={path === '/' ? 'website' : 'article'} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:locale" content={SITE.locale} />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<meta name="generator" content={Astro.generator} />
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />

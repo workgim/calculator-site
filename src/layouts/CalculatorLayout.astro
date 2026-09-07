@@ -1,0 +1,70 @@
+---
+/**
+ * 계산기 페이지 공통 틀. (docs/12-page-structure.md §5)
+ * 모든 계산기 페이지가 같은 순서를 갖도록 강제한다:
+ *   이동경로 → 제목 → 한 줄 소개 → [계산기 본체=named slot] → 광고 → [설명 섹션=기본 slot]
+ *
+ * 계산기 페이지는 이 레이아웃에 calculator 데이터만 넘기면 된다.
+ */
+import type { Calculator } from '../data/calculators';
+import { getCategory } from '../data/categories';
+import { SITE } from '../config/site';
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+interface Props {
+  calculator: Calculator;
+}
+const { calculator } = Astro.props;
+const category = getCategory(calculator.category);
+const path = `/calc/${calculator.slug}`;
+
+const crumbs = [
+  { name: '홈', href: '/' },
+  ...(category ? [{ name: category.name, href: `/#${category.id}` }] : []),
+  { name: calculator.title },
+];
+
+// 계산기 = 무료 온라인 도구 (docs/20-seo-google.md §4)
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: calculator.title,
+  description: calculator.description,
+  url: new URL(path, SITE.url).href,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Web',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' },
+};
+---
+
+<BaseLayout title={calculator.title} description={calculator.description} path={path}>
+  <Breadcrumb items={crumbs} />
+
+  <h1>{calculator.title}</h1>
+  <p class="lead">{calculator.shortDescription}</p>
+
+  <slot name="calculator" />
+
+  <AdSlot position="afterResult" />
+
+  <div class="calc-content">
+    <slot />
+  </div>
+
+  <p class="calc-updated">최종 업데이트: {calculator.updated}</p>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+</BaseLayout>
+
+<style>
+  .calc-content {
+    max-width: var(--measure);
+  }
+  .calc-updated {
+    margin-top: var(--space-8);
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+  }
+</style>
