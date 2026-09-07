@@ -21,4 +21,10 @@ export const SITE = {
     google: 'OzP_NcNWR0pvjoqgmzIKtVNS4ajqJ87kqeamfdRGTcg',
     naver: 'a228612f91c6bebefda230688800ee098dead29f',
   },
+  /**
+   * Google Analytics 4 측정 ID (예: 'G-XXXXXXXXXX').
+   * 값이 있으면 Analytics.astro 가 스크립트를 삽입하고, privacy.astro 에 쿠키 고지가 나온다.
+   * 비워두면 분석 코드가 전혀 로드되지 않는다.
+   */
+  gaId: '',
 } as const;

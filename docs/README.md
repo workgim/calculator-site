@@ -3,9 +3,10 @@
 사이트를 만들기 전에 정해두는 "규칙 모음"입니다.
 코드보다 이 문서가 먼저입니다. 규칙이 바뀌면 **먼저 이 문서를 고치고**, 그 다음 코드를 맞춥니다.
 
-- 배포 주소: <https://lifecalcmate.com>
-- 진행 상황(2026-09-07): 1~12단계(환경 세팅 → 배포 → 검색엔진 등록) 완료.
-  계산기 6개: `bmi` `percentage` `vat` `dday` `loan` `salary-net`. 다음은 `savings`.
+- 배포 주소: <https://lifecalcmate.com> (커스텀 도메인, `.vercel.app` → 308 리다이렉트)
+- 진행 상황(2026-09-07): 1~12단계 완료. 계산기 6개(`bmi` `percentage` `vat` `dday` `loan` `salary-net`).
+  이후: 금액칸 콤마·증감 버튼, 관련 계산기 내부 링크, sitemap lastmod, 커스텀 도메인,
+  GA4 플러밍(`site.ts` `gaId` 채우면 활성). 다음: `savings` 계산기, GA4 측정 ID 입력.
 
 ## 목차
 
