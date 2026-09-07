@@ -31,5 +31,5 @@ export const SITE = {
    * 공개 문의용 이메일. 개인 메일 대신 전용 주소 권장 (예: lifecalcmate.help@gmail.com).
    * 비워두면 /contact 에 "준비 중"으로 표시된다.
    */
-  contactEmail: '',
+  contactEmail: 'workgim3230@gmail.com',
 } as const;
