@@ -1,0 +1,102 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('vat')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <form id="vat-form">
+      <div class="calc-field">
+        <label for="basis">입력 금액의 종류</label>
+        <select id="basis">
+          <option value="supply">공급가액 (부가세 별도 금액)</option>
+          <option value="total">합계금액 (부가세 포함 금액)</option>
+          <option value="vat">부가세액</option>
+        </select>
+      </div>
+      <div class="calc-field">
+        <label for="amount">금액 (원)</label>
+        <input
+          type="number"
+          id="amount"
+          inputmode="numeric"
+          step="1"
+          min="0"
+          placeholder="예: 1000000"
+          required
+        />
+      </div>
+      <button type="submit" class="btn">계산하기</button>
+    </form>
+
+    <output id="vat-result" class="calc-result" hidden></output>
+    <p id="vat-error" class="calc-error" role="alert" hidden></p>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>
+      입력한 금액이 <strong>공급가액</strong>인지, <strong>합계금액</strong>인지,
+      <strong>부가세액</strong>인지 고른 뒤 금액을 넣고 계산하세요. 나머지 두 값이 자동으로 나옵니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>계산 방법</h2>
+    <ul>
+      <li>부가세액 = 공급가액 × 10%</li>
+      <li>합계금액 = 공급가액 + 부가세액 = 공급가액 × 1.1</li>
+      <li>공급가액 = 합계금액 ÷ 1.1 (합계에서 역산할 때)</li>
+    </ul>
+    <p>대한민국의 일반 부가가치세율은 10%입니다. (간이과세·면세 사업자는 적용이 다릅니다.)</p>
+  </section>
+
+  <section>
+    <h2>계산 예시</h2>
+    <p>공급가액 1,000,000원 → 부가세 100,000원 → 합계 1,100,000원</p>
+    <p>합계 1,100,000원 → 공급가액 1,000,000원 + 부가세 100,000원</p>
+  </section>
+
+  <section>
+    <h2>주의사항</h2>
+    <p>
+      역산 과정에서 원 단위 반올림으로 1원 정도 차이가 날 수 있습니다. 세금계산서 작성 시에는
+      국세청 기준을 따르세요.
+    </p>
+    <p>근거: 국세청 부가가치세 안내 (nts.go.kr).</p>
+  </section>
+</CalculatorLayout>
+
+<script>
+  import { calcVat, type VatBasis } from '../../lib/vat';
+
+  const form = document.getElementById('vat-form') as HTMLFormElement;
+  const basisEl = document.getElementById('basis') as HTMLSelectElement;
+  const amountEl = document.getElementById('amount') as HTMLInputElement;
+  const resultEl = document.getElementById('vat-result') as HTMLElement;
+  const errorEl = document.getElementById('vat-error') as HTMLElement;
+
+  const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    try {
+      const { supply, vat, total } = calcVat(parseFloat(amountEl.value), basisEl.value as VatBasis);
+      resultEl.innerHTML = `
+        <dl>
+          <dt>공급가액</dt><dd>${won(supply)}</dd>
+          <dt>부가세액</dt><dd>${won(vat)}</dd>
+          <dt>합계금액</dt><dd><strong>${won(total)}</strong></dd>
+        </dl>`;
+      resultEl.hidden = false;
+      errorEl.hidden = true;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '계산할 수 없습니다.';
+      errorEl.hidden = false;
+      resultEl.hidden = true;
+    }
+  });
+</script>

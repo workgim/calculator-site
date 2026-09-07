@@ -1,0 +1,116 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('loan')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <form id="loan-form">
+      <div class="calc-field">
+        <label for="principal">대출 원금 (원)</label>
+        <input type="number" id="principal" inputmode="numeric" step="1" min="1" placeholder="예: 30000000" required />
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label for="rate">연이자율 (%)</label>
+          <input type="number" id="rate" inputmode="decimal" step="0.01" min="0" placeholder="예: 4.5" required />
+        </div>
+        <div class="calc-field">
+          <label for="months">기간 (개월)</label>
+          <input type="number" id="months" inputmode="numeric" step="1" min="1" max="600" placeholder="예: 36" required />
+        </div>
+      </div>
+      <div class="calc-field">
+        <label for="type">상환 방식</label>
+        <select id="type">
+          <option value="equalPayment">원리금균등상환</option>
+          <option value="equalPrincipal">원금균등상환</option>
+          <option value="bullet">만기일시상환</option>
+        </select>
+      </div>
+      <button type="submit" class="btn">계산하기</button>
+    </form>
+
+    <output id="loan-result" class="calc-result" hidden></output>
+    <p id="loan-error" class="calc-error" role="alert" hidden></p>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>대출 원금, 연이자율, 기간(개월), 상환 방식을 입력하면 월 상환액과 총 이자를 계산합니다.</p>
+  </section>
+
+  <section>
+    <h2>상환 방식</h2>
+    <ul>
+      <li>
+        <strong>원리금균등상환</strong>: 매달 갚는 금액(원금+이자)이 같습니다. 가장 일반적인 방식입니다.
+      </li>
+      <li>
+        <strong>원금균등상환</strong>: 매달 갚는 <em>원금</em>이 같고 이자는 잔액에 붙어 점점 줄어듭니다.
+        초기 부담이 크지만 총 이자는 가장 적습니다.
+      </li>
+      <li>
+        <strong>만기일시상환</strong>: 기간 동안 이자만 내고 원금은 만기에 한 번에 갚습니다. 총 이자가
+        가장 많습니다.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>계산 방법</h2>
+    <p>월 이자율 = 연이자율 ÷ 12 ÷ 100 으로 두고,</p>
+    <ul>
+      <li>원리금균등: 월 상환액 = 원금 × 월이자율 × (1+월이자율)^개월 ÷ ((1+월이자율)^개월 − 1)</li>
+      <li>원금균등: 매달 원금 = 원금 ÷ 개월, 이자 = 남은 원금 × 월이자율</li>
+      <li>만기일시: 매달 이자 = 원금 × 월이자율, 마지막 달에 원금 상환</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>주의사항</h2>
+    <p>
+      실제 대출은 중도상환수수료, 이자 계산 기준일(일할), 우대금리 조건, 거치기간 등에 따라 결과가
+      달라질 수 있습니다. 이 계산기는 표준 상환식에 따른 개략값입니다.
+    </p>
+    <p>근거: 금융감독원 금융소비자포털 '파인' 금융계산기 (fine.fss.or.kr).</p>
+  </section>
+</CalculatorLayout>
+
+<script>
+  import { calcLoan, type RepaymentType } from '../../lib/loan';
+
+  const form = document.getElementById('loan-form') as HTMLFormElement;
+  const resultEl = document.getElementById('loan-result') as HTMLElement;
+  const errorEl = document.getElementById('loan-error') as HTMLElement;
+  const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+  const val = (id: string) => parseFloat((document.getElementById(id) as HTMLInputElement).value);
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    try {
+      const type = (document.getElementById('type') as HTMLSelectElement).value as RepaymentType;
+      const res = calcLoan(val('principal'), val('rate'), val('months'), type);
+
+      const rows: string[] = [];
+      if (res.monthlyPayment !== null) {
+        rows.push(`<dt>매월 상환액</dt><dd><strong>${won(res.monthlyPayment)}</strong></dd>`);
+      } else {
+        rows.push(`<dt>첫 달 상환액</dt><dd>${won(res.firstPayment)}</dd>`);
+        rows.push(`<dt>마지막 달 상환액</dt><dd>${won(res.lastPayment)}</dd>`);
+      }
+      rows.push(`<dt>총 이자</dt><dd>${won(res.totalInterest)}</dd>`);
+      rows.push(`<dt>총 상환액</dt><dd>${won(res.totalPayment)}</dd>`);
+      resultEl.innerHTML = `<dl>${rows.join('')}</dl>`;
+      resultEl.hidden = false;
+      errorEl.hidden = true;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '계산할 수 없습니다.';
+      errorEl.hidden = false;
+      resultEl.hidden = true;
+    }
+  });
+</script>

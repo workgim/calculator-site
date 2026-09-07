@@ -259,6 +259,60 @@ th {
   border: 0;
 }
 
+/* ---- 계산기 폼 공통 UI (docs/12-page-structure.md §5) ---- */
+.calc-box {
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.calc-field {
+  margin-bottom: var(--space-4);
+}
+.calc-field:last-of-type {
+  margin-bottom: 0;
+}
+/* 여러 입력을 한 줄에 */
+.calc-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.calc-row > * {
+  flex: 1 1 8rem;
+}
+.calc-result {
+  display: block;
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+.calc-result strong {
+  font-size: var(--fs-2xl);
+  font-variant-numeric: tabular-nums;
+}
+.calc-result dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-4);
+}
+.calc-result dt {
+  color: var(--color-text-muted);
+}
+.calc-result dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.calc-error {
+  margin-top: var(--space-4);
+  color: var(--color-danger);
+  font-size: var(--fs-sm);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

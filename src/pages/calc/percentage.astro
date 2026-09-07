@@ -9,7 +9,7 @@ const calculator = getCalculator('percentage')!;
   <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
     <h2 id="calc-heading" class="visually-hidden">계산기</h2>
 
-    <div class="field">
+    <div class="calc-field">
       <label for="mode">계산 종류</label>
       <select id="mode">
         <option value="percentOf">A의 B% 는 얼마?</option>
@@ -19,19 +19,19 @@ const calculator = getCalculator('percentage')!;
     </div>
 
     <form id="pct-form">
-      <div class="field">
+      <div class="calc-field">
         <label for="a" id="label-a">A</label>
         <input type="number" id="a" inputmode="decimal" step="any" placeholder="예: 20000" required />
       </div>
-      <div class="field">
+      <div class="calc-field">
         <label for="b" id="label-b">B</label>
         <input type="number" id="b" inputmode="decimal" step="any" placeholder="예: 15" required />
       </div>
       <button type="submit" class="btn">계산하기</button>
     </form>
 
-    <output id="pct-result" class="result" hidden></output>
-    <p id="pct-error" class="error" role="alert" hidden></p>
+    <output id="pct-result" class="calc-result" hidden></output>
+    <p id="pct-error" class="calc-error" role="alert" hidden></p>
   </section>
 
   <section>
@@ -58,35 +58,6 @@ const calculator = getCalculator('percentage')!;
     <p>결과는 소수 둘째 자리에서 반올림합니다. 기준값이 0이면 백분율을 계산할 수 없습니다.</p>
   </section>
 </CalculatorLayout>
-
-<style>
-  .calc-box {
-    padding: var(--space-5);
-    background: var(--color-surface);
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-  }
-  .field {
-    margin-bottom: var(--space-4);
-  }
-  .result {
-    display: block;
-    margin-top: var(--space-5);
-    padding: var(--space-4);
-    background: var(--color-bg);
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-sm);
-  }
-  .result strong {
-    font-size: var(--fs-2xl);
-    font-variant-numeric: tabular-nums;
-  }
-  .error {
-    margin-top: var(--space-4);
-    color: var(--color-danger);
-    font-size: var(--fs-sm);
-  }
-</style>
 
 <script>
   import { percentOf, whatPercent, changeRate } from '../../lib/percentage';

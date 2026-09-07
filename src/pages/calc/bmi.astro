@@ -9,7 +9,7 @@ const calculator = getCalculator('bmi')!;
   <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
     <h2 id="calc-heading" class="visually-hidden">계산기</h2>
     <form id="bmi-form">
-      <div class="field">
+      <div class="calc-field">
         <label for="height">키 (cm)</label>
         <input
           type="number"
@@ -23,7 +23,7 @@ const calculator = getCalculator('bmi')!;
           required
         />
       </div>
-      <div class="field">
+      <div class="calc-field">
         <label for="weight">몸무게 (kg)</label>
         <input
           type="number"
@@ -40,8 +40,8 @@ const calculator = getCalculator('bmi')!;
       <button type="submit" class="btn">계산하기</button>
     </form>
 
-    <output id="bmi-result" class="result" hidden></output>
-    <p id="bmi-error" class="error" role="alert" hidden></p>
+    <output id="bmi-result" class="calc-result" hidden></output>
+    <p id="bmi-error" class="calc-error" role="alert" hidden></p>
   </section>
 
   <!-- 설명 섹션 (docs/12-page-structure.md §5) -->
@@ -85,35 +85,6 @@ const calculator = getCalculator('bmi')!;
     <p>근거: 세계보건기구(WHO) BMI 분류, 대한비만학회 비만 진료지침.</p>
   </section>
 </CalculatorLayout>
-
-<style>
-  .calc-box {
-    padding: var(--space-5);
-    background: var(--color-surface);
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-  }
-  .field {
-    margin-bottom: var(--space-4);
-  }
-  .result {
-    display: block;
-    margin-top: var(--space-5);
-    padding: var(--space-4);
-    background: var(--color-bg);
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-sm);
-  }
-  .result strong {
-    font-size: var(--fs-2xl);
-    font-variant-numeric: tabular-nums;
-  }
-  .error {
-    margin-top: var(--space-4);
-    color: var(--color-danger);
-    font-size: var(--fs-sm);
-  }
-</style>
 
 <script>
   import { calcBmi } from '../../lib/bmi';
