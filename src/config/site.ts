@@ -19,6 +19,6 @@ export const SITE = {
    */
   verification: {
     google: 'OzP_NcNWR0pvjoqgmzIKtVNS4ajqJ87kqeamfdRGTcg',
-    naver: 'e13380b3acd2711f9677cff39d14428b61cf7dca',
+    naver: 'a228612f91c6bebefda230688800ee098dead29f',
   },
 } as const;
