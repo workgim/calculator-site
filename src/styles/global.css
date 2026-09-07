@@ -319,6 +319,32 @@ th {
   font-size: var(--fs-sm);
 }
 
+/* 빠른 증감 버튼 */
+.stepper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.stepper button {
+  min-height: 36px;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-primary);
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+.stepper button:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+}
+.stepper .stepper__clear {
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

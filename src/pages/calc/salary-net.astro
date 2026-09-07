@@ -1,5 +1,6 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import AmountInput from '../../components/AmountInput.astro';
 import { getCalculator } from '../../data/calculators';
 
 const calculator = getCalculator('salary-net')!;
@@ -9,24 +10,21 @@ const calculator = getCalculator('salary-net')!;
   <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
     <h2 id="calc-heading" class="visually-hidden">계산기</h2>
     <form id="salary-form">
-      <div class="calc-field">
-        <label for="annual">연봉 (원, 세전)</label>
-        <input
-          type="number"
-          id="annual"
-          inputmode="numeric"
-          step="1"
-          min="1"
-          placeholder="예: 36000000"
-          required
-        />
-      </div>
+      <AmountInput
+        id="annual"
+        label="연봉 (원, 세전)"
+        placeholder="예: 36000000"
+        steps={[1_000_000, 10_000_000, 100_000_000]}
+      />
       <div class="calc-row">
-        <div class="calc-field">
-          <label for="nontax">월 비과세액 (원)</label>
-          <input type="number" id="nontax" inputmode="numeric" step="1" min="0" value="200000" />
-          <small class="calc-hint">식대 등. 기본 20만원</small>
-        </div>
+        <AmountInput
+          id="nontax"
+          label="월 비과세액 (원)"
+          hint="식대 등. 기본 20만원"
+          value={200000}
+          required={false}
+          steps={[50_000, 100_000]}
+        />
         <div class="calc-field">
           <label for="dependents">부양가족 수</label>
           <input type="number" id="dependents" inputmode="numeric" step="1" min="1" value="1" />
@@ -115,19 +113,24 @@ const calculator = getCalculator('salary-net')!;
 
 <script>
   import { calcSalary, type SalaryInput } from '../../lib/salary';
+  import { parseAmount } from '../../lib/format';
+  import { enhanceInputs } from '../../scripts/enhance-inputs';
+
+  enhanceInputs();
 
   const form = document.getElementById('salary-form') as HTMLFormElement;
   const resultEl = document.getElementById('salary-result') as HTMLElement;
   const errorEl = document.getElementById('salary-error') as HTMLElement;
   const won = (n: number) => n.toLocaleString('ko-KR') + '원';
   const numVal = (id: string) => parseFloat((document.getElementById(id) as HTMLInputElement).value);
+  const amountVal = (id: string) =>
+    parseAmount((document.getElementById(id) as HTMLInputElement).value);
 
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
+  function calculate() {
     try {
       const input: SalaryInput = {
-        annualSalary: numVal('annual'),
-        monthlyNonTax: numVal('nontax') || 0,
+        annualSalary: amountVal('annual'),
+        monthlyNonTax: amountVal('nontax') || 0,
         dependents: numVal('dependents'),
         childrenForCredit: numVal('children') || 0,
         withholdingRate: parseFloat((document.getElementById('withholding') as HTMLSelectElement).value),
@@ -153,5 +156,13 @@ const calculator = getCalculator('salary-net')!;
       errorEl.hidden = false;
       resultEl.hidden = true;
     }
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculate();
+  });
+  form?.addEventListener('input', () => {
+    if (!resultEl.hidden) calculate();
   });
 </script>

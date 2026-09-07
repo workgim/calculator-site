@@ -1,5 +1,6 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import AmountInput from '../../components/AmountInput.astro';
 import { getCalculator } from '../../data/calculators';
 
 const calculator = getCalculator('vat')!;
@@ -17,18 +18,7 @@ const calculator = getCalculator('vat')!;
           <option value="vat">부가세액</option>
         </select>
       </div>
-      <div class="calc-field">
-        <label for="amount">금액 (원)</label>
-        <input
-          type="number"
-          id="amount"
-          inputmode="numeric"
-          step="1"
-          min="0"
-          placeholder="예: 1000000"
-          required
-        />
-      </div>
+      <AmountInput id="amount" label="금액 (원)" placeholder="예: 1000000" />
       <button type="submit" class="btn">계산하기</button>
     </form>
 
@@ -72,6 +62,10 @@ const calculator = getCalculator('vat')!;
 
 <script>
   import { calcVat, type VatBasis } from '../../lib/vat';
+  import { parseAmount } from '../../lib/format';
+  import { enhanceInputs } from '../../scripts/enhance-inputs';
+
+  enhanceInputs();
 
   const form = document.getElementById('vat-form') as HTMLFormElement;
   const basisEl = document.getElementById('basis') as HTMLSelectElement;
@@ -81,10 +75,9 @@ const calculator = getCalculator('vat')!;
 
   const won = (n: number) => n.toLocaleString('ko-KR') + '원';
 
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
+  function calculate() {
     try {
-      const { supply, vat, total } = calcVat(parseFloat(amountEl.value), basisEl.value as VatBasis);
+      const { supply, vat, total } = calcVat(parseAmount(amountEl.value), basisEl.value as VatBasis);
       resultEl.innerHTML = `
         <dl>
           <dt>공급가액</dt><dd>${won(supply)}</dd>
@@ -98,5 +91,14 @@ const calculator = getCalculator('vat')!;
       errorEl.hidden = false;
       resultEl.hidden = true;
     }
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculate();
+  });
+  // 결과가 이미 보이는 상태면 입력/버튼 변경 시 자동으로 다시 계산
+  form?.addEventListener('input', () => {
+    if (!resultEl.hidden) calculate();
   });
 </script>

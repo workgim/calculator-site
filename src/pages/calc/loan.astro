@@ -1,5 +1,6 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import AmountInput from '../../components/AmountInput.astro';
 import { getCalculator } from '../../data/calculators';
 
 const calculator = getCalculator('loan')!;
@@ -9,18 +10,32 @@ const calculator = getCalculator('loan')!;
   <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
     <h2 id="calc-heading" class="visually-hidden">계산기</h2>
     <form id="loan-form">
-      <div class="calc-field">
-        <label for="principal">대출 원금 (원)</label>
-        <input type="number" id="principal" inputmode="numeric" step="1" min="1" placeholder="예: 30000000" required />
-      </div>
+      <AmountInput
+        id="principal"
+        label="대출 원금 (원)"
+        placeholder="예: 30000000"
+        steps={[1_000_000, 10_000_000, 100_000_000]}
+      />
       <div class="calc-row">
         <div class="calc-field">
           <label for="rate">연이자율 (%)</label>
           <input type="number" id="rate" inputmode="decimal" step="0.01" min="0" placeholder="예: 4.5" required />
+          <div class="stepper">
+            <button type="button" data-step="0.1" data-target="rate">+0.1</button>
+            <button type="button" data-step="0.5" data-target="rate">+0.5</button>
+            <button type="button" data-step="1" data-target="rate">+1</button>
+            <button type="button" data-step="clear" data-target="rate" class="stepper__clear" aria-label="지우기">C</button>
+          </div>
         </div>
         <div class="calc-field">
           <label for="months">전체 기간 (개월)</label>
           <input type="number" id="months" inputmode="numeric" step="1" min="1" max="600" placeholder="예: 36" required />
+          <div class="stepper">
+            <button type="button" data-step="1" data-target="months">+1</button>
+            <button type="button" data-step="12" data-target="months">+12</button>
+            <button type="button" data-step="60" data-target="months">+60</button>
+            <button type="button" data-step="clear" data-target="months" class="stepper__clear" aria-label="지우기">C</button>
+          </div>
         </div>
       </div>
       <div class="calc-field">
@@ -34,6 +49,11 @@ const calculator = getCalculator('loan')!;
       <div class="calc-field" id="grace-field">
         <label for="grace">거치기간 (개월)</label>
         <input type="number" id="grace" inputmode="numeric" step="1" min="0" max="599" value="0" />
+        <div class="stepper">
+          <button type="button" data-step="6" data-target="grace">+6</button>
+          <button type="button" data-step="12" data-target="grace">+12</button>
+          <button type="button" data-step="clear" data-target="grace" class="stepper__clear" aria-label="지우기">C</button>
+        </div>
         <small class="calc-hint">
           거치기간 동안은 이자만 냅니다. 남은 기간(전체 − 거치)에 원금을 상환합니다. 없으면 0.
         </small>
@@ -102,6 +122,10 @@ const calculator = getCalculator('loan')!;
 
 <script>
   import { calcLoan, type RepaymentType } from '../../lib/loan';
+  import { parseAmount } from '../../lib/format';
+  import { enhanceInputs } from '../../scripts/enhance-inputs';
+
+  enhanceInputs();
 
   const form = document.getElementById('loan-form') as HTMLFormElement;
   const resultEl = document.getElementById('loan-result') as HTMLElement;
@@ -118,12 +142,14 @@ const calculator = getCalculator('loan')!;
   typeEl?.addEventListener('change', syncGraceField);
   syncGraceField();
 
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
+  function calculate() {
     try {
       const type = typeEl.value as RepaymentType;
       const grace = type === 'bullet' ? 0 : val('grace') || 0;
-      const res = calcLoan(val('principal'), val('rate'), val('months'), type, grace);
+      const principal = parseAmount(
+        (document.getElementById('principal') as HTMLInputElement).value,
+      );
+      const res = calcLoan(principal, val('rate'), val('months'), type, grace);
 
       const rows: string[] = [];
       if (res.gracePayment !== null) {
@@ -149,5 +175,13 @@ const calculator = getCalculator('loan')!;
       errorEl.hidden = false;
       resultEl.hidden = true;
     }
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculate();
+  });
+  form?.addEventListener('input', () => {
+    if (!resultEl.hidden) calculate();
   });
 </script>

@@ -1,0 +1,60 @@
+---
+/**
+ * 금액(원) 입력 필드. 세 자리 콤마 자동 표시 + 빠른 추가 버튼.
+ * 값을 읽을 때는 lib/format 의 parseAmount(el.value) 를 쓴다.
+ *
+ * 활성화: 이 컴포넌트를 쓰는 페이지의 <script> 에서
+ *   import { enhanceInputs } from '../../scripts/enhance-inputs';
+ *   enhanceInputs();
+ * 를 호출한다.
+ */
+import { formatThousands, moneyStepLabel } from '../lib/format';
+
+interface Props {
+  id: string;
+  label: string;
+  placeholder?: string;
+  hint?: string;
+  value?: number;
+  /** 빠른 추가 버튼 단위 (원) */
+  steps?: number[];
+  required?: boolean;
+}
+
+const {
+  id,
+  label,
+  placeholder,
+  hint,
+  value,
+  steps = [10_000, 100_000, 1_000_000, 10_000_000],
+  required = true,
+} = Astro.props;
+---
+
+<div class="calc-field">
+  <label for={id}>{label}</label>
+  <input
+    type="text"
+    id={id}
+    inputmode="numeric"
+    autocomplete="off"
+    data-money
+    value={value != null ? formatThousands(value) : ''}
+    placeholder={placeholder}
+    required={required}
+  />
+  <div class="stepper">
+    {
+      steps.map((s) => (
+        <button type="button" data-step={s} data-target={id}>
+          +{moneyStepLabel(s)}
+        </button>
+      ))
+    }
+    <button type="button" data-step="clear" data-target={id} class="stepper__clear" aria-label="지우기">
+      C
+    </button>
+  </div>
+  {hint && <small class="calc-hint">{hint}</small>}
+</div>
