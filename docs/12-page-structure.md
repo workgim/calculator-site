@@ -157,11 +157,13 @@ title/description(→ `BaseLayout`), breadcrumb, `<h1>`, 리드 문장, `Softwar
 
 ---
 
-## 7. 정적 페이지(about / privacy / 404) 구조
+## 7. 정적 페이지(about / contact / privacy / 404) 구조
 
-- `BaseLayout` + `<main>` 안에 `<h1>` + 본문 `<section>`들.
-- `privacy`(개인정보처리방침)는 나중에 애드센스·분석 도입 시 항목을 채운다(수집 항목, 쿠키, 광고 고지). 세부는 나중에 `40-legal-pages.md`.
-- `404.astro`는 "페이지를 찾을 수 없음" + 홈 링크 + 전체 계산기 목록 링크.
+- `BaseLayout` + `<main>` 안에 `<h1>` + 본문 `<section>`들. 푸터(`Footer.astro`)에 about·contact·privacy 링크.
+- `about` — 사이트 목적, 제공 내용, 운영 원칙(정확성 관리·입력값 미저장·참고용), 운영자.
+- `contact` — 문의 안내. `site.ts` 의 `contactEmail` 이 있으면 mailto 링크, 없으면 "준비 중". 오류 제보 시 적을 내용 안내.
+- `privacy` — GA4 도입 반영됨. `site.ts` `gaId` 유무로 "쿠키·자동 수집" 문단이 분기. 광고 고지는 AdSense 도입 시 갱신. 세부는 나중에 `40-legal-pages.md`.
+- `404.astro` — "페이지를 찾을 수 없음" + 홈 링크 + 전체 계산기 목록. `noindex`.
 
 ---
 

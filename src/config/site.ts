@@ -27,4 +27,9 @@ export const SITE = {
    * 비워두면 분석 코드가 전혀 로드되지 않는다.
    */
   gaId: 'G-64XL4FTB03',
+  /**
+   * 공개 문의용 이메일. 개인 메일 대신 전용 주소 권장 (예: lifecalcmate.help@gmail.com).
+   * 비워두면 /contact 에 "준비 중"으로 표시된다.
+   */
+  contactEmail: '',
 } as const;
