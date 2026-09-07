@@ -19,7 +19,7 @@ const calculator = getCalculator('loan')!;
           <input type="number" id="rate" inputmode="decimal" step="0.01" min="0" placeholder="예: 4.5" required />
         </div>
         <div class="calc-field">
-          <label for="months">기간 (개월)</label>
+          <label for="months">전체 기간 (개월)</label>
           <input type="number" id="months" inputmode="numeric" step="1" min="1" max="600" placeholder="예: 36" required />
         </div>
       </div>
@@ -31,6 +31,13 @@ const calculator = getCalculator('loan')!;
           <option value="bullet">만기일시상환</option>
         </select>
       </div>
+      <div class="calc-field" id="grace-field">
+        <label for="grace">거치기간 (개월)</label>
+        <input type="number" id="grace" inputmode="numeric" step="1" min="0" max="599" value="0" />
+        <small class="calc-hint">
+          거치기간 동안은 이자만 냅니다. 남은 기간(전체 − 거치)에 원금을 상환합니다. 없으면 0.
+        </small>
+      </div>
       <button type="submit" class="btn">계산하기</button>
     </form>
 
@@ -40,7 +47,10 @@ const calculator = getCalculator('loan')!;
 
   <section>
     <h2>사용법</h2>
-    <p>대출 원금, 연이자율, 기간(개월), 상환 방식을 입력하면 월 상환액과 총 이자를 계산합니다.</p>
+    <p>
+      대출 원금, 연이자율, 전체 기간(개월), 상환 방식, 거치기간을 입력하면 월 상환액과 총 이자를
+      계산합니다.
+    </p>
   </section>
 
   <section>
@@ -55,17 +65,27 @@ const calculator = getCalculator('loan')!;
       </li>
       <li>
         <strong>만기일시상환</strong>: 기간 동안 이자만 내고 원금은 만기에 한 번에 갚습니다. 총 이자가
-        가장 많습니다.
+        가장 많습니다. (구조상 전체가 거치이므로 거치기간 입력은 무시됩니다.)
       </li>
     </ul>
   </section>
 
   <section>
+    <h2>거치기간이란?</h2>
+    <p>
+      거치기간은 <strong>원금 상환을 미루고 이자만 내는 기간</strong>입니다. 예를 들어 36개월 대출에
+      거치 12개월을 두면, 처음 12개월은 원금 전액에 대한 이자만 내고, 남은 24개월 동안 원금을
+      나눠 갚습니다. 초기 부담은 줄지만 원금이 늦게 줄어들어 <strong>총 이자는 늘어납니다.</strong>
+    </p>
+  </section>
+
+  <section>
     <h2>계산 방법</h2>
-    <p>월 이자율 = 연이자율 ÷ 12 ÷ 100 으로 두고,</p>
+    <p>월 이자율 = 연이자율 ÷ 12 ÷ 100 으로 두고, 상환 기간 = 전체 기간 − 거치기간 으로 둡니다.</p>
     <ul>
-      <li>원리금균등: 월 상환액 = 원금 × 월이자율 × (1+월이자율)^개월 ÷ ((1+월이자율)^개월 − 1)</li>
-      <li>원금균등: 매달 원금 = 원금 ÷ 개월, 이자 = 남은 원금 × 월이자율</li>
+      <li>거치기간 중: 매달 이자 = 원금 × 월이자율</li>
+      <li>원리금균등: 월 상환액 = 원금 × 월이자율 × (1+월이자율)^상환기간 ÷ ((1+월이자율)^상환기간 − 1)</li>
+      <li>원금균등: 매달 원금 = 원금 ÷ 상환기간, 이자 = 남은 원금 × 월이자율</li>
       <li>만기일시: 매달 이자 = 원금 × 월이자율, 마지막 달에 원금 상환</li>
     </ul>
   </section>
@@ -86,20 +106,37 @@ const calculator = getCalculator('loan')!;
   const form = document.getElementById('loan-form') as HTMLFormElement;
   const resultEl = document.getElementById('loan-result') as HTMLElement;
   const errorEl = document.getElementById('loan-error') as HTMLElement;
+  const typeEl = document.getElementById('type') as HTMLSelectElement;
+  const graceField = document.getElementById('grace-field') as HTMLElement;
   const won = (n: number) => n.toLocaleString('ko-KR') + '원';
   const val = (id: string) => parseFloat((document.getElementById(id) as HTMLInputElement).value);
+
+  // 만기일시상환은 전체가 거치이므로 거치기간 입력을 숨긴다
+  function syncGraceField() {
+    graceField.hidden = typeEl.value === 'bullet';
+  }
+  typeEl?.addEventListener('change', syncGraceField);
+  syncGraceField();
 
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
     try {
-      const type = (document.getElementById('type') as HTMLSelectElement).value as RepaymentType;
-      const res = calcLoan(val('principal'), val('rate'), val('months'), type);
+      const type = typeEl.value as RepaymentType;
+      const grace = type === 'bullet' ? 0 : val('grace') || 0;
+      const res = calcLoan(val('principal'), val('rate'), val('months'), type, grace);
 
       const rows: string[] = [];
+      if (res.gracePayment !== null) {
+        rows.push(
+          `<dt>거치기간 중 매월<br><small>${res.graceMonths}개월, 이자만</small></dt><dd>${won(res.gracePayment)}</dd>`,
+        );
+      }
       if (res.monthlyPayment !== null) {
-        rows.push(`<dt>매월 상환액</dt><dd><strong>${won(res.monthlyPayment)}</strong></dd>`);
+        const label = res.graceMonths > 0 ? '거치 후 매월 상환액' : '매월 상환액';
+        rows.push(`<dt>${label}</dt><dd><strong>${won(res.monthlyPayment)}</strong></dd>`);
       } else {
-        rows.push(`<dt>첫 달 상환액</dt><dd>${won(res.firstPayment)}</dd>`);
+        const prefix = res.graceMonths > 0 ? '거치 후 ' : '';
+        rows.push(`<dt>${prefix}첫 달 상환액</dt><dd>${won(res.firstPayment)}</dd>`);
         rows.push(`<dt>마지막 달 상환액</dt><dd>${won(res.lastPayment)}</dd>`);
       }
       rows.push(`<dt>총 이자</dt><dd>${won(res.totalInterest)}</dd>`);
