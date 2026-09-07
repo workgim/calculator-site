@@ -1,0 +1,180 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import AmountInput from '../../components/AmountInput.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('broker-fee')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <form id="bf-form">
+      <div class="calc-field">
+        <label for="dtype">거래 유형</label>
+        <select id="dtype">
+          <option value="sale">매매</option>
+          <option value="lease">전세</option>
+          <option value="monthly">월세</option>
+        </select>
+      </div>
+
+      <div id="price-group">
+        <AmountInput
+          id="price"
+          label="거래 금액 (원)"
+          placeholder="예: 300000000"
+          steps={[10_000_000, 100_000_000, 1_000_000_000]}
+        />
+      </div>
+
+      <div id="monthly-group" hidden>
+        <AmountInput
+          id="deposit"
+          label="보증금 (원)"
+          placeholder="예: 10000000"
+          value={0}
+          required={false}
+          steps={[1_000_000, 10_000_000]}
+        />
+        <AmountInput
+          id="rent"
+          label="월세 (원)"
+          placeholder="예: 500000"
+          value={0}
+          required={false}
+          steps={[100_000, 500_000]}
+        />
+      </div>
+
+      <div class="calc-field">
+        <label><input type="checkbox" id="vat" /> 중개보수에 부가세 10% 포함 (일반과세 중개사무소)</label>
+      </div>
+
+      <button type="submit" class="btn">계산하기</button>
+    </form>
+
+    <output id="bf-result" class="calc-result" hidden></output>
+    <p id="bf-error" class="calc-error" role="alert" hidden></p>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>
+      거래 유형을 고르고 금액을 입력하세요. 월세는 보증금과 월 차임을 각각 입력합니다. 결과는
+      법에서 정한 <strong>상한액</strong>이며, 실제 보수는 이 한도 안에서 협의합니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>거래금액 산정</h2>
+    <ul>
+      <li>매매: 매매가격</li>
+      <li>전세: 전세보증금</li>
+      <li>월세: 보증금 + (월세 × 100). 단, 그 합이 5천만원 미만이면 보증금 + (월세 × 70)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>상한요율 (주택, 전국 기준)</h2>
+    <p><strong>매매·교환</strong></p>
+    <table>
+      <thead><tr><th>거래금액</th><th>상한요율</th><th>한도액</th></tr></thead>
+      <tbody>
+        <tr><td>5천만원 미만</td><td>0.6%</td><td>25만원</td></tr>
+        <tr><td>5천만 ~ 2억 미만</td><td>0.5%</td><td>80만원</td></tr>
+        <tr><td>2억 ~ 9억 미만</td><td>0.4%</td><td>-</td></tr>
+        <tr><td>9억 ~ 12억 미만</td><td>0.5%</td><td>-</td></tr>
+        <tr><td>12억 ~ 15억 미만</td><td>0.6%</td><td>-</td></tr>
+        <tr><td>15억 이상</td><td>0.7%</td><td>-</td></tr>
+      </tbody>
+    </table>
+    <p><strong>임대차(전세·월세)</strong></p>
+    <table>
+      <thead><tr><th>거래금액</th><th>상한요율</th><th>한도액</th></tr></thead>
+      <tbody>
+        <tr><td>5천만원 미만</td><td>0.5%</td><td>20만원</td></tr>
+        <tr><td>5천만 ~ 1억 미만</td><td>0.4%</td><td>30만원</td></tr>
+        <tr><td>1억 ~ 6억 미만</td><td>0.3%</td><td>-</td></tr>
+        <tr><td>6억 ~ 12억 미만</td><td>0.4%</td><td>-</td></tr>
+        <tr><td>12억 ~ 15억 미만</td><td>0.5%</td><td>-</td></tr>
+        <tr><td>15억 이상</td><td>0.6%</td><td>-</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>주의사항</h2>
+    <ul>
+      <li>주택 기준입니다. <strong>오피스텔·상가·토지</strong>는 요율이 다릅니다.</li>
+      <li>시·도 조례로 세부 구간·요율이 다를 수 있습니다. 정확한 요율은 관할 지자체·부동산에 확인하세요.</li>
+      <li>부가세는 중개사무소가 일반과세자일 때 별도 부과됩니다(간이과세는 다름).</li>
+    </ul>
+    <p>근거: 공인중개사법 시행규칙 별표1 (2021-10-19 개정).</p>
+  </section>
+</CalculatorLayout>
+
+<script>
+  import { calcBrokerFee, type BrokerFeeInput } from '../../lib/brokerFee';
+  import { parseAmount } from '../../lib/format';
+  import { enhanceInputs } from '../../scripts/enhance-inputs';
+
+  enhanceInputs();
+
+  const form = document.getElementById('bf-form') as HTMLFormElement;
+  const typeEl = document.getElementById('dtype') as HTMLSelectElement;
+  const priceGroup = document.getElementById('price-group') as HTMLElement;
+  const monthlyGroup = document.getElementById('monthly-group') as HTMLElement;
+  const priceLabel = document.querySelector('label[for="price"]') as HTMLElement;
+  const resultEl = document.getElementById('bf-result') as HTMLElement;
+  const errorEl = document.getElementById('bf-error') as HTMLElement;
+  const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+  const amt = (id: string) => parseAmount((document.getElementById(id) as HTMLInputElement).value);
+
+  function syncFields() {
+    const t = typeEl.value;
+    priceGroup.hidden = t === 'monthly';
+    monthlyGroup.hidden = t !== 'monthly';
+    priceLabel.textContent = t === 'sale' ? '매매가격 (원)' : '전세보증금 (원)';
+  }
+  typeEl.addEventListener('change', () => {
+    syncFields();
+    if (!resultEl.hidden) calculate();
+  });
+  syncFields();
+
+  function calculate() {
+    try {
+      const t = typeEl.value as BrokerFeeInput['dealType'];
+      const input: BrokerFeeInput =
+        t === 'monthly'
+          ? { dealType: t, deposit: amt('deposit') || 0, monthlyRent: amt('rent') || 0, includeVat: (document.getElementById('vat') as HTMLInputElement).checked }
+          : { dealType: t, price: amt('price'), includeVat: (document.getElementById('vat') as HTMLInputElement).checked };
+      const r = calcBrokerFee(input);
+      const rows = [
+        `<dt>거래금액</dt><dd>${won(r.transactionAmount)}</dd>`,
+        `<dt>적용 요율</dt><dd>${r.ratePct}%${r.cap != null ? ` (한도 ${won(r.cap)})` : ''}</dd>`,
+        `<dt>중개보수 상한${r.vat ? ' (부가세 별도)' : ''}</dt><dd>${r.vat ? '' : '<strong>'}${won(r.fee)}${r.vat ? '' : '</strong>'}</dd>`,
+      ];
+      if (r.vat) {
+        rows.push(`<dt>부가세 10%</dt><dd>${won(r.vat)}</dd>`);
+        rows.push(`<dt>합계</dt><dd><strong>${won(r.total)}</strong></dd>`);
+      }
+      resultEl.innerHTML = `<dl>${rows.join('')}</dl>`;
+      resultEl.hidden = false;
+      errorEl.hidden = true;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '계산할 수 없습니다.';
+      errorEl.hidden = false;
+      resultEl.hidden = true;
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculate();
+  });
+  form.addEventListener('input', () => {
+    if (!resultEl.hidden) calculate();
+  });
+</script>

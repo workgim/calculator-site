@@ -88,12 +88,13 @@
 | 6 | `salary-net` (연봉 실수령액) | ✅ 완료 | 최대어. 2026년 4대보험 요율 + 간이세액표 근사 |
 | 7 | `savings` (예적금이자) | ✅ 완료 | 예금/적금 × 단리/월복리, 이자소득세 |
 | 8 | `severance-pay` (퇴직금) | ✅ 완료 | 평균임금 기준, 세전 |
-| 9 | `broker-fee` (중개보수) | ⏭ 다음 | CPC 매우 높음. 지역별 상한요율표 |
-| 10 | `acquisition-tax` (취득세) | | CPC 매우 높음, `broker-fee`와 세트 |
-| 11 | `hourly-wage` (주휴수당) | | 쉬움, 8월 시즌 대비 |
-| 12 | `age` (만 나이) | 보류 | 트래픽 자석이나 사용자 요청으로 뒤로 미룸 |
+| 9 | `broker-fee` (중개보수) | ✅ 완료 | 전국 상한요율표(2021-10-19), 매매/전세/월세 |
+| 10 | `acquisition-tax` (취득세) | ✅ 완료 | 1주택 유상취득 기준(중과 제외) |
+| 11 | `hourly-wage` (주휴수당) | ✅ 완료 | 2026 최저임금 10,320원 |
+| 12 | `age` (만 나이) | ✅ 완료 | 만/연 나이, 다음 생일 D-day, 띠 |
 
-> 순서 조정: 조사에서 정한 Tier 1(수요·수익) 우선으로, 쉬운 트래픽 자석(`age`)보다 `vat`·`loan`을 먼저 만듦.
+> 첫 12개 완료. 새 카테고리 `realestate`(부동산) 추가됨.
+> 이후: Tier 2~3 (`date-add` `pyeong` `discount` `unit-converter` `electricity-bill` `unemployment-benefit` `jeonse-wolse` `dsr` `income-tax` `bmr`/`tdee` `due-date` `gpa` `char-count` …).
 
 1~4로 트래픽·색인 기반을 빠르게 깔고, 5번부터 수요·수익이 큰 금융/세금으로 넘어간다.
 6·7·9·10·11은 세율·요율이 매년 바뀌므로 "매년 갱신" 관리 대상 → [20-seo-google.md](./20-seo-google.md) §1 "맥락적 최신성".

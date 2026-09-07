@@ -49,7 +49,8 @@ calculator-site/
 │  │     └─ dday.astro  loan.astro  salary-net.astro
 │  │
 │  ├─ lib/                     # 순수 함수 (DOM·astro import 없음) + 각 파일의 *.test.ts (vitest)
-│  │  ├─ bmi.ts  percentage.ts  vat.ts  dday.ts  loan.ts  salary.ts  savings.ts
+│  │  ├─ bmi  percentage  vat  dday  loan  salary  savings  severance
+│  │  ├─ brokerFee  acquisitionTax  wage  age   (.ts)
 │  │  ├─ format.ts             #  parseAmount / formatThousands / moneyStepLabel
 │  │  └─ *.test.ts             #  `npm test` (vitest run). 계산 함수 회귀 방지
 │  │

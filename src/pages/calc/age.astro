@@ -1,0 +1,100 @@
+---
+import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import { getCalculator } from '../../data/calculators';
+
+const calculator = getCalculator('age')!;
+---
+
+<CalculatorLayout calculator={calculator}>
+  <section slot="calculator" class="calc-box" aria-labelledby="calc-heading">
+    <h2 id="calc-heading" class="visually-hidden">계산기</h2>
+    <form id="age-form">
+      <div class="calc-row">
+        <div class="calc-field">
+          <label for="birth">생년월일</label>
+          <input type="date" id="birth" required />
+        </div>
+        <div class="calc-field">
+          <label for="ref">기준일</label>
+          <input type="date" id="ref" required />
+          <small class="calc-hint">기본값은 오늘</small>
+        </div>
+      </div>
+      <button type="submit" class="btn">계산하기</button>
+    </form>
+
+    <output id="age-result" class="calc-result" hidden></output>
+    <p id="age-error" class="calc-error" role="alert" hidden></p>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>생년월일을 입력하면 기준일(기본 오늘) 기준 만 나이를 계산합니다.</p>
+  </section>
+
+  <section>
+    <h2>만 나이란</h2>
+    <p>
+      2023년 6월 28일부터 법령·행정·계약에서 나이는 <strong>만 나이</strong>로 통일되었습니다. 만
+      나이는 태어난 날을 기준으로, 생일이 지날 때마다 한 살씩 더합니다.
+    </p>
+    <ul>
+      <li>만 나이 = 기준일 연도 − 출생 연도 (생일이 안 지났으면 −1)</li>
+      <li>연 나이 = 기준일 연도 − 출생 연도 (병역·청소년보호법 등 일부에서 사용)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>주의사항</h2>
+    <p>
+      일부 법률(청소년보호법의 술·담배 구입 기준 등)은 여전히 "연 나이"를 씁니다. 정확한 적용
+      기준은 해당 법령을 확인하세요.
+    </p>
+    <p>근거: 행정기본법·민법(2023-06-28 시행), 국가법령정보센터.</p>
+  </section>
+</CalculatorLayout>
+
+<script>
+  import { calcAge } from '../../lib/age';
+
+  const form = document.getElementById('age-form') as HTMLFormElement;
+  const birthEl = document.getElementById('birth') as HTMLInputElement;
+  const refEl = document.getElementById('ref') as HTMLInputElement;
+  const resultEl = document.getElementById('age-result') as HTMLElement;
+  const errorEl = document.getElementById('age-error') as HTMLElement;
+
+  refEl.value = new Date().toISOString().slice(0, 10);
+
+  function calculate() {
+    try {
+      if (!birthEl.value) throw new Error('생년월일을 입력하세요.');
+      const r = calcAge(birthEl.value, refEl.value || undefined);
+      const bday =
+        r.daysToNextBirthday === 0
+          ? '오늘이 생일입니다 🎂'
+          : `다음 생일까지 <strong>${r.daysToNextBirthday.toLocaleString()}일</strong>`;
+      resultEl.innerHTML = `
+        <dl>
+          <dt>만 나이</dt><dd><strong>만 ${r.fullAge}세</strong></dd>
+          <dt>연 나이</dt><dd>${r.yearAge}세</dd>
+          <dt>띠</dt><dd>${r.zodiac}띠</dd>
+          <dt>태어난 지</dt><dd>${r.daysLived.toLocaleString()}일</dd>
+        </dl>
+        <p style="margin-top:var(--space-3)">${bday}</p>`;
+      resultEl.hidden = false;
+      errorEl.hidden = true;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '계산할 수 없습니다.';
+      errorEl.hidden = false;
+      resultEl.hidden = true;
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculate();
+  });
+  form.addEventListener('input', () => {
+    if (!resultEl.hidden) calculate();
+  });
+</script>
