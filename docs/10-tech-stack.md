@@ -97,14 +97,21 @@ Tailwind 같은 도구도 좋지만, 초보 단계에서는 CSS 자체(레이아
 
 ---
 
-## 6. 실제 설치 버전 기록 (설치 후 채우기)
+## 6. 실제 설치 버전 기록
 
-| 항목 | 버전 | 설치일 |
-|------|------|--------|
-| Node.js | (예: 22.x) | |
-| npm | | |
-| astro | | |
-| @astrojs/sitemap | | |
+| 항목 | 버전 | 비고 |
+|------|------|------|
+| Node.js | 24.20.0 | PC에 기존 설치본 사용. `C:\Program Files\nodejs` 를 PATH에 추가 |
+| npm | 11.19.0 | |
+| astro | ^7.3.1 | `import { defineConfig } from 'astro/config'` |
+| @astrojs/sitemap | ^3.7.4 | `sitemap-index.xml` + `sitemap-0.xml` 생성 |
+| prettier / prettier-plugin-astro | ^3.9.6 / ^0.14.1 | |
+| sharp | (astro 의존성) | `scripts/generate-og.mjs` 에서 OG 이미지 생성에 사용 |
+
+- `package.json` 에 `allowScripts: { "esbuild@0.28.2": true }` — npm 11+ 의 설치 스크립트 승인 기능.
+  최초 `npm install` 후 `npm install-scripts approve esbuild` 로 승인함.
+- `astro.config.mjs`: `site` = 배포 도메인, `trailingSlash: 'never'`, `build.format: 'file'` (URL 을 `/calc/bmi` 형태로).
+- `vercel.json`: `{ "cleanUrls": true, "trailingSlash": false }`.
 
 ---
 
@@ -121,3 +128,4 @@ Tailwind 같은 도구도 좋지만, 초보 단계에서는 CSS 자체(레이아
 | 날짜 | 변경 내용 |
 |------|-----------|
 | 2026-09-07 | 최초 작성. Astro + 순수 CSS + Vercel로 확정 |
+| 2026-09-07 | 설치 완료(§6): Node 24.20.0 / Astro 7.3.1. Vercel 배포, `vercel.json` 추가. OG 이미지 생성에 sharp 사용 |

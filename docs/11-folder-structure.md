@@ -9,61 +9,65 @@
 
 ## 1. 전체 폴더 트리
 
+> 아래 트리는 2026-09-07 실제 구조 기준. 계산기가 늘면 `pages/calc/`·`lib/` 파일만 추가된다.
+
 ```
 calculator-site/
 ├─ docs/                       # 이 문서들 (설계 규칙 모음)
 │
+├─ scripts/                    # 빌드와 무관한 1회성 도구 (클라이언트 코드 아님)
+│  └─ generate-og.mjs          #  기본 OG 이미지 생성 (npm run gen:og). sharp 사용
+│
 ├─ public/                     # 가공 없이 그대로 배포되는 파일
 │  ├─ favicon.svg
 │  ├─ robots.txt               # 검색봇 안내 + sitemap 위치
-│  ├─ naver<인증코드>.html      # 네이버 소유확인 파일 (메타태그 방식이면 불필요)
 │  └─ images/
-│     └─ og-default.png        # 기본 Open Graph 이미지
+│     └─ og-default.png        # 기본 Open Graph 이미지 (1200×630, scripts/generate-og.mjs 로 생성)
+│    (네이버·구글 소유확인은 HTML 태그 방식 → src/config/site.ts 의 verification)
 │
 ├─ src/
-│  ├─ layouts/                 # 모든 페이지가 공유하는 "뼈대"
-│  │  ├─ BaseLayout.astro      #  <html><head>…</head><body> + 헤더 + <slot/> + 푸터
-│  │  └─ CalculatorLayout.astro#  BaseLayout 위에 계산기 페이지 공통 틀(제목·설명·광고자리)
+│  ├─ layouts/
+│  │  ├─ BaseLayout.astro      #  <html><head>…</head><body> + 헤더 + 광고자리 + <slot/> + 푸터
+│  │  └─ CalculatorLayout.astro#  BaseLayout 위 계산기 공통 틀(breadcrumb·h1·리드·named slot·광고·JSON-LD)
 │  │
-│  ├─ components/              # 재사용 UI 조각
-│  │  ├─ Head.astro            #  <title>·meta·canonical·OG 태그 모음 (SEO의 실체)
-│  │  ├─ Header.astro
-│  │  ├─ Footer.astro
-│  │  ├─ Nav.astro
-│  │  ├─ AdSlot.astro          #  광고 자리. 지금은 빈 상자 + "광고" 라벨 자리
-│  │  ├─ CalculatorCard.astro  #  홈 목록에 뿌리는 카드
-│  │  ├─ Breadcrumb.astro      #  홈 > 카테고리 > 계산기
-│  │  └─ Faq.astro             #  질문/답변 목록 (+ 구조화 데이터)
+│  ├─ components/
+│  │  ├─ Head.astro            #  <title>·meta·canonical·OG·소유확인·전역 JSON-LD
+│  │  ├─ Header.astro / Footer.astro / Nav.astro
+│  │  ├─ AdSlot.astro          #  광고 자리 (빈 상자 + "광고" 라벨, 높이 예약)
+│  │  ├─ CalculatorCard.astro  #  홈 목록 카드
+│  │  ├─ Breadcrumb.astro      #  홈 > 카테고리 > 계산기 (+ BreadcrumbList JSON-LD)
+│  │  └─ AmountInput.astro     #  금액(원) 입력 필드: 세 자리 콤마 + 빠른 증감 버튼
+│  │     (Faq.astro 는 아직 미작성 — 계산기 페이지에 일반 텍스트로 FAQ 작성 중)
 │  │
-│  ├─ pages/                   # ★ 파일 = URL
+│  ├─ pages/                   # ★ 파일 = URL  (astro.config: trailingSlash 'never', build.format 'file')
 │  │  ├─ index.astro           # →  /
 │  │  ├─ about.astro           # →  /about
 │  │  ├─ privacy.astro         # →  /privacy
-│  │  ├─ 404.astro             # →  없는 주소 처리
+│  │  ├─ 404.astro
 │  │  └─ calc/
-│  │     ├─ bmi.astro          # →  /calc/bmi
-│  │     └─ percentage.astro   # →  /calc/percentage
+│  │     ├─ bmi.astro  percentage.astro  vat.astro
+│  │     └─ dday.astro  loan.astro  salary-net.astro
 │  │
-│  ├─ lib/                     # 계산 "로직"만 (화면과 무관한 순수 함수 + 그 테스트)
-│  │  ├─ bmi.ts                #  export function calcBmi(heightCm, weightKg)
-│  │  ├─ bmi.test.ts           #  (테스트 도입 후)
-│  │  └─ percentage.ts
+│  ├─ lib/                     # 순수 함수 (DOM·astro import 없음)
+│  │  ├─ bmi.ts  percentage.ts  vat.ts  dday.ts  loan.ts  salary.ts
+│  │  └─ format.ts             #  parseAmount / formatThousands / moneyStepLabel
+│  │     (*.test.ts 는 테스트 러너 도입 후)
+│  │
+│  ├─ scripts/                 # 브라우저에서 실행되는 공유 스크립트
+│  │  └─ enhance-inputs.ts     #  data-money 콤마 포맷 + .stepper 버튼 처리 (페이지가 import)
 │  │
 │  ├─ data/
-│  │  ├─ calculators.ts        #  계산기 목록·메타데이터 배열 (홈·사이트맵·내비가 참조)
-│  │  └─ categories.ts         #  카테고리 정의 (id, 이름, 설명)
+│  │  ├─ calculators.ts        #  계산기 목록·메타데이터 배열 (홈·사이트맵·breadcrumb 이 참조)
+│  │  └─ categories.ts         #  카테고리 정의 (finance / health / date / living)
 │  │
 │  ├─ styles/
-│  │  └─ global.css            #  디자인 토큰(CSS 변수) + 기본 요소 스타일 + 공통 반응형
+│  │  └─ global.css            #  디자인 토큰(CSS 변수) + 기본 요소 + 계산기 폼 공통 클래스 + .stepper
 │  │
 │  └─ config/
-│     └─ site.ts               #  사이트 전역 설정 (도메인, 사이트명, 기본 설명, SNS 등)
+│     └─ site.ts               #  도메인·사이트명·기본 설명·OG 이미지·검색엔진 소유확인 코드
 │
-├─ astro.config.mjs            # Astro 설정 (site URL, sitemap 플러그인 등)
-├─ package.json
-├─ tsconfig.json
-├─ .prettierrc
-├─ .gitignore
+├─ astro.config.mjs   vercel.json   tsconfig.json
+├─ package.json       .prettierrc.json   .gitattributes   .gitignore
 └─ README.md
 ```
 
@@ -79,9 +83,13 @@ calculator-site/
 | `src/components/` | 재사용 UI 조각 | 계산 공식(→ `lib/`) |
 | `src/pages/` | **URL이 되는 파일.** 페이지는 "데이터 가져와 컴포넌트 배치"만 | 복잡한 계산 로직(→ `lib/`), 재사용 UI(→ `components/`) |
 | `src/lib/` | 순수 계산 함수 + 테스트 | DOM 조작, import astro 컴포넌트 |
+| `src/scripts/` | **브라우저에서** 실행되는 공유 JS (`enhance-inputs.ts` 등). 페이지 `<script>` 가 import | astro 컴포넌트, 순수 계산 로직(→ `lib/`) |
 | `src/data/` | 계산기·카테고리 목록 같은 "표 데이터" | 함수 로직 |
 | `src/styles/` | 전역 CSS와 디자인 토큰 | 컴포넌트 전용 스타일(그건 각 `.astro`의 `<style>`에) |
 | `src/config/` | 사이트 전역 상수 | 페이지별 콘텐츠 |
+| `scripts/` (루트) | 빌드와 별개인 1회성 개발 도구 (`generate-og.mjs`). `node` 로 직접 실행 | 사이트에 포함될 코드 |
+
+> `src/lib/` 와 `src/scripts/` 구분: `lib/` 는 입출력만 있는 순수 함수(브라우저·테스트 어디서든), `scripts/` 는 `document` 를 만지는 코드.
 
 ---
 
@@ -111,8 +119,11 @@ calculator-site/
    export function calcExample(a: number, b: number) { ... }
    ```
 2. **`src/pages/calc/example.astro`** — 화면.
-   `CalculatorLayout`을 가져와 입력창·결과 영역·설명(공식/예시/주의)·FAQ를 배치하고,
-   `<script>`에서 `calcExample`을 호출해 결과를 채운다.
+   `CalculatorLayout`을 가져와 입력창·결과 영역(`.calc-box`/`.calc-field`/`.calc-result`/`.calc-error` 클래스)·
+   설명(공식/예시/주의)·FAQ를 배치하고, `<script>`에서 `calcExample`을 호출해 결과를 채운다.
+   - 금액(원) 입력이 있으면 `<AmountInput>` 컴포넌트를 쓰고, `<script>`에서
+     `import { enhanceInputs } from '../../scripts/enhance-inputs'; enhanceInputs();` 호출,
+     값은 `parseAmount(el.value)` 로 읽는다. (콤마·빠른 증감 버튼 자동)
 3. **`src/data/calculators.ts`** — 배열에 항목 한 개 추가
    ```
    { slug: 'example', title: '예시 계산기', description: '...',
@@ -144,3 +155,4 @@ calculators.ts (배열)
 | 날짜 | 변경 내용 |
 |------|-----------|
 | 2026-09-07 | 최초 작성. Astro 기준 폴더 트리·명명 규칙·계산기 추가 절차 정리 |
+| 2026-09-07 | 실제 구조 반영: `scripts/`(루트)·`src/scripts/`·`lib/format.ts`·`AmountInput.astro`·`vercel.json` 추가, 계산기 6개, `build.format:'file'`, 소유확인은 메타태그 방식 |

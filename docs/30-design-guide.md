@@ -163,6 +163,18 @@
 | **링크(본문)** | `--color-primary`, 밑줄. 방문 후에도 색 유지(구분 불필요) |
 | **에러 메시지** | `--color-danger`, `--fs-sm`, 입력창 아래 |
 
+### 계산기 폼 공통 클래스 (`global.css` 에 정의, `.astro` 는 클래스만 사용)
+
+| 클래스 | 용도 |
+|--------|------|
+| `.calc-box` | 입력 영역을 감싸는 카드 (`--color-surface` 배경, `--radius-md`) |
+| `.calc-field` | 라벨 + 입력 한 묶음. 아래 여백 `--space-4` (마지막은 0) |
+| `.calc-row` | 한 줄에 입력 2개 이상 (flex, 각 칸 `flex: 1 1 8rem`) |
+| `.calc-hint` | 입력 아래 작은 설명. `--fs-xs`, `--color-text-muted` |
+| `.calc-result` | 결과 박스. 안에 `<dl>`(항목/값) 지원 — 값은 오른쪽 정렬 + tabular-nums |
+| `.calc-error` | 빨간 오류 문구. `--color-danger`, `--fs-sm` |
+| `.stepper` | 빠른 증감 버튼 줄. 버튼은 알약형(`--radius-full`), 최소 높이 36px, `--color-primary` 글자. `.stepper__clear`(C 버튼)는 `--color-text-muted` + 오른쪽 정렬 |
+
 ### 모서리 / 그림자 / 테두리
 
 | 변수 | 값 |
@@ -203,7 +215,7 @@
 
 - **명도 대비**: 본문 텍스트/배경 4.5:1 이상, 큰 텍스트·UI 요소 3:1 이상. (§2 색상은 이 기준으로 골랐음. 색 바꾸면 재검증 — WebAIM Contrast Checker)
 - **포커스 표시**: 키보드 `Tab` 이동 시 `--color-focus-ring` 윤곽이 보여야 함. `outline: none`만 주고 대체 안 하는 것 금지.
-- **터치 타겟**: 버튼·링크 최소 44×44px.
+- **터치 타겟**: 주요 버튼·링크 최소 44×44px. (예외: `.stepper` 의 빠른 증감 버튼은 보조 조작이라 36px — 주 입력과 [계산] 버튼은 44px 유지)
 - **라벨 연결**: 모든 `<input>`에 연결된 `<label>`. placeholder는 라벨 대체 불가.
 - **색만으로 정보 전달 금지**: 오류를 빨간색"만"으로 표시하지 말고 텍스트도 함께.
 - **의미 있는 마크업**: 버튼은 `<button>`, 링크는 `<a>`. `<div onclick>` 금지.
@@ -231,7 +243,9 @@
 |----------------|-----------|
 | §2 색상, §3 타이포, §4 여백, §5 컨테이너, §6 모서리·그림자 변수 | `src/styles/global.css`의 `:root { ... }` |
 | 기본 요소 스타일(body, a, h1~h3, input, button, table) | `src/styles/global.css` |
+| §6 계산기 폼 공통 클래스(`.calc-box`/`.calc-field`/`.calc-row`/`.calc-hint`/`.calc-result`/`.calc-error`) + `.stepper` | `src/styles/global.css` (하단) |
 | 컴포넌트별 세부 스타일 | 각 `.astro` 파일의 `<style>` (토큰 변수만 사용, 하드코딩 값 금지) |
+| 금액 입력 UI(콤마·증감 버튼) | `src/components/AmountInput.astro` + `src/scripts/enhance-inputs.ts` |
 | 브레이크포인트 수치 | 각 미디어쿼리에 직접(`48rem` 등). 기준값은 이 문서 §5 |
 | 다크 모드 | (나중) `global.css`의 `@media (prefers-color-scheme: dark)` 블록 |
 
@@ -245,3 +259,4 @@
 | 날짜 | 변경 내용 |
 |------|-----------|
 | 2026-09-07 | 최초 작성. 색/타이포/여백/레이아웃/컴포넌트/접근성/광고영역 토큰 정의. 시스템 폰트 사용, 다크모드는 구조만 |
+| 2026-09-07 | 구현 반영: §6 계산기 폼 공통 클래스 + `.stepper`(빠른 증감 버튼, 36px 예외) 추가, §10 매핑에 `enhance-inputs.ts`·`AmountInput.astro` |

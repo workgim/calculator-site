@@ -78,11 +78,14 @@
 즐겨찾기·최근 본 계산기 / 실제 광고 코드 삽입 / 방문자 분석 도구 / 검색창(사이트 내 검색) /
 애니메이션 효과 / 계산기 3개 이상 / 커스텀 도메인(나중에)
 
-### 1차 완료 판정 (Definition of Done)
+### 1차 완료 판정 (Definition of Done) — ✅ 2026-09-07 전부 충족
 
-- [ ] 배포된 URL에서 홈 + 계산기 2개 + about + privacy 가 열린다
-- [ ] 모바일 폭(375px)과 PC 폭(1280px)에서 레이아웃이 깨지지 않는다
-- [ ] 각 페이지에 고유한 title / description 이 들어간다
-- [ ] `/sitemap.xml`, `/robots.txt` 가 정상 응답한다
-- [ ] Search Console + 서치어드바이저에 사이트가 등록되고 사이트맵이 제출된다
-- [ ] 새 계산기 1개를 추가할 때 만지는 파일이 [11-folder-structure.md](./11-folder-structure.md) 에 적힌 3개뿐이다
+- [x] 배포된 URL에서 홈 + 계산기 + about + privacy 가 열린다 (<https://calculator-site-lilac.vercel.app>)
+- [x] 모바일 폭(375px)과 PC 폭(1280px)에서 레이아웃이 깨지지 않는다
+- [x] 각 페이지에 고유한 title / description 이 들어간다
+- [x] `/sitemap-index.xml`, `/robots.txt` 가 정상 응답한다
+- [x] Search Console + 서치어드바이저에 사이트가 등록되고 사이트맵이 제출됨 (소유확인 완료)
+- [x] 새 계산기 1개를 추가할 때 만지는 파일이 [11-folder-structure.md](./11-folder-structure.md) §4 의 3개뿐이다
+
+> 1차 이후 진행: 계산기 6개(`bmi` `percentage` `vat` `dday` `loan` `salary-net`),
+> 금액칸 콤마·빠른 증감 버튼, 기본 OG 이미지. 다음은 [02-calculator-catalog.md](./02-calculator-catalog.md) 순서대로.

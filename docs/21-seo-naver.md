@@ -62,36 +62,39 @@
 공통 항목(title, description, canonical, 모바일, HTTPS, sitemap.xml, 404, 구조화 데이터 등)은
 [20-seo-google.md](./20-seo-google.md) §3 매핑표를 그대로 따른다. **아래는 네이버 때문에 추가로 필요한 것**만.
 
+배포 도메인: `https://calculator-site-lilac.vercel.app`
+
 | # | 항목 | 권장값 / 규칙 | 구현 위치 | 현재 상태 |
 |---|------|----------------|-----------|-----------|
-| N1 | 소유확인 메타태그 | `<meta name="naver-site-verification" content="{발급코드}">` (또는 HTML 파일 업로드 방식) | `Head.astro`(전역) 또는 `public/naver{코드}.html` | 미구현 |
-| N2 | Open Graph 태그 | og:title, og:description, og:image, og:url — **네이버는 검색·공유 미리보기에서 OG를 적극 사용**. 대표 이미지 필수 | `Head.astro` + `public/images/og-default.png` | 미구현 |
-| N3 | robots.txt에서 Yeti 허용 | `User-agent: Yeti` `Allow: /` (전체 허용 시 `User-agent: *`로 충분하나 명시 가능) + `Sitemap:` 절대경로 | `public/robots.txt` | 미구현 |
-| N4 | 사이트맵 | **1개**로 유지(`sitemap.xml` 또는 `sitemap-index.xml`). 서치어드바이저에 제출 | `@astrojs/sitemap` (`astro.config.mjs`) | 미구현 |
-| N5 | RSS/Atom 피드 | 신규·업데이트 페이지를 담은 피드. 서치어드바이저에 제출 | `@astrojs/rss` → `src/pages/rss.xml.ts` (콘텐츠 쌓이면 도입) | 나중 |
-| N6 | `<link rel="alternate" type="application/rss+xml">` | RSS 도입 시 head에 추가 | `Head.astro` | 나중 |
-| N7 | 모바일 대응 | 반응형(동일 URL). 서치어드바이저 "모바일 친화도"에서 통과 | `global.css` — [30-design-guide.md](./30-design-guide.md) | 미구현 |
-| N8 | 웹 표준 | 유효한 HTML. 서치어드바이저 "웹 표준 검증" 통과 | 전역 마크업 품질 | 점검 필요 |
-| N9 | 프로토콜/호스트 통일 | http→https, www↔non-www 중 하나로 301. **네이버는 이들을 별개 사이트로 취급** → canonical + 리다이렉트 일치 | Vercel 리다이렉트 설정 + `canonical`(`site.ts`) | 배포 시 |
-| N10 | title/description | 낚시·과장 금지, 페이지 고유, 핵심 키워드 자연스럽게 | `Head.astro` (§20 §2 패턴 공유) | 미구현 |
-| N11 | 대표 이미지 | 각 계산기 페이지에 의미 있는 대표 이미지(없으면 기본 OG). 너무 작지 않게 | 페이지 props / 기본값 | 미구현 |
+| N1 | 소유확인 메타태그 | `<meta name="naver-site-verification" content="…">` | `src/config/site.ts` `verification.naver` → `Head.astro` (값 있을 때만 출력) | ✅ 소유확인 완료 |
+| N2 | Open Graph 태그 | og:title/description/image/url — 네이버가 미리보기에 적극 사용, 대표 이미지 필수 | `Head.astro` + `public/images/og-default.png` (1200×630) | ✅ |
+| N3 | robots.txt Yeti 허용 | `User-agent: *`/`Yeti` `Allow: /` + `Sitemap:` 절대경로 | `public/robots.txt` (Yeti 명시함) | ✅ |
+| N4 | 사이트맵 | 1개로 유지, 서치어드바이저 제출 | `@astrojs/sitemap` → `/sitemap-index.xml` | ✅ 제출 완료 |
+| N5 | RSS/Atom 피드 | 신규·업데이트 페이지 피드, 서치어드바이저 제출 | `@astrojs/rss` → `src/pages/rss.xml.ts` | 나중 (설명 글 쌓이면) |
+| N6 | `<link rel="alternate" type="application/rss+xml">` | RSS 도입 시 head 추가 | `Head.astro` | 나중 |
+| N7 | 모바일 대응 | 반응형(동일 URL), "모바일 친화도" 통과 | `global.css` — [30-design-guide.md](./30-design-guide.md) | ✅ |
+| N8 | 웹 표준 | 유효한 HTML, "웹 표준 검증" 통과 | 전역 마크업 (Astro 빌드 유효 HTML) | ⏳ 서치어드바이저 도구로 재확인 |
+| N9 | 프로토콜/호스트 통일 | https 단일, canonical 일치 | Vercel(https 강제) + `canonical`(`site.ts`) | ✅ (`.vercel.app` 단일 호스트) |
+| N10 | title/description | 낚시·과장 금지, 페이지 고유 | `Head.astro` (§20 §2 패턴 공유) | ✅ |
+| N11 | 대표 이미지 | 페이지별 대표 이미지(없으면 기본 OG) | 현재 전 페이지 기본 OG 공용 | ✅ (기본), 페이지별은 나중 |
 
 ---
 
-## 4. 서치어드바이저 등록 절차 (배포 직후 1회)
+## 4. 서치어드바이저 등록 절차
 
-1. **사이트 등록**: https://searchadvisor.naver.com → 웹마스터 도구 → 사이트 URL 입력.
-   - `https://` + 최종 호스트(www 쓸지 말지 확정 후 그 형태로).
-2. **소유 확인**: HTML 태그(권장) 또는 HTML 파일 업로드.
-   - 태그 방식: 발급된 `<meta name="naver-site-verification" ...>`를 `Head.astro`에 넣고 배포 → "확인".
-3. **robots.txt 확인**: 요청 > robots.txt → Yeti 차단 없는지, `Sitemap:` 줄 있는지.
-4. **사이트맵 제출**: 요청 > 사이트맵 제출 → `https://{도메인}/sitemap-index.xml` (또는 `sitemap.xml`) 입력. **여러 개를 한 줄에 붙여 넣지 말 것.**
-5. **RSS 제출**(피드 도입 후): 요청 > RSS 제출.
-6. **웹페이지 수집 요청**: 요청 > 웹페이지 수집 → 홈·주요 계산기 URL 등록. **하루 약 50 URL 한도**이므로 여러 날에 나눠서.
-7. **진단 도구 실행**: 검증 > 웹 표준 검증 / 모바일 친화도 / (지원되면) 리치리절트. 오류 정리.
-8. 색인까지 보통 **1~4주**. 조급해하지 말 것.
+### 완료 (2026-09-07)
 
-> HTTP/HTTPS, www/non-www를 **각각** 등록해두면(리다이렉트는 하되) 어느 쪽으로 들어와도 데이터가 잡힌다.
+- 사이트 등록 `https://calculator-site-lilac.vercel.app`, **HTML 태그** 방식 소유확인 완료
+  (코드: `src/config/site.ts` `verification.naver`).
+- `sitemap-index.xml` 제출 완료.
+
+### 남은 것 / 정기
+
+1. **웹페이지 수집 요청**: 요청 > 웹페이지 수집 → 새 계산기 URL 등록. **하루 약 50 URL 한도**.
+2. **진단 도구**: 검증 > 웹 표준 검증 / 모바일 친화도 실행, 경고 정리.
+3. **RSS 제출**: 피드 도입(N5) 후.
+4. 색인까지 보통 **1~4주**.
+5. 커스텀 도메인 연결 시: 새 호스트로 사이트 다시 등록(구 호스트도 남겨두면 유입 데이터가 잡힌다).
 
 ---
 
@@ -133,3 +136,4 @@
 | 날짜 | 확인한 것 / 바꾼 것 |
 |------|---------------------|
 | 2026-09-07 | 최초 작성. 서치어드바이저 등록 절차, Yeti, 사이트맵 1개 원칙, RSS 제출, 수집요청 일 50 URL, http/https·www 분리 취급, OG 태그 중요성, C-Rank/D.I.A 개념 반영 |
+| 2026-09-07 | 소유확인·사이트맵 제출 완료. §3 매핑표 현재 상태 갱신, §4 등록 절차를 "완료/남은 것"으로 정리 |

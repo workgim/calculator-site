@@ -66,32 +66,34 @@
 ## 3. 구현 매핑표 (기술 요구사항 → 코드 위치)
 
 가이드가 바뀌면 "권장값"을 고치고 "구현 위치" 파일을 수정한다.
+배포 도메인은 `https://calculator-site-lilac.vercel.app` (커스텀 도메인 연결 시 `astro.config.mjs` `site`,
+`src/config/site.ts` `url`, `public/robots.txt` 세 곳 교체).
 
 | # | 항목 | 권장값 / 규칙 | 구현 위치 | 현재 상태 |
 |---|------|----------------|-----------|-----------|
-| 1 | 문서 언어 | `<html lang="ko">` | `BaseLayout.astro` | 미구현 |
-| 2 | 인코딩·뷰포트 | utf-8 / `width=device-width,initial-scale=1` | `Head.astro` | 미구현 |
-| 3 | title | §2 패턴, 페이지 고유 | `Head.astro` ← 페이지 props | 미구현 |
-| 4 | meta description | §2 패턴, 페이지 고유 | `Head.astro` ← 페이지 props | 미구현 |
-| 5 | canonical | `https://{도메인}{현재경로}` 절대주소, 1개 | `Head.astro` + `src/config/site.ts` | 미구현 |
-| 6 | robots 메타 | 기본 `index,follow`. 얇은/중복 페이지만 `noindex` | `Head.astro` ← props(기본 index) | 미구현 |
-| 7 | Open Graph | og:title, og:description, og:type(website), og:url, og:image(1200×630 기본 이미지) | `Head.astro` + `public/images/og-default.png` | 미구현 |
-| 8 | Twitter 카드 | `summary_large_image` | `Head.astro` | 미구현 |
-| 9 | sitemap.xml | 전체 URL 자동 수집, `lastmod` 포함 | `@astrojs/sitemap` in `astro.config.mjs` (+ `site` 설정) | 미구현 |
-| 10 | robots.txt | 전체 허용 + `Sitemap: https://{도메인}/sitemap-index.xml` | `public/robots.txt` | 미구현 |
-| 11 | 트레일링 슬래시 | 사이트 전역 1가지로 통일 | `astro.config.mjs` (`trailingSlash`) | 미구현 |
-| 12 | HTTPS | 강제(배포사가 자동) | Vercel 설정 | 배포 시 |
-| 13 | 404 응답 | 실제 404 상태 + 안내 페이지 | `src/pages/404.astro` | 미구현 |
-| 14 | 구조화 데이터: 사이트 | `WebSite` (+ 향후 `SearchAction`), `Organization` | `Head.astro`(전역 JSON-LD) | 미구현 |
-| 15 | 구조화 데이터: 경로 | `BreadcrumbList` | `Breadcrumb.astro` | 미구현 |
-| 16 | 구조화 데이터: 계산기 | `SoftwareApplication`(또는 `WebApplication`), `applicationCategory: UtilitiesApplication`, `offers.price: 0` | `CalculatorLayout.astro` ← 페이지 props | 미구현 |
-| 17 | 구조화 데이터: FAQ | §4 참고 — 마크업은 둬도 되나 리치결과 기대 안 함 | `Faq.astro` | 나중 |
-| 18 | 이미지 | `alt` 필수, 크기 지정(레이아웃 이동 방지), 지연 로딩 | 각 컴포넌트 / `12-page-structure.md` 규칙 | 규칙만 |
-| 19 | 내부 링크 | breadcrumb + 홈↔계산기 + 관련 계산기. 앵커 텍스트에 의미 | `Nav.astro`, `CalculatorLayout.astro` | 부분 |
-| 20 | 페이지당 h1 | 정확히 1개, 주제어 포함 | 각 페이지 / 리뷰 체크 | 규칙만 |
-| 21 | 모바일 대응 | 반응형, 가로 스크롤 없음, 터치 타겟 | `global.css` — [30-design-guide.md](./30-design-guide.md) | 미구현 |
-| 22 | 성능(CWV) | §6 목표치 | 전역(이미지·폰트·JS 최소화) | 측정 필요 |
-| 23 | 언어/지역 | 한국어 단일. `hreflang` 불필요(다국어 도입 시 추가) | — | 해당 없음 |
+| 1 | 문서 언어 | `<html lang="ko">` | `BaseLayout.astro` | ✅ |
+| 2 | 인코딩·뷰포트 | utf-8 / `width=device-width,initial-scale=1` | `Head.astro` | ✅ |
+| 3 | title | §2 패턴, 페이지 고유 | `Head.astro` ← 페이지 props | ✅ |
+| 4 | meta description | §2 패턴, 페이지 고유 | `Head.astro` ← 페이지 props | ✅ |
+| 5 | canonical | 절대주소 1개 | `Head.astro` + `src/config/site.ts` | ✅ |
+| 6 | robots 메타 | 기본 `index,follow`. 얇은/중복만 `noindex` | `Head.astro` ← props(기본 index; 404 만 noindex) | ✅ |
+| 7 | Open Graph | og:title/description/type/url/image(1200×630) | `Head.astro` + `public/images/og-default.png` (`scripts/generate-og.mjs`) | ✅ |
+| 8 | Twitter 카드 | `summary_large_image` | `Head.astro` | ✅ |
+| 9 | sitemap | 전체 URL 자동 수집 | `@astrojs/sitemap` (`astro.config.mjs` `site`) → `/sitemap-index.xml` | ✅ |
+| 10 | robots.txt | 전체 허용 + `Sitemap:` 절대경로 | `public/robots.txt` | ✅ |
+| 11 | 트레일링 슬래시 | 전역 1가지로 통일 (`/calc/bmi`) | `astro.config.mjs` `trailingSlash:'never'` + `build.format:'file'` + `vercel.json` `cleanUrls` | ✅ |
+| 12 | HTTPS | 강제 | Vercel 자동 | ✅ |
+| 13 | 404 응답 | 실제 404 상태 + 안내 | `src/pages/404.astro` | ✅ |
+| 14 | 구조화 데이터: 사이트 | `WebSite`, `Organization` | `Head.astro` 전역 JSON-LD | ✅ |
+| 15 | 구조화 데이터: 경로 | `BreadcrumbList` | `Breadcrumb.astro` | ✅ |
+| 16 | 구조화 데이터: 계산기 | `SoftwareApplication`, `UtilitiesApplication`, `offers.price:0` | `CalculatorLayout.astro` | ✅ |
+| 17 | 구조화 데이터: FAQ | §4 — 마크업 둬도 되나 리치결과 기대 안 함 | (미도입) `Faq.astro` 예정 | 나중 |
+| 18 | 이미지 | `alt` 필수, 크기 지정, 지연 로딩 | 규칙 — 현재 본문 이미지 거의 없음 | 규칙만 |
+| 19 | 내부 링크 | breadcrumb + 홈↔계산기 | `Nav.astro`, `Breadcrumb.astro`, `index.astro` | ✅ (관련 계산기 링크는 나중) |
+| 20 | 페이지당 h1 | 정확히 1개 | `CalculatorLayout`(자동 1개) / 정적 페이지 각각 1개 | ✅ |
+| 21 | 모바일 대응 | 반응형, 가로 스크롤 없음, 터치 타겟 | `global.css` — [30-design-guide.md](./30-design-guide.md) | ✅ |
+| 22 | 성능(CWV) | §6 목표치 | 시스템 폰트, JS 최소, `AdSlot` 높이 예약 | ⏳ 배포 후 Search Console 로 측정 |
+| 23 | 언어/지역 | 한국어 단일 | — | 해당 없음 |
 
 ---
 
@@ -158,12 +160,12 @@ Article, Breadcrumb, Carousel, Course List, Dataset, Discussion Forum, Education
 
 ## 7. 등록 및 정기 점검
 
-### 최초 등록 (배포 직후 1회)
+### 최초 등록 — ✅ 2026-09-07 완료
 
-1. [Search Console](https://search.google.com/search-console) 접속 → 속성 추가는 **도메인 속성** 권장(DNS TXT 인증). 커스텀 도메인 없으면 배포 URL로 **URL 접두어 속성**.
-2. `sitemap-index.xml` 제출 (색인 > Sitemaps).
-3. 주요 페이지 몇 개를 **URL 검사 → 색인 요청**.
-4. `robots.txt`가 봇을 막고 있지 않은지 확인.
+- **URL 접두어 속성** 으로 `https://calculator-site-lilac.vercel.app` 등록, **HTML 태그** 방식 소유확인.
+  - 확인 코드는 `src/config/site.ts` 의 `verification.google` → `Head.astro` 가 meta 출력.
+- `sitemap-index.xml` 제출, 주요 페이지 색인 요청 완료.
+- 커스텀 도메인 연결 시: 새 도메인으로 속성 다시 만들고(또는 도메인 속성 + DNS TXT), 이전 URL → 새 URL 301.
 
 ### 정기 점검 체크리스트 (분기 1회 + 구글 발표 있을 때)
 
@@ -182,3 +184,4 @@ Article, Breadcrumb, Carousel, Course List, Dataset, Discussion Forum, Education
 | 날짜 | 확인한 것 / 바꾼 것 |
 |------|---------------------|
 | 2026-09-07 | 최초 작성. FAQ 리치결과 2026-05-07 종료·HowTo 폐기 반영. 스팸정책(대규모 콘텐츠 남용 등) 반영. CWV는 LCP/CLS/INP 기준. 구조화 데이터는 WebSite·Organization·BreadcrumbList·SoftwareApplication만 사용하기로 결정 |
+| 2026-09-07 | 구현·배포 완료. §3 매핑표 현재 상태 갱신, 배포 도메인 명시, §7 등록 완료 표시. OG 이미지 생성(`scripts/generate-og.mjs`) |

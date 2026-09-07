@@ -47,6 +47,7 @@
 | `<meta property="og:title" / "og:description" / "og:image" / "og:url" / "og:type">` | 위 값 재사용 + 대표 이미지 | 카톡·페북 등 공유 미리보기, 네이버도 참고 | props + 기본 OG 이미지 |
 | `<meta name="twitter:card" content="summary_large_image">` | 고정 | 트위터/X 공유 카드 | 고정 |
 | `<meta name="robots" content="index,follow">` | 기본 index / 특정 페이지만 noindex | 색인 허용 여부 | props(기본값 index) |
+| `<meta name="google-site-verification">` / `<meta name="naver-site-verification">` | 소유확인 코드 | 검색엔진 소유확인 | `site.ts` 의 `verification.google` / `.naver` (값 있을 때만 출력) |
 | `<link rel="icon" href="/favicon.svg">` | 고정 | 탭 아이콘 | 고정 |
 | `<link rel="alternate" type="application/rss+xml" ...>` | RSS 도입 후 | 네이버 RSS | 조건부 |
 | 구조화 데이터 `<script type="application/ld+json">` | `WebSite`, `BreadcrumbList`, `SoftwareApplication` 등 | 검색엔진에 의미 전달 | [20-seo-google.md](./20-seo-google.md) 매핑표 |
@@ -106,29 +107,37 @@ BaseLayout(props: title, description, canonicalPath, ogImage?, noindex?)
 `BaseLayout`을 한 번 더 감싸, 모든 계산기 페이지가 **같은 순서**를 갖게 한다.
 계산기를 추가할 때 이 틀 덕분에 "무슨 섹션을 넣지?"를 고민하지 않는다.
 
-| 순서 | 섹션 | 태그 | 내용 | 1차 버전 |
-|------|------|------|------|----------|
-| 1 | 이동 경로 | `<Breadcrumb />` | 홈 > 카테고리 > 계산기명 | 포함 |
-| 2 | 제목 | `<h1>` | 계산기 이름 (예: "BMI 계산기") | 포함 |
-| 3 | 한 줄 소개 | `<p>` | 이 계산기가 무엇을 해주는지 1문장 | 포함 |
-| 4 | **계산기 본체** | `<article>` (입력 `<form>` + 결과 영역) | 입력창 + [계산] 버튼 + 결과 박스 | 포함 |
-| 5 | 광고 자리 | `<AdSlot position="afterResult" />` | 결과 바로 아래 (가장 눈에 띔) | 빈 상자 |
-| 6 | 사용법 | `<section><h2>사용법</h2>` | 입력값 설명, 단계 | 포함(짧게) |
-| 7 | 계산 공식 | `<section><h2>계산 방법</h2>` | 공식 + 쉬운 설명 | 포함(짧게) |
-| 8 | 예시 | `<section><h2>계산 예시</h2>` | 숫자 예시 1~2개 | 포함(짧게) |
-| 9 | 주의 / 근거 | `<section><h2>주의사항</h2>` | 참고용 안내 + 공식 출처 링크([02-calculator-catalog.md](./02-calculator-catalog.md)) | 포함 |
-| 10 | FAQ | `<Faq />` | 자주 묻는 질문 2~5개 (+ 구조화 데이터) | 나중 |
-| 11 | 관련 계산기 | `<nav>` | 같은 카테고리 계산기 3~5개 링크 | 나중 |
+`CalculatorLayout` 은 props 로 `calculator`(데이터 객체) 하나만 받는다. 그러면 canonical 경로,
+title/description(→ `BaseLayout`), breadcrumb, `<h1>`, 리드 문장, `SoftwareApplication` JSON-LD 를
+자동으로 만든다. 페이지는 **두 개의 슬롯**만 채운다.
 
-> 6~9번의 "설명 텍스트"는 SEO와 신뢰도, 나중의 애드센스 심사에 중요하다.
-> 계산기 위젯만 있고 글이 없는 페이지는 검색에서 약하다. 분량 기준은 나중에 `23-content-guide.md`로.
+| 순서 | 섹션 | 어디서 | 내용 | 상태 |
+|------|------|--------|------|------|
+| 1 | 이동 경로 | `CalculatorLayout` (`<Breadcrumb />`) | 홈 > 카테고리 > 계산기명 | 자동 |
+| 2 | 제목 | `CalculatorLayout` (`<h1>`) | `calculator.title` | 자동 |
+| 3 | 한 줄 소개 | `CalculatorLayout` (`<p class="lead">`) | `calculator.shortDescription` | 자동 |
+| 4 | **계산기 본체** | 페이지 → `<... slot="calculator">` | `.calc-box` 안에 `<form>`(입력 + [계산] 버튼) + `.calc-result` + `.calc-error` | 페이지 |
+| 5 | 광고 자리 | `CalculatorLayout` (`<AdSlot position="afterResult" />`) | 결과 바로 아래 | 빈 상자 |
+| 6~9 | 사용법 / 계산 방법 / 계산 예시 / 주의사항·근거 | 페이지 → 기본 `<slot>` (`<section><h2>…`) | 짧은 설명 텍스트 + 공식 출처 | 페이지 |
+| 10 | 최종 업데이트 날짜 | `CalculatorLayout` | `calculator.updated` | 자동 |
+| 11 | FAQ | 페이지 (일반 `<section>`, `Faq.astro` 아직 없음) | 자주 묻는 질문 2~5개 | 일부 페이지 |
+| 12 | 관련 계산기 | — | 같은 카테고리 링크 | 나중 |
 
-### 계산기 본체의 동작 방식 (1차)
+> 6~9번의 "설명 텍스트"는 SEO·신뢰도·애드센스 심사에 중요하다. 위젯만 있고 글이 없는 페이지는 검색에서 약하다.
 
-1. `<form>` 안에 `<label>` + `<input type="number">` 등으로 입력창 구성 (label과 input은 `for`/`id`로 연결).
-2. 자바스크립트 없이도 폼은 보이게 둔다(점진적 향상).
-3. `<script>`에서 입력값을 읽어 `src/lib/<slug>.ts`의 함수를 호출하고, 결과 박스의 텍스트를 갱신.
-4. 입력이 잘못되면(빈 값, 음수 등) 결과 대신 안내 문구 표시.
+### 계산기 폼 공통 클래스 (`global.css`)
+
+`.astro` 마다 스타일을 복붙하지 않도록 폼 UI 클래스를 `global.css` 에 모아 둔다:
+`.calc-box`(입력 영역 카드) · `.calc-field`(라벨+입력 묶음) · `.calc-row`(한 줄에 여러 입력) ·
+`.calc-hint`(입력 아래 작은 설명) · `.calc-result`(결과 박스, 안에 `<dl>` 지원) · `.calc-error`(빨간 오류 문구) ·
+`.stepper`(빠른 증감 버튼 줄). 값·규칙은 [30-design-guide.md](./30-design-guide.md) §6.
+
+### 계산기 본체의 동작 방식
+
+1. `<form>` 안에 `<label>` + `<input>` (label·input 은 `for`/`id` 로 연결). 금액칸은 `<AmountInput>` 컴포넌트.
+2. `<script>` 에서 `src/lib/<slug>.ts` 함수 호출 → `.calc-result` 갱신, 오류 시 `.calc-error` 표시.
+3. 금액칸이 있으면 `enhanceInputs()` 호출(콤마·증감 버튼), 값은 `parseAmount(el.value)` 로 읽는다.
+4. `calculate()` 를 별도 함수로 두고 `submit` + (결과가 떠 있으면) `input` 에 연결 → 값 바꾸면 자동 재계산.
 5. 페이지 새로고침 없이 결과만 바뀜.
 
 ---
@@ -170,3 +179,4 @@ BaseLayout(props: title, description, canonicalPath, ogImage?, noindex?)
 | 날짜 | 변경 내용 |
 |------|-----------|
 | 2026-09-07 | 최초 작성. 문서 골격 · head 구성 · 시맨틱 구조 · 공통 레이아웃 · 계산기 공통 틀 정리 |
+| 2026-09-07 | 구현 반영: head 에 소유확인 meta, `CalculatorLayout` 이 breadcrumb/h1/리드/JSON-LD 자동 생성 + named slot 2개, 폼 공통 클래스(`global.css`)·`AmountInput`·`enhanceInputs`·자동 재계산 |
