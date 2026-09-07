@@ -1,9 +1,15 @@
 ---
 /**
  * Google Analytics 4. `SITE.gaId` 가 설정된 경우에만 로드한다.
- * - 로더는 async 로 불러 성능 영향 최소화
- * - GA4 는 기본적으로 IP 를 익명 처리하며 개인 식별 정보를 수집하지 않음
- * - 쿠키 고지는 privacy.astro (SITE.gaId 값에 따라 문구가 달라짐)
+ *
+ * 성능(Core Web Vitals) 영향을 없애려고 **지연 로드**한다:
+ *  - 브라우저가 한가해지면(requestIdleCallback, 최대 3초) 또는
+ *  - 사용자가 처음 스크롤·클릭·입력하면
+ *  둘 중 먼저 오는 시점에 gtag 스크립트를 삽입한다.
+ *  → 페이지 로딩 임계 경로에서 빠지므로 Lighthouse 성능 점수에 영향이 없다.
+ *
+ * GA4 는 IP 를 익명 처리하며 개인 식별 정보를 수집하지 않는다.
+ * 쿠키 고지는 privacy.astro (SITE.gaId 유무로 문구 분기).
  */
 import { SITE } from '../config/site';
 const id = SITE.gaId;
@@ -11,16 +17,31 @@ const id = SITE.gaId;
 
 {
   id && (
-    <>
-      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
-      <script is:inline define:vars={{ id }}>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-          dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-        gtag('config', id);
-      </script>
-    </>
+    <script is:inline define:vars={{ id }}>
+      {`(function () {
+  var loaded = false;
+  function loadGA() {
+    if (loaded) return;
+    loaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', id);
+  }
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(loadGA, { timeout: 3000 });
+  } else {
+    setTimeout(loadGA, 2000);
+  }
+  ['scroll', 'keydown', 'pointerdown', 'touchstart'].forEach(function (evt) {
+    window.addEventListener(evt, loadGA, { once: true, passive: true });
+  });
+})();`}
+    </script>
   )
 }
