@@ -111,8 +111,11 @@
 주차별(참고 / 진행 현황):
 - 1주차: **✅ 완료 (2026-09-08)** — `salary-net` `hourly-wage` `loan` `vat` `severance-pay` 개편 + `related` 필드 + `<Faq>`·`.faq`·`.terms`·`.table-scroll` + 빌드타임 표
 - 2주차: **✅ 완료 (2026-09-08)** — `broker-fee` `pyeong` `acquisition-tax` `savings` + 폼 `[계산하기]` 버튼 위 여백 수정
-- 3주차: `bmi` `bmr` `age` `dday` `date-add`
-- 4주차: `percentage` `char-count` + Search Console 노출어 분석 → 다음 콘텐츠 결정
+- 3주차: **✅ 완료 (2026-09-08)** — `bmi` `bmr` `age` `dday` `date-add` (날짜 3종은 표 생략, 질문형 계산 예시 + `<Faq>`)
+- 4주차: **✅ 완료 (2026-09-08)** — `percentage`(계산 유형별 H2 + 예시 2개씩) `char-count`(흔한 글자수 제한 참고표 + `<Faq>`)
+  - 남음: Search Console 노출어 분석 → 다음 콘텐츠 결정
+
+> 16개 페이지 콘텐츠 개편 전량 완료. 이후 4주 뒤 Search Console(노출수·클릭·CTR·평균 순위)에서 실제 반응하는 검색어를 보고 다음 페이지를 정한다.
 
 > 4주 후 Search Console(노출수·클릭·CTR·평균 순위)에서 실제 반응하는 검색어를 보고 이후 페이지를 정한다.
 

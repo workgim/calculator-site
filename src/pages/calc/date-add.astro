@@ -1,8 +1,35 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import Faq from '../../components/Faq.astro';
 import { getCalculator } from '../../data/calculators';
+import { calcDateAdd } from '../../lib/dateAdd';
 
 const calculator = getCalculator('date-add')!;
+
+// 계산 예시 — 기준일을 고정
+const ex90 = calcDateAdd({ base: '2026-09-08', direction: 'add', days: 90 });
+const ex100 = calcDateAdd({ base: '2026-09-08', direction: 'add', days: 100 });
+const exBack = calcDateAdd({ base: '2026-09-08', direction: 'subtract', months: 3 });
+const exEom = calcDateAdd({ base: '2026-01-31', direction: 'add', months: 1 });
+
+const FAQ = [
+  {
+    q: '오늘부터 100일 후는 며칠인가요?',
+    a: `기준일에서 100일을 더하면 됩니다. 예를 들어 2026년 9월 8일부터 100일 후는 ${ex100.date} (${ex100.weekday}요일)입니다. 위 계산기에 기준일을 넣고 "일" 칸에 100을 입력하세요.`,
+  },
+  {
+    q: '1월 31일에서 1개월 후는 왜 2월 28일인가요?',
+    a: '2월에는 31일이 없기 때문입니다. 연·월을 더한 결과가 그 달에 없는 날이면 그 달의 말일로 맞춥니다. 2026년은 평년이라 2월 말일이 28일입니다.',
+  },
+  {
+    q: '영업일(주말 제외)로도 계산되나요?',
+    a: '아니요. 이 계산기는 달력상의 날짜만 더하고 뺍니다. 주말과 공휴일도 그대로 포함하므로 영업일 기준 기한 계산에는 맞지 않습니다.',
+  },
+  {
+    q: '며칠 전 날짜는 어떻게 구하나요?',
+    a: `"방향"을 "빼기(이전)"로 바꾸고 값을 넣으면 됩니다. 예를 들어 2026년 9월 8일에서 3개월 전은 ${exBack.date}입니다.`,
+  },
+];
 ---
 
 <CalculatorLayout calculator={calculator}>
@@ -48,25 +75,45 @@ const calculator = getCalculator('date-add')!;
   </section>
 
   <section>
-    <h2>사용법</h2>
+    <h2>날짜 계산기 사용법</h2>
     <p>
-      기준일을 정하고 더할지 뺄지 고른 뒤, 년·개월·주·일 칸에 값을 넣으면 됩니다. 여러 칸을 함께
-      쓸 수 있습니다(예: 1년 2개월 10일 후).
+      기준일을 정하고 <strong>더하기(이후)</strong> 또는 <strong>빼기(이전)</strong>를 고른 뒤,
+      년·개월·주·일 칸에 값을 넣습니다. 여러 칸을 함께 쓸 수 있습니다(예: 1년 2개월 10일 후).
+      결과로 <strong>날짜와 요일</strong>, 기준일로부터의 일수가 나옵니다.
     </p>
   </section>
 
   <section>
-    <h2>계산 방법</h2>
+    <h2>날짜에 일수 더하기·빼기</h2>
     <p>
-      년·개월을 먼저 반영하고, 그 결과에 주·일을 더합니다. 연·월을 더한 결과가 그 달에 없는
-      날이면(예: 1월 31일 + 1개월) 그 달의 <strong>말일</strong>로 맞춥니다.
+      "일"만 넣으면 그 수만큼 날짜를 옮깁니다. 90일 후, 100일 후처럼 <strong>일 단위 기한</strong>을
+      셀 때 씁니다. 윤년(2월 29일)과 월별 일수 차이는 자동으로 반영됩니다.
     </p>
+  </section>
+
+  <section>
+    <h2>몇 주 후 / 몇 개월 후 날짜</h2>
+    <p>
+      "주"는 7일로 환산합니다. "개월"·"년"을 먼저 반영한 뒤 주·일을 더합니다. 연·월을 더한 결과가
+      그 달에 없는 날이면(예: 1월 31일 + 1개월) 그 달의 <strong>말일</strong>로 맞춥니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>계산 예시</h2>
+    <ul>
+      <li><strong>2026년 9월 8일부터 90일 후</strong> → {ex90.date} ({ex90.weekday}요일)</li>
+      <li><strong>2026년 9월 8일에서 3개월 전</strong> → {exBack.date} ({exBack.weekday}요일)</li>
+      <li><strong>2026년 1월 31일 + 1개월</strong> → {exEom.date} (말일 보정)</li>
+    </ul>
   </section>
 
   <section>
     <h2>주의사항</h2>
-    <p>윤년(2월 29일)과 월별 일수 차이는 자동으로 반영됩니다. 공휴일·영업일은 고려하지 않습니다.</p>
+    <p>공휴일·영업일은 고려하지 않습니다. 결과 날짜가 실제로 존재하지 않는 날이면 말일로 보정됩니다.</p>
   </section>
+
+  <Faq items={FAQ} />
 </CalculatorLayout>
 
 <script>

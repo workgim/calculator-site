@@ -1,8 +1,34 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import Faq from '../../components/Faq.astro';
 import { getCalculator } from '../../data/calculators';
+import { dday, daysCounting } from '../../lib/dday';
 
 const calculator = getCalculator('dday')!;
+
+// 계산 예시 — 기준일을 고정
+const exam = dday('2026-11-19', '2026-09-08'); // 시험일까지
+const yearEnd = dday('2026-12-31', '2026-09-08'); // 연말까지
+const couple = daysCounting('2026-06-01', '2026-09-08'); // 사귄 지 며칠째
+
+const FAQ = [
+  {
+    q: '사귄 지 100일은 어떻게 세나요?',
+    a: '만난 날을 1일로 셉니다. 그래서 100일은 "만난 날 + 99일"이 되는 날입니다. 이 계산기의 "며칠째" 모드에 시작일을 넣으면 오늘이 며칠째인지 바로 나옵니다.',
+  },
+  {
+    q: 'D-day에 시작일을 포함하나요?',
+    a: 'D-day는 두 날짜 사이의 간격만 셉니다. 목표 날짜가 오늘이면 D-DAY, 사흘 뒤면 D-3입니다. 시작일을 1일로 세는 "며칠째" 방식과는 다릅니다.',
+  },
+  {
+    q: '"며칠 남았는지"와 "며칠째"는 왜 1일 차이가 나나요?',
+    a: '"며칠 남았는지"는 순수한 날짜 간격이고, "며칠째"는 시작일 자체를 1일로 포함하기 때문입니다. 예를 들어 오늘부터 세면 오늘이 1일째지만, 남은 일수로는 0일입니다.',
+  },
+  {
+    q: '지난 날짜를 넣으면 어떻게 표시되나요?',
+    a: '목표 날짜가 이미 지났으면 D+N으로 표시하고 "N일 지났습니다"라고 안내합니다. 예를 들어 어제가 목표였다면 D+1입니다.',
+  },
+];
 ---
 
 <CalculatorLayout calculator={calculator}>
@@ -34,34 +60,67 @@ const calculator = getCalculator('dday')!;
   </section>
 
   <section>
-    <h2>사용법</h2>
+    <h2>D-day 계산 방법</h2>
+    <p>
+      D-day는 <strong>기준일과 목표 날짜의 간격</strong>을 일 단위로 센 값입니다. 두 날짜를 각각
+      '그 날의 자정'으로 맞춘 뒤 차이를 하루로 나누므로, 시각과 시간대의 영향을 받지 않습니다.
+      윤년과 월별 일수 차이는 자동으로 반영됩니다.
+    </p>
+    <ul>
+      <li>목표가 미래면 <strong>D-N</strong> (N일 남음)</li>
+      <li>목표가 오늘이면 <strong>D-DAY</strong></li>
+      <li>목표가 과거면 <strong>D+N</strong> (N일 지남)</li>
+    </ul>
+    <p>기준 날짜를 바꾸면 <strong>임의의 두 날짜 사이 일수</strong>도 이 방식으로 구할 수 있습니다.</p>
+  </section>
+
+  <section>
+    <h2>"며칠째" 계산 (시작일 = 1일)</h2>
+    <p>
+      시작한 날을 <strong>1일</strong>로 세어 오늘이 며칠째인지 계산합니다. 커플 100일, 금연 30일차,
+      운동 습관 며칠째처럼 <strong>시작일부터 누적해서 세는</strong> 상황에 씁니다.
+    </p>
+    <p>며칠째 = 두 날짜의 간격 + 1</p>
+  </section>
+
+  <section>
+    <h2>시작일 포함·제외 차이</h2>
+    <p>
+      "며칠 남았는지"(D-day)는 순수한 날짜 간격이고, "며칠째"는 시작일을 1일로 포함합니다. 그래서
+      같은 두 날짜라도 두 값은 항상 1일 차이가 납니다. 서비스마다 100일·1주년을 세는 방식이
+      조금씩 다른 것도 이 때문이며, 이 계산기는 <strong>시작일을 1일로</strong> 셉니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>계산 예시</h2>
     <ul>
       <li>
-        <strong>D-day</strong>: 기준 날짜와 목표 날짜를 넣으면 D-N / D-DAY / D+N 과 함께 남은(또는
-        지난) 일수를 표시합니다. 기준 날짜를 바꾸면 <strong>임의의 두 날짜 사이 일수</strong>도 이 방식으로
-        구할 수 있습니다.
+        <strong>2026년 9월 8일 기준, 시험일 2026년 11월 19일까지</strong> →
+        <strong>{exam.label}</strong> ({Math.abs(exam.diffDays)}일 남음)
       </li>
-      <li><strong>며칠째</strong>: 시작한 날을 1일로 세어 오늘이 며칠째인지 계산합니다. (커플 100일 등)</li>
+      <li>
+        <strong>2026년 9월 8일 기준, 2026년 12월 31일까지</strong> → {yearEnd.label}
+      </li>
+      <li>
+        <strong>2026년 6월 1일부터 사귀었다면 2026년 9월 8일은</strong> →
+        <strong>{couple}일째</strong> (이 날이 100일 기념일)
+      </li>
     </ul>
-    <p>기준 날짜는 기본으로 오늘로 채워집니다. 필요하면 바꾸세요.</p>
   </section>
 
   <section>
-    <h2>계산 방법</h2>
-    <p>
-      두 날짜를 각각 '그 날의 자정'으로 맞춘 뒤 밀리초 차이를 하루(86,400,000ms)로 나눕니다. 시각과
-      시간대의 영향을 받지 않도록 연·월·일만 사용합니다.
-    </p>
-    <p>'며칠째'는 이 차이에 시작일 하루를 더합니다(시작일이 1일).</p>
+    <h2>어떤 상황에 쓰나요</h2>
+    <ul>
+      <li>수능·자격증·공무원 시험 등 시험일까지 남은 날</li>
+      <li>기념일·결혼기념일·돌잔치까지 남은 날</li>
+      <li>여행·입대·전역일까지 카운트다운</li>
+      <li>프로젝트 마감, 계약 만료, 환불 기한까지 남은 날</li>
+      <li>커플 100일·200일, 금연·운동 며칠째</li>
+    </ul>
   </section>
 
-  <section>
-    <h2>주의사항</h2>
-    <p>
-      윤년과 월별 일수 차이는 자동으로 반영됩니다. '며칠째' 방식은 서비스마다 시작일 포함 여부가
-      다를 수 있으니, 이 계산기는 <strong>시작일을 1일로</strong> 센다는 점을 참고하세요.
-    </p>
-  </section>
+  <Faq items={FAQ} />
 </CalculatorLayout>
 
 <script>

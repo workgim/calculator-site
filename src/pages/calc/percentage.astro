@@ -1,8 +1,46 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import Faq from '../../components/Faq.astro';
 import { getCalculator } from '../../data/calculators';
+import { percentOf, whatPercent, changeRate } from '../../lib/percentage';
 
 const calculator = getCalculator('percentage')!;
+
+const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+
+// A의 B%
+const ex1a = percentOf(50_000, 20); // 10,000
+const ex1b = percentOf(360_000, 15); // 54,000
+// A는 B의 몇 %
+const ex2a = whatPercent(9_000, 30_000); // 30
+const ex2b = whatPercent(45, 180); // 25
+// 증감률
+const ex3a = changeRate(50_000, 60_000); // 20
+const ex3b = changeRate(120, 90); // -25
+// 할인가
+const listPrice = 50_000;
+const dcRate = 30;
+const dcAmount = percentOf(listPrice, dcRate); // 15,000
+const salePrice = listPrice - dcAmount; // 35,000
+
+const FAQ = [
+  {
+    q: '50,000원의 20%는 얼마인가요?',
+    a: `50,000 × 20 ÷ 100 = ${won(ex1a)}입니다. "A의 B%" 계산을 골라 A에 50000, B에 20을 넣으면 됩니다.`,
+  },
+  {
+    q: '30% 할인하면 얼마인가요?',
+    a: `정가에서 "정가의 30%"를 빼면 됩니다. 정가 50,000원이면 할인액 ${won(dcAmount)}, 할인가는 ${won(salePrice)}입니다. 할인가 = 정가 × (1 − 할인율 ÷ 100)로도 구할 수 있습니다.`,
+  },
+  {
+    q: '값이 얼마에서 얼마로 바뀌면 몇 % 증가인가요?',
+    a: '(나중값 − 처음값) ÷ 처음값 × 100입니다. 예를 들어 50,000 → 60,000은 (10,000 ÷ 50,000) × 100 = 20% 증가, 120 → 90은 25% 감소입니다.',
+  },
+  {
+    q: '부가세 10%도 이걸로 계산하나요?',
+    a: '간단한 금액이면 "A의 10%"로 구할 수 있지만, 공급가액·부가세·합계를 나눠 보거나 합계에서 역산하려면 부가가치세 계산기가 편합니다.',
+  },
+];
 ---
 
 <CalculatorLayout calculator={calculator}>
@@ -35,28 +73,55 @@ const calculator = getCalculator('percentage')!;
   </section>
 
   <section>
-    <h2>사용법</h2>
-    <p>위에서 계산 종류를 고르고 두 값(A, B)을 입력한 뒤 <strong>계산하기</strong>를 누르세요.</p>
+    <h2>퍼센트 계산기 사용법</h2>
+    <p>
+      위에서 계산 종류를 고르고 두 값(A, B)을 입력하면 됩니다. 자주 쓰는 네 가지 계산을 공식·예시와
+      함께 정리했습니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>A의 B%는 얼마인가요?</h2>
+    <p><strong>A × B ÷ 100</strong></p>
     <ul>
-      <li><strong>A의 B%</strong>: 20,000의 15% → 3,000</li>
-      <li><strong>A는 B의 몇 %</strong>: 3,000은 20,000의 → 15%</li>
-      <li><strong>증감률</strong>: 20,000 → 23,000 → +15%</li>
+      <li>50,000의 20% = 50,000 × 20 ÷ 100 = <strong>{ex1a.toLocaleString()}</strong></li>
+      <li>360,000의 15% = <strong>{ex1b.toLocaleString()}</strong></li>
     </ul>
   </section>
 
   <section>
-    <h2>계산 방법</h2>
+    <h2>A는 B의 몇 %인가요?</h2>
+    <p><strong>A ÷ B × 100</strong></p>
     <ul>
-      <li>A의 B% = A × B ÷ 100</li>
-      <li>A는 B의 몇 % = A ÷ B × 100</li>
-      <li>증감률 = (나중값 − 처음값) ÷ |처음값| × 100</li>
+      <li>9,000은 30,000의 = 9,000 ÷ 30,000 × 100 = <strong>{ex2a}%</strong></li>
+      <li>45는 180의 = <strong>{ex2b}%</strong></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>몇 % 증가·감소했나요?</h2>
+    <p><strong>(나중값 − 처음값) ÷ |처음값| × 100</strong></p>
+    <ul>
+      <li>50,000 → 60,000 = <strong>+{ex3a}%</strong> (증가)</li>
+      <li>120 → 90 = <strong>{ex3b}%</strong> (감소)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>할인율·할인가 계산</h2>
+    <p><strong>할인가 = 정가 − (정가 × 할인율 ÷ 100)</strong></p>
+    <ul>
+      <li>정가 {won(listPrice)}, 할인율 {dcRate}% → 할인액 {won(dcAmount)}, <strong>할인가 {won(salePrice)}</strong></li>
+      <li>정가 40,000원이 28,000원이 됐다면, 28,000 ÷ 40,000 = 70% 이므로 <strong>30% 할인</strong>입니다.</li>
     </ul>
   </section>
 
   <section>
     <h2>주의사항</h2>
-    <p>결과는 소수 둘째 자리에서 반올림합니다. 기준값이 0이면 백분율을 계산할 수 없습니다.</p>
+    <p>결과는 소수 둘째 자리에서 반올림합니다. 기준값(나누는 값)이 0이면 백분율을 계산할 수 없습니다.</p>
   </section>
+
+  <Faq items={FAQ} />
 </CalculatorLayout>
 
 <script>

@@ -53,7 +53,7 @@ export const CALCULATORS: Calculator[] = [
     category: 'living',
     related: ['vat', 'loan'],
     keywords: ['퍼센트 계산기', '% 계산', '비율 계산', '증가율 계산'],
-    updated: '2026-09-07',
+    updated: '2026-09-08',
   },
   {
     slug: 'salary-net',
@@ -112,7 +112,7 @@ export const CALCULATORS: Calculator[] = [
     category: 'date',
     related: ['dday', 'age'],
     keywords: ['날짜 계산기', '며칠 후 날짜', '날짜 더하기', '몇 주 후 날짜'],
-    updated: '2026-09-07',
+    updated: '2026-09-08',
   },
   {
     slug: 'pyeong',
@@ -135,7 +135,7 @@ export const CALCULATORS: Calculator[] = [
       '입력하는 즉시 공백 포함·제외 글자 수, UTF-8·EUC-KR 바이트, 단어·줄 수를 셉니다. 자기소개서·블로그 글자수 제한 확인에 사용하세요.',
     category: 'living',
     keywords: ['글자수 세기', '자소서 글자수', '바이트 계산', '글자 수 계산기'],
-    updated: '2026-09-07',
+    updated: '2026-09-08',
   },
   {
     slug: 'bmr',
@@ -158,7 +158,7 @@ export const CALCULATORS: Calculator[] = [
     category: 'date',
     related: ['dday', 'date-add'],
     keywords: ['만나이 계산기', '만 나이', '나이 계산', '연 나이'],
-    updated: '2026-09-07',
+    updated: '2026-09-08',
   },
   {
     slug: 'vat',
@@ -181,7 +181,7 @@ export const CALCULATORS: Calculator[] = [
     category: 'date',
     related: ['date-add', 'age'],
     keywords: ['디데이 계산기', 'd-day 계산', '날짜 계산기', '100일 계산기'],
-    updated: '2026-09-07',
+    updated: '2026-09-08',
   },
   {
     slug: 'savings',
