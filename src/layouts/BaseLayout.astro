@@ -28,6 +28,16 @@ const { title, description, path, seoTitle, noindex, wide = false } = Astro.prop
 <!doctype html>
 <html lang={SITE.lang}>
   <head>
+    <script is:inline>
+      // 테마 초기화: 저장된 선택이 있으면 first paint 전에 적용 (FOUC 방지).
+      // 저장값이 없으면 속성을 두지 않아 @media (prefers-color-scheme) 가 적용됨.
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
+        } catch (e) {}
+      })();
+    </script>
     <Head title={title} description={description} path={path} seoTitle={seoTitle} noindex={noindex} />
     <Analytics />
   </head>

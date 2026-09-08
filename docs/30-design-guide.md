@@ -50,7 +50,13 @@
 
 ### 다크 (구현됨 — 2026-09-08)
 
-`@media (prefers-color-scheme: dark)`에서 `:root`의 색 토큰만 재정의한다(`global.css` 상단). OS 설정에 따라 자동 전환. 별도 토글 UI는 없음. `color-scheme: dark`도 같이 지정해 `<input type="date">` 등 네이티브 위젯도 어둡게.
+`global.css` 상단에서 색 토큰만 재정의한다. `color-scheme: dark`도 같이 지정해 `<input type="date">` 등 네이티브 위젯도 어둡게.
+
+- **모드 3가지**: 시스템(기본) / 라이트 / 다크. 헤더의 `ThemeToggle` 버튼이 `시스템 → 라이트 → 다크` 순환.
+- `<html data-theme>` 없음 = 시스템 → `@media (prefers-color-scheme: dark)` 안의 `:root:not([data-theme])` 가 적용.
+- `data-theme="dark"` = `:root[data-theme='dark']` 블록(같은 다크 토큰). `data-theme="light"` = `:root` 기본값이 라이트라 별도 블록 불필요.
+- **다크 토큰 블록이 두 벌**(미디어쿼리용 + `[data-theme='dark']`용). 하나 고치면 다른 하나도 같이 고칠 것.
+- 선택은 `localStorage['theme']`('light'|'dark', 시스템이면 키 삭제)에 저장. **FOUC 방지**: `BaseLayout` `<head>` 맨 앞 인라인 스크립트가 first paint 전에 `data-theme` 를 심는다.
 
 | 변수 | 값 | 비고 |
 |------|-----|------|
@@ -258,7 +264,8 @@
 | 컴포넌트별 세부 스타일 | 각 `.astro` 파일의 `<style>` (토큰 변수만 사용, 하드코딩 값 금지) |
 | 금액 입력 UI(콤마·증감 버튼) | `src/components/AmountInput.astro` + `src/scripts/enhance-inputs.ts` |
 | 브레이크포인트 수치 | 각 미디어쿼리에 직접(`48rem` 등). 기준값은 이 문서 §5 |
-| 다크 모드 | `global.css` `:root` 바로 뒤 `@media (prefers-color-scheme: dark)` 블록 — 색 토큰 + shadow 재정의 |
+| 다크 모드 | `global.css` `:root` 바로 뒤: `@media (prefers-color-scheme: dark) :root:not([data-theme])` + `:root[data-theme='dark']` (색·shadow 토큰 두 벌) |
+| 테마 토글 | `src/components/ThemeToggle.astro`(헤더, 시스템↔라이트↔다크 순환) + `BaseLayout` `<head>` 맨 앞 FOUC 방지 인라인 스크립트 + `global.css` `.theme-toggle` |
 | 표면 층위 | 캔버스 `--color-page`(body) → 카드 `--color-bg`(`.calc-box`·`.card`·`table`·`.calc-result`·`.faq details`) → 보조 `--color-surface`(표 헤더·줄무늬) |
 
 > 원칙: `.astro` 파일 안에서 색·간격을 **숫자로 직접 쓰지 않는다.** 항상 `var(--...)`.
@@ -273,3 +280,4 @@
 | 2026-09-07 | 최초 작성. 색/타이포/여백/레이아웃/컴포넌트/접근성/광고영역 토큰 정의. 시스템 폰트 사용, 다크모드는 구조만 |
 | 2026-09-07 | 구현 반영: §6 계산기 폼 공통 클래스 + `.stepper`(빠른 증감 버튼, 36px 예외) 추가, §10 매핑에 `enhance-inputs.ts`·`AmountInput.astro` |
 | 2026-09-08 | 디자인 보강("앱 느낌" 중간 강도): `--color-page` 캔버스 토큰 도입(body 회색, 카드는 흰색으로 띄움), `.calc-box`·`table`·카드에 그림자, `[계산하기]` 버튼 가로 꽉·48px·lg, 결과 박스 좌측 primary 라인, 표 짝수 행 줄무늬+`.table-scroll` 라운드 테두리, 본문 H2 얇은 밑줄, 헤더 그림자+로고 primary, 내비 알약 hover, 카드 제목 primary+호버 리프트. **다크 모드 구현**(prefers-color-scheme, 토큰만 재정의) |
+| 2026-09-08 | 웹 내 테마 토글 추가: 헤더 `ThemeToggle`(시스템→라이트→다크), `<html data-theme>` + `localStorage`, `<head>` 인라인 스크립트로 FOUC 방지. 다크 토큰이 두 블록(미디어쿼리 + `[data-theme='dark']`)으로 중복됨 |

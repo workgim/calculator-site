@@ -2,12 +2,14 @@
 /** 사이트 상단: 로고(홈 링크) + 내비게이션. 모든 페이지 공통. */
 import { SITE } from '../config/site';
 import Nav from './Nav.astro';
+import ThemeToggle from './ThemeToggle.astro';
 ---
 
 <header class="site-header">
   <div class="container container--wide site-header__inner">
     <a href="/" class="site-header__logo">{SITE.name}</a>
     <Nav />
+    <ThemeToggle />
   </div>
 </header>
 
