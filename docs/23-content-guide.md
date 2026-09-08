@@ -108,8 +108,8 @@
 | 2 | `savings` `acquisition-tax` `bmi` `bmr` | 견고한 수요 |
 | 3 | `age` `dday` `date-add` `percentage` `char-count` | 트래픽은 있으나 콘텐츠 여지 적음 |
 
-주차별(참고):
-- 1주차: 1순위 앞 5개(`salary-net` `hourly-wage` `loan` `vat` `severance-pay`) + `related` 필드 도입 + `<Faq>`·`.faq` 스타일 + "자주 찾는 값" 표 컴포넌트화
+주차별(참고 / 진행 현황):
+- 1주차: **✅ 완료 (2026-09-08)** — `salary-net` `hourly-wage` `loan` `vat` `severance-pay` 개편 + `related` 필드 + `<Faq>`·`.faq`·`.terms`·`.table-scroll` + 빌드타임 표
 - 2주차: `broker-fee` `pyeong` `acquisition-tax` `savings`
 - 3주차: `bmi` `bmr` `age` `dday` `date-add`
 - 4주차: `percentage` `char-count` + Search Console 노출어 분석 → 다음 콘텐츠 결정

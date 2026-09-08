@@ -1,9 +1,40 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
 import AmountInput from '../../components/AmountInput.astro';
+import Faq from '../../components/Faq.astro';
 import { getCalculator } from '../../data/calculators';
+import { calcVat } from '../../lib/vat';
 
 const calculator = getCalculator('vat')!;
+
+const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+const supplyRows = [
+  10_000, 50_000, 100_000, 300_000, 500_000, 1_000_000, 3_000_000, 5_000_000, 10_000_000, 50_000_000,
+].map((a) => calcVat(a, 'supply'));
+const totalRows = [11_000, 55_000, 110_000, 1_100_000, 11_000_000].map((a) => calcVat(a, 'total'));
+
+const FAQ = [
+  {
+    q: '부가세 포함 금액에서 공급가액을 어떻게 구하나요?',
+    a: '합계금액 ÷ 1.1 이 공급가액이고, 합계 − 공급가액이 부가세입니다. 예를 들어 110만원이 부가세 포함이면 공급가액 100만원, 부가세 10만원입니다.',
+  },
+  {
+    q: '110만원의 부가세는 얼마인가요?',
+    a: '110만원이 부가세 포함 합계라면 부가세는 10만원입니다. 110만원이 공급가액(부가세 별도)이라면 부가세는 11만원, 합계는 121만원입니다.',
+  },
+  {
+    q: '간이과세자도 10%인가요?',
+    a: '간이과세자는 업종별 부가가치율을 곱한 낮은 실효세율이 적용됩니다. 이 계산기는 일반과세 10% 기준입니다.',
+  },
+  {
+    q: '면세 상품에도 부가세가 붙나요?',
+    a: '아닙니다. 기초 생필품, 의료·교육 서비스 등 면세 대상에는 부가세가 붙지 않습니다.',
+  },
+  {
+    q: '세금계산서 금액과 1원 차이가 나는 이유는?',
+    a: '역산 과정의 원 단위 반올림 차이입니다. 세금계산서 작성 시에는 국세청·회계 기준을 따르세요.',
+  },
+];
 ---
 
 <CalculatorLayout calculator={calculator}>
@@ -27,27 +58,93 @@ const calculator = getCalculator('vat')!;
   </section>
 
   <section>
-    <h2>사용법</h2>
+    <h2>부가세란 무엇인가요?</h2>
     <p>
-      입력한 금액이 <strong>공급가액</strong>인지, <strong>합계금액</strong>인지,
-      <strong>부가세액</strong>인지 고른 뒤 금액을 넣고 계산하세요. 나머지 두 값이 자동으로 나옵니다.
+      부가가치세(VAT)는 상품·서비스가 거래될 때 붙는 세금입니다. 대한민국의 일반 세율은
+      <strong>10%</strong>이며, 사업자가 소비자에게서 받아 국세청에 냅니다. (간이과세·면세 사업자는
+      적용이 다릅니다.)
     </p>
   </section>
 
   <section>
-    <h2>계산 방법</h2>
+    <h2>공급가액 · 부가세액 · 합계금액</h2>
+    <dl class="terms">
+      <dt>공급가액</dt><dd>부가세를 뺀 물건·서비스 자체의 값 (부가세 별도 금액).</dd>
+      <dt>부가세액</dt><dd>공급가액의 10%.</dd>
+      <dt>합계금액</dt><dd>공급가액 + 부가세액. 소비자가 실제로 내는 금액 (부가세 포함 금액).</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>부가세 별도 금액 계산</h2>
     <ul>
       <li>부가세액 = 공급가액 × 10%</li>
-      <li>합계금액 = 공급가액 + 부가세액 = 공급가액 × 1.1</li>
-      <li>공급가액 = 합계금액 ÷ 1.1 (합계에서 역산할 때)</li>
+      <li>합계금액 = 공급가액 × 1.1</li>
     </ul>
-    <p>대한민국의 일반 부가가치세율은 10%입니다. (간이과세·면세 사업자는 적용이 다릅니다.)</p>
+    <p>공급가액이 1,000,000원이면 부가세 100,000원, 합계 1,100,000원입니다.</p>
+  </section>
+
+  <section>
+    <h2>부가세 역산 (포함 → 별도)</h2>
+    <ul>
+      <li>공급가액 = 합계금액 ÷ 1.1</li>
+      <li>부가세액 = 합계금액 − 공급가액</li>
+    </ul>
+    <p>110만원이 부가세 포함 금액이라면 공급가액은 1,000,000원, 부가세는 100,000원입니다.</p>
   </section>
 
   <section>
     <h2>계산 예시</h2>
-    <p>공급가액 1,000,000원 → 부가세 100,000원 → 합계 1,100,000원</p>
-    <p>합계 1,100,000원 → 공급가액 1,000,000원 + 부가세 100,000원</p>
+    <ul>
+      <li>공급가액 500,000원 → 부가세 50,000원 → 합계 550,000원</li>
+      <li>합계 330,000원 → 공급가액 300,000원 + 부가세 30,000원</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>금액별 부가세</h2>
+    <p>공급가액(부가세 별도) 기준:</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>공급가액</th><th>부가세 (10%)</th><th>합계금액</th></tr>
+        </thead>
+        <tbody>
+          {
+            supplyRows.map((r) => (
+              <tr>
+                <td>{won(r.supply)}</td>
+                <td>{won(r.vat)}</td>
+                <td>
+                  <strong>{won(r.total)}</strong>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p>합계금액(부가세 포함) 기준:</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>합계금액</th><th>공급가액</th><th>부가세</th></tr>
+        </thead>
+        <tbody>
+          {
+            totalRows.map((r) => (
+              <tr>
+                <td>{won(r.total)}</td>
+                <td>
+                  <strong>{won(r.supply)}</strong>
+                </td>
+                <td>{won(r.vat)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section>
@@ -58,6 +155,8 @@ const calculator = getCalculator('vat')!;
     </p>
     <p>근거: 국세청 부가가치세 안내 (nts.go.kr).</p>
   </section>
+
+  <Faq items={FAQ} />
 </CalculatorLayout>
 
 <script>
@@ -97,7 +196,6 @@ const calculator = getCalculator('vat')!;
     e.preventDefault();
     calculate();
   });
-  // 결과가 이미 보이는 상태면 입력/버튼 변경 시 자동으로 다시 계산
   form?.addEventListener('input', () => {
     if (!resultEl.hidden) calculate();
   });

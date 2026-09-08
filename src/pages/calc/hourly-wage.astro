@@ -1,10 +1,49 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
 import AmountInput from '../../components/AmountInput.astro';
+import Faq from '../../components/Faq.astro';
 import { getCalculator } from '../../data/calculators';
-import { MINIMUM_WAGE } from '../../lib/wage';
+import { calcWage, MINIMUM_WAGE } from '../../lib/wage';
 
 const calculator = getCalculator('hourly-wage')!;
+
+const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+const byHours = [15, 20, 25, 30, 35, 40].map((h) => ({
+  h,
+  ...calcWage({ hourly: MINIMUM_WAGE.hourly, weeklyHours: h }),
+}));
+const byWage = [MINIMUM_WAGE.hourly, 11_000, 12_000, 13_000, 15_000].map((w) => ({
+  w,
+  ...calcWage({ hourly: w, weeklyHours: 40 }),
+}));
+const ex40 = calcWage({ hourly: MINIMUM_WAGE.hourly, weeklyHours: 40 });
+
+const FAQ = [
+  {
+    q: '주 15시간이면 주휴수당을 받을 수 있나요?',
+    a: '1주 소정근로시간이 정확히 15시간이면 지급 대상입니다. 15시간 미만이면 주휴수당이 발생하지 않습니다. 그 주에 결근이 없어야(개근) 합니다.',
+  },
+  {
+    q: '주휴수당은 하루치 임금인가요?',
+    a: '주 40시간 근무자는 8시간분(하루치)이 맞습니다. 주 40시간 미만이면 근무시간에 비례해 줄어듭니다. 예를 들어 주 20시간이면 4시간분입니다.',
+  },
+  {
+    q: '주휴수당 계산에 휴게시간도 포함되나요?',
+    a: '아닙니다. 소정근로시간은 실제로 일하기로 정한 시간이며, 무급 휴게시간은 제외합니다.',
+  },
+  {
+    q: '주휴수당을 받으면 한 달 급여는 얼마인가요?',
+    a: `2026년 최저시급 ${won(MINIMUM_WAGE.hourly)}·주 40시간이면 주급 ${won(ex40.weeklyPay)}, 월 환산 약 ${won(ex40.monthlyPay)}입니다.`,
+  },
+  {
+    q: '5인 미만 사업장도 주휴수당을 주나요?',
+    a: '네. 주휴수당은 상시 근로자 수와 관계없이, 주 15시간 이상 일하고 개근하면 모든 사업장에 적용됩니다.',
+  },
+  {
+    q: '시급이 최저임금보다 낮으면 어떻게 되나요?',
+    a: '최저임금은 법으로 정한 하한입니다. 그보다 낮은 시급 계약은 무효이며 사용자는 차액을 지급해야 합니다. 이 계산기는 입력 시급이 최저임금 미만이면 경고를 표시합니다.',
+  },
+];
 ---
 
 <CalculatorLayout calculator={calculator}>
@@ -39,40 +78,118 @@ const calculator = getCalculator('hourly-wage')!;
   </section>
 
   <section>
-    <h2>사용법</h2>
-    <p>시급과 1주 근무시간을 입력하면 주휴수당·주급·월급(환산)을 계산합니다.</p>
+    <h2>이 계산기는 무엇을 계산하나요?</h2>
+    <p>
+      시급과 1주 근무시간을 입력하면 <strong>주휴수당</strong>, 한 주에 받는 <strong>주급</strong>(근로수당 +
+      주휴수당), 이를 4.345주로 환산한 <strong>월급</strong>을 계산합니다. 시급이 2026년 최저임금보다
+      낮으면 경고를 표시합니다.
+    </p>
   </section>
 
   <section>
-    <h2>주휴수당</h2>
+    <h2>주휴수당이란?</h2>
     <p>
-      1주 소정근로시간이 <strong>15시간 이상</strong>이고 그 주에 개근하면 유급 주휴가 발생합니다.
+      근로기준법상, 1주 동안 소정근로일을 개근한 근로자에게는 <strong>유급 주휴일</strong>이 하루
+      주어집니다. 이때 지급되는 하루치 임금이 주휴수당입니다.
     </p>
+  </section>
+
+  <section>
+    <h2>주휴수당 지급 조건</h2>
     <ul>
-      <li>주휴시간 = min(1주 근무시간, 40) ÷ 40 × 8 → 주 40시간이면 8시간분</li>
-      <li>주휴수당 = 주휴시간 × 시급</li>
-      <li>월급 환산 = 주급 × (365 ÷ 7 ÷ 12) ≈ 주급 × 4.345</li>
+      <li>1주 소정근로시간이 <strong>15시간 이상</strong></li>
+      <li>그 주의 소정근로일을 <strong>개근</strong>(결근 없음)</li>
+      <li>상시 근로자 수와 무관 — 5인 미만 사업장도 적용</li>
     </ul>
   </section>
 
   <section>
-    <h2>{MINIMUM_WAGE.year}년 최저임금</h2>
-    <p>
-      시간급 <strong>{MINIMUM_WAGE.hourly.toLocaleString()}원</strong> (전 업종 동일). 주 40시간·월
-      209시간 기준 월 환산 {MINIMUM_WAGE.monthly209.toLocaleString()}원. 시급이 최저임금보다 낮으면
-      경고가 표시됩니다.
-    </p>
+    <h2>주휴시간은 어떻게 계산하나요?</h2>
+    <ul>
+      <li>주휴시간 = min(1주 근무시간, 40) ÷ 40 × 8</li>
+      <li>주 40시간이면 8시간분, 주 20시간이면 4시간분</li>
+      <li>주휴수당 = 주휴시간 × 시급</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>주급·월급 환산</h2>
+    <ul>
+      <li>주급 = (1주 근무시간 × 시급) + 주휴수당</li>
+      <li>월급(환산) = 주급 × (365 ÷ 7 ÷ 12) ≈ 주급 × 4.345</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>계산 예시</h2>
+    <p>2026년 최저시급 {won(MINIMUM_WAGE.hourly)} · 주 40시간:</p>
+    <ul>
+      <li>주휴시간 {ex40.weeklyHolidayHours}시간 → 주휴수당 {won(ex40.weeklyHolidayPay)}</li>
+      <li>주급 {won(ex40.weeklyPay)}</li>
+      <li><strong>월급 환산 약 {won(ex40.monthlyPay)}</strong></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>시급·근무시간별 주휴수당</h2>
+    <p>2026년 최저시급 {won(MINIMUM_WAGE.hourly)} 기준, 1주 근무시간별:</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>주 근무시간</th><th>주휴수당</th><th>주급</th><th>월급(환산)</th></tr>
+        </thead>
+        <tbody>
+          {
+            byHours.map((r) => (
+              <tr>
+                <td>{r.h}시간</td>
+                <td>{r.weeklyHolidayPay === 0 ? '없음' : won(r.weeklyHolidayPay)}</td>
+                <td>{won(r.weeklyPay)}</td>
+                <td>
+                  <strong>{won(r.monthlyPay)}</strong>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p>주 40시간 기준, 시급별:</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>시급</th><th>주휴수당</th><th>주급</th><th>월급(환산)</th></tr>
+        </thead>
+        <tbody>
+          {
+            byWage.map((r) => (
+              <tr>
+                <td>{won(r.w)}</td>
+                <td>{won(r.weeklyHolidayPay)}</td>
+                <td>{won(r.weeklyPay)}</td>
+                <td>
+                  <strong>{won(r.monthlyPay)}</strong>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section>
     <h2>주의사항</h2>
     <ul>
       <li>연장·야간·휴일근로 가산수당(1.5배 등)은 포함하지 않은 기본 계산입니다.</li>
-      <li>월급 환산은 평균적인 주 수(4.345주)로 계산한 값이며, 실제 그 달의 일수에 따라 다릅니다.</li>
+      <li>월급 환산은 평균 주 수(4.345주)로 계산한 값이며, 실제 그 달의 일수에 따라 다릅니다.</li>
       <li>4대보험료·세금 공제 전 금액입니다.</li>
+      <li>최저임금은 매년 8월 고시되어 이듬해 1월부터 적용됩니다.</li>
     </ul>
-    <p>근거: 최저임금위원회, 근로기준법(주휴수당).</p>
+    <p>근거: 최저임금위원회, 고용노동부, 근로기준법(주휴수당).</p>
   </section>
+
+  <Faq items={FAQ} />
 </CalculatorLayout>
 
 <script>

@@ -175,6 +175,8 @@
 | `.calc-error` | 빨간 오류 문구. `--color-danger`, `--fs-sm` |
 | `.stepper` | 빠른 증감 버튼 줄. 버튼은 알약형(`--radius-full`), 최소 높이 36px, `--color-primary` 글자. `.stepper__clear`(C 버튼)는 `--color-text-muted` + 오른쪽 정렬 |
 | `.faq details / summary / .faq__a` | 자주 묻는 질문 아코디언(`<details>`). 테두리 `--radius-sm`, summary 오른쪽에 +/− 표시, 답변은 `--color-text-muted`. `<Faq>` 컴포넌트가 사용 (docs/23-content-guide.md §1.5) |
+| `.terms` | "계산에 사용되는 용어" 정의 목록(`<dl>`). 2열 그리드(용어/설명), 좁은 화면에서 1열. (docs/23-content-guide.md §Part2) |
+| `.table-scroll` | 넓은 표를 감싸 가로 스크롤. `<table>` 을 `<div class="table-scroll">` 로 감쌈 |
 
 ### 모서리 / 그림자 / 테두리
 
