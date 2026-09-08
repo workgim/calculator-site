@@ -269,6 +269,22 @@ th {
 .calc-field {
   margin-bottom: var(--space-4);
 }
+/* 체크박스: 전역 input 규칙(width:100%·min-height:44px)에서 제외하고
+   라벨 글자 크기에 맞춘 인라인 체크박스로 표시 */
+.calc-field input[type='checkbox'] {
+  width: 1em;
+  height: 1em;
+  min-height: 0;
+  padding: 0;
+  margin: 0 0.5em 0 0;
+  vertical-align: -0.1em;
+  accent-color: var(--color-primary);
+}
+.calc-field label:has(> input[type='checkbox']) {
+  display: block;
+  font-weight: var(--fw-regular);
+  margin-bottom: 0;
+}
 /* 폼 안의 [계산하기] 버튼: 위 입력·증감 버튼과 간격 확보 */
 .calc-box form button[type='submit'] {
   margin-top: var(--space-2);
