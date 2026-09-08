@@ -35,12 +35,22 @@ import CalculatorCard from '../components/CalculatorCard.astro';
 
 <style>
   .cat {
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: var(--border-width) solid var(--color-border);
+  }
+  .cat:first-of-type {
     margin-top: var(--space-8);
+    padding-top: 0;
+    border-top: 0;
+  }
+  .cat h2 {
+    margin: 0 0 var(--space-1);
   }
   .cat__desc {
+    margin: 0 0 var(--space-5);
     color: var(--color-text-muted);
     font-size: var(--fs-sm);
-    margin-top: calc(-1 * var(--space-2));
   }
   .grid {
     display: grid;

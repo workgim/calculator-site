@@ -203,6 +203,7 @@
 | `--border-width` | `1px` |
 | `--shadow-sm` | `0 1px 2px rgba(0,0,0,.06)` |
 | `--shadow-md` | `0 4px 12px rgba(0,0,0,.08)` |
+| `--edge-fade` | `rgba(0,0,0,.12)` (다크 `.55`) — 가로 스크롤 표 좌우 경계 그림자 |
 
 ### 아이콘
 
@@ -281,3 +282,4 @@
 | 2026-09-07 | 구현 반영: §6 계산기 폼 공통 클래스 + `.stepper`(빠른 증감 버튼, 36px 예외) 추가, §10 매핑에 `enhance-inputs.ts`·`AmountInput.astro` |
 | 2026-09-08 | 디자인 보강("앱 느낌" 중간 강도): `--color-page` 캔버스 토큰 도입(body 회색, 카드는 흰색으로 띄움), `.calc-box`·`table`·카드에 그림자, `[계산하기]` 버튼 가로 꽉·48px·lg, 결과 박스 좌측 primary 라인, 표 짝수 행 줄무늬+`.table-scroll` 라운드 테두리, 본문 H2 얇은 밑줄, 헤더 그림자+로고 primary, 내비 알약 hover, 카드 제목 primary+호버 리프트. **다크 모드 구현**(prefers-color-scheme, 토큰만 재정의) |
 | 2026-09-08 | 웹 내 테마 토글 추가: 헤더 `ThemeToggle`(시스템→라이트→다크), `<html data-theme>` + `localStorage`, `<head>` 인라인 스크립트로 FOUC 방지. 다크 토큰이 두 블록(미디어쿼리 + `[data-theme='dark']`)으로 중복됨 |
+| 2026-09-08 | 마감 손질: 모바일에서 헤더 내비 가로 스크롤 한 줄(`.nav` shrink + `overflow-x`), `.table-scroll` 좌우 안쪽 경계 그림자(`--edge-fade` 토큰)로 스크롤 암시, `.calc-result` 강조 크기 분리(`dd strong`=2xl / 한 문장형 `>strong`=lg+primary), 홈 카테고리 구분선+여백 정리 |

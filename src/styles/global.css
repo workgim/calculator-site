@@ -67,6 +67,7 @@
   --border-width: 1px;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --edge-fade: rgba(0, 0, 0, 0.12); /* 가로 스크롤 표의 좌우 경계 그림자 */
 
   --transition: 150ms ease;
 
@@ -100,6 +101,7 @@
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
     --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.6);
+    --edge-fade: rgba(0, 0, 0, 0.55);
   }
 }
 :root[data-theme='dark'] {
@@ -123,6 +125,7 @@
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.6);
+  --edge-fade: rgba(0, 0, 0, 0.55);
 }
 
 /* ---- 리셋(최소) ---- */
@@ -428,8 +431,16 @@ tbody tr:nth-child(even) td {
   border-radius: var(--radius-sm);
 }
 .calc-result strong {
-  font-size: var(--fs-2xl);
   font-variant-numeric: tabular-nums;
+}
+/* <dl> 형식 결과: 값 칸의 강조 숫자는 크게 (연봉·대출 등) */
+.calc-result dd strong {
+  font-size: var(--fs-2xl);
+}
+/* 한 문장형 결과: 값만 살짝 키우고 primary 로 (BMI·퍼센트·D-day 등) */
+.calc-result > strong {
+  font-size: var(--fs-lg);
+  color: var(--color-primary);
 }
 .calc-result dl {
   margin: 0;
@@ -482,6 +493,10 @@ tbody tr:nth-child(even) td {
   overflow-x: auto;
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-md);
+  /* 좌우로 더 볼 내용이 있음을 암시하는 안쪽 경계 그림자 */
+  box-shadow:
+    inset 14px 0 14px -14px var(--edge-fade),
+    inset -14px 0 14px -14px var(--edge-fade);
 }
 .table-scroll table {
   border: 0;
