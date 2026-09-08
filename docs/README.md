@@ -22,12 +22,13 @@
 | [12-page-structure.md](./12-page-structure.md) | 웹 페이지 / HTML 문서 구조, 공통 레이아웃 | 작성됨 |
 | [20-seo-google.md](./20-seo-google.md) | 구글 SEO 구현 명세 (가이드 바뀌면 이 문서만 고침) | 작성됨 |
 | [21-seo-naver.md](./21-seo-naver.md) | 네이버 SEO 구현 명세 (가이드 바뀌면 이 문서만 고침) | 작성됨 |
+| [23-content-guide.md](./23-content-guide.md) | 계산기 16개 페이지 콘텐츠·SEO 기획서 (제목·설명·H2·표·FAQ·내부링크·키워드) | 작성됨 (구현 대기) |
 | [30-design-guide.md](./30-design-guide.md) | 색 · 타이포 · 여백 · 컴포넌트 스타일 토큰 | 작성됨 |
 
 ## 아직 안 만든 문서 (나중에 채움)
 
 `13-coding-conventions`, `14-workflow`,
-`22-seo-page-checklist`, `23-content-guide`,
+`22-seo-page-checklist`,
 `31-responsive-guide`, `32-accessibility`,
 `40-legal-pages`, `41-ads-adsense`, `42-analytics`, `43-performance`, `44-deployment`
 

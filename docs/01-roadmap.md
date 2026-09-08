@@ -34,6 +34,13 @@
 - 새 종류 아이디어도 환영 (사용자가 추가하고 싶어함) → [02-calculator-catalog.md](./02-calculator-catalog.md)에 후보로 먼저 등록
 - 추가 절차는 [11-folder-structure.md](./11-folder-structure.md) §4 (파일 3개 + `*.test.ts`)
 
+### B-2. 기존 16개 페이지 콘텐츠 개편 (SEO)
+
+- **[23-content-guide.md](./23-content-guide.md)** 에 16개 계산기 각각의 제목·설명·H2 개요·"자주 찾는 값" 표·FAQ·내부링크·타깃 키워드가 정리돼 있음.
+- 먼저 공통 작업(1회): `Head.astro` `seoTitle` 지원, `CalculatorLayout` `related` 필드, `<Faq>` 컴포넌트 + `.faq` 스타일, "자주 찾는 값" 표 패턴.
+- 그다음 우선순위대로 페이지별 본문·표·FAQ 채우기 (23번 §1.8 주차별 안).
+- "자주 찾는 값" 표는 **손으로 숫자 쓰지 말고 `lib` 함수로 빌드타임 계산**.
+
 ### C. FAQ 섹션 — **후순위** (사용자가 미룸)
 
 - `<Faq>` 컴포넌트(`<details>` 아코디언 + 선택적 `FAQPage` JSON-LD) 만들고 계산기별 Q&A 배열 작성.
