@@ -1,8 +1,42 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import Faq from '../../components/Faq.astro';
 import { getCalculator } from '../../data/calculators';
+import { calcBmi } from '../../lib/bmi';
 
 const calculator = getCalculator('bmi')!;
+
+const r1 = (n: number) => Math.round(n * 10) / 10;
+// 키별 정상 체중 범위 (BMI 18.5 ~ 22.9)
+const heightRows = [150, 155, 160, 165, 170, 175, 180, 185].map((h) => {
+  const m2 = (h / 100) ** 2;
+  return { h, lo: r1(18.5 * m2), hi: r1(22.9 * m2), std: r1(22 * m2) };
+});
+// 170cm 몸무게별
+const weightRows = [55, 60, 65, 70, 75, 80, 90].map((w) => ({ w, ...calcBmi(170, w) }));
+
+const FAQ = [
+  {
+    q: 'BMI 정상 범위는 몇인가요?',
+    a: '아시아-태평양 기준으로 18.5~22.9가 정상입니다. 23 이상은 과체중, 25 이상은 비만으로 봅니다. WHO 국제 기준은 25 이상을 과체중으로 분류합니다.',
+  },
+  {
+    q: 'BMI 25는 비만인가요?',
+    a: '아시아-태평양 기준으로는 비만 1단계입니다. WHO 국제 기준으로는 과체중에 해당합니다.',
+  },
+  {
+    q: 'BMI가 정상인데 뱃살이 신경 쓰여요.',
+    a: 'BMI는 키와 몸무게만 보기 때문에 체지방 분포를 반영하지 못합니다. 복부비만은 허리둘레(남 90cm, 여 85cm 이상)로 따로 확인하세요.',
+  },
+  {
+    q: '어린이·노인도 같은 기준인가요?',
+    a: '이 계산기는 성인 기준입니다. 소아·청소년은 연령·성별 성장도표(백분위수)를 쓰고, 노인은 근육량 감소를 고려해 다르게 해석합니다.',
+  },
+  {
+    q: '표준체중은 어떻게 구하나요?',
+    a: '흔히 BMI 22를 표준으로 봅니다. 표준체중(kg) = 22 × 키(m)². 예를 들어 키 170cm면 약 63.6kg입니다.',
+  },
+];
 ---
 
 <CalculatorLayout calculator={calculator}>
@@ -11,31 +45,11 @@ const calculator = getCalculator('bmi')!;
     <form id="bmi-form">
       <div class="calc-field">
         <label for="height">키 (cm)</label>
-        <input
-          type="number"
-          id="height"
-          name="height"
-          inputmode="decimal"
-          step="0.1"
-          min="50"
-          max="300"
-          placeholder="예: 170"
-          required
-        />
+        <input type="number" id="height" name="height" inputmode="decimal" step="0.1" min="50" max="300" placeholder="예: 170" required />
       </div>
       <div class="calc-field">
         <label for="weight">몸무게 (kg)</label>
-        <input
-          type="number"
-          id="weight"
-          name="weight"
-          inputmode="decimal"
-          step="0.1"
-          min="2"
-          max="500"
-          placeholder="예: 65"
-          required
-        />
+        <input type="number" id="weight" name="weight" inputmode="decimal" step="0.1" min="2" max="500" placeholder="예: 65" required />
       </div>
       <button type="submit" class="btn">계산하기</button>
     </form>
@@ -44,21 +58,24 @@ const calculator = getCalculator('bmi')!;
     <p id="bmi-error" class="calc-error" role="alert" hidden></p>
   </section>
 
-  <!-- 설명 섹션 (docs/12-page-structure.md §5) -->
   <section>
-    <h2>사용법</h2>
-    <p>키(cm)와 몸무게(kg)를 입력하고 <strong>계산하기</strong>를 누르면 BMI와 비만도 분류가 나옵니다.</p>
+    <h2>BMI란?</h2>
+    <p>
+      BMI(체질량지수, Body Mass Index)는 <strong>몸무게와 키의 비율</strong>로 체중이 적정한지
+      가늠하는 지표입니다. 키에 비해 몸무게가 얼마나 되는지를 하나의 숫자로 나타냅니다.
+    </p>
   </section>
 
   <section>
-    <h2>계산 방법</h2>
-    <p>BMI는 몸무게를 키(m)의 제곱으로 나눈 값입니다.</p>
+    <h2>BMI 계산 공식</h2>
     <p><strong>BMI = 몸무게(kg) ÷ (키(m) × 키(m))</strong></p>
-    <p>이 계산기는 대한비만학회의 아시아-태평양 기준으로 분류합니다.</p>
+    <p>키는 cm가 아니라 m로 환산해서 넣습니다. 키 170cm면 1.7m로 계산합니다.</p>
+  </section>
+
+  <section>
+    <h2>BMI 기준표 (아시아-태평양)</h2>
     <table>
-      <thead>
-        <tr><th>BMI</th><th>분류</th></tr>
-      </thead>
+      <thead><tr><th>BMI</th><th>분류</th></tr></thead>
       <tbody>
         <tr><td>18.5 미만</td><td>저체중</td></tr>
         <tr><td>18.5 ~ 22.9</td><td>정상</td></tr>
@@ -68,22 +85,77 @@ const calculator = getCalculator('bmi')!;
         <tr><td>35 이상</td><td>비만 3단계</td></tr>
       </tbody>
     </table>
+    <p>대한비만학회 기준입니다. WHO 국제 기준은 25 이상을 과체중, 30 이상을 비만으로 봅니다.</p>
   </section>
 
   <section>
-    <h2>계산 예시</h2>
-    <p>키 170cm, 몸무게 65kg → 1.7 × 1.7 = 2.89, 65 ÷ 2.89 ≈ <strong>22.5 (정상)</strong></p>
+    <h2>키별 정상 체중 범위</h2>
+    <p>BMI 18.5 ~ 22.9(정상)에 해당하는 몸무게입니다.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>키</th><th>정상 체중 범위</th><th>표준체중 (BMI 22)</th></tr></thead>
+        <tbody>
+          {
+            heightRows.map((r) => (
+              <tr>
+                <td>{r.h}cm</td>
+                <td>
+                  <strong>
+                    {r.lo} ~ {r.hi}kg
+                  </strong>
+                </td>
+                <td>{r.std}kg</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section>
-    <h2>주의사항</h2>
+    <h2>키·몸무게별 BMI 예시</h2>
+    <p>키 170cm 기준:</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>몸무게</th><th>BMI</th><th>분류</th></tr></thead>
+        <tbody>
+          {
+            weightRows.map((r) => (
+              <tr>
+                <td>{r.w}kg</td>
+                <td>
+                  <strong>{r.bmi}</strong>
+                </td>
+                <td>{r.category}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>BMI 결과 해석</h2>
+    <ul>
+      <li><strong>저체중</strong>: 영양 부족·면역 저하 위험. 균형 잡힌 식사로 체중을 늘리는 것이 좋습니다.</li>
+      <li><strong>정상</strong>: 현재 체중을 유지하세요.</li>
+      <li><strong>과체중·비만</strong>: 생활습관병 위험이 올라갑니다. 식사·운동으로 점진적 감량을 권합니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>BMI만으로 판단하기 어려운 경우</h2>
     <p>
-      BMI는 키와 몸무게만으로 계산하므로 근육량·체지방·나이·성별을 반영하지 않습니다. 운동선수처럼
-      근육량이 많으면 실제 체지방과 무관하게 높게 나올 수 있습니다. 참고 지표로만 사용하고, 정확한
-      평가는 의료기관의 상담을 받으세요.
+      근육량이 많은 사람(운동선수 등)은 실제 체지방과 무관하게 BMI가 높게 나옵니다. 임산부, 성장기
+      청소년, 노인도 BMI를 그대로 적용하기 어렵습니다. 참고 지표로만 쓰고, 정확한 평가는 의료기관
+      상담을 받으세요.
     </p>
     <p>근거: 세계보건기구(WHO) BMI 분류, 대한비만학회 비만 진료지침.</p>
   </section>
+
+  <Faq items={FAQ} />
 </CalculatorLayout>
 
 <script>

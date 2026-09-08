@@ -1,8 +1,43 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
+import Faq from '../../components/Faq.astro';
 import { getCalculator } from '../../data/calculators';
+import { calcBmr, type BmrInput } from '../../lib/bmr';
 
 const calculator = getCalculator('bmr')!;
+
+const kcal = (n: number) => n.toLocaleString('ko-KR') + ' kcal';
+const profiles: { label: string; input: BmrInput }[] = [
+  { label: '남 30세 170cm 70kg', input: { sex: 'male', age: 30, heightCm: 170, weightKg: 70, activity: 'moderate' } },
+  { label: '남 40세 175cm 80kg', input: { sex: 'male', age: 40, heightCm: 175, weightKg: 80, activity: 'moderate' } },
+  { label: '여 30세 160cm 55kg', input: { sex: 'female', age: 30, heightCm: 160, weightKg: 55, activity: 'moderate' } },
+  { label: '여 40세 160cm 60kg', input: { sex: 'female', age: 40, heightCm: 160, weightKg: 60, activity: 'moderate' } },
+];
+const profileRows = profiles.map((p) => ({ label: p.label, ...calcBmr(p.input) }));
+const ex = calcBmr({ sex: 'male', age: 30, heightCm: 175, weightKg: 70, activity: 'sedentary' });
+
+const FAQ = [
+  {
+    q: '기초대사량과 유지 칼로리는 어떻게 다른가요?',
+    a: '기초대사량은 아무것도 안 하고 누워만 있어도 쓰는 칼로리이고, 유지 칼로리(TDEE)는 여기에 일상활동·운동량을 곱한 값입니다. 실제로 먹어야 하는 기준은 유지 칼로리입니다.',
+  },
+  {
+    q: '하루에 몇 kcal 먹어야 살이 빠지나요?',
+    a: '유지 칼로리보다 하루 300~500kcal 적게 먹으면 주 약 0.3~0.5kg 감량됩니다. 너무 적게 먹으면 근손실·요요 위험이 커집니다.',
+  },
+  {
+    q: '활동량은 어떻게 고르나요?',
+    a: '사무직·거의 안 움직임은 "좌식", 주 1~3회 가벼운 운동은 "가벼운 운동", 주 3~5회는 "보통"이 무난합니다. 애매하면 한 단계 낮게 잡는 편이 안전합니다.',
+  },
+  {
+    q: 'Harris-Benedict 공식과 결과가 다른 이유는?',
+    a: '두 공식은 계수가 다릅니다. Mifflin-St Jeor가 현대 체형에 더 잘 맞는다고 알려져 이 계산기의 기본으로 씁니다.',
+  },
+  {
+    q: '기초대사량을 높이려면?',
+    a: '근육량을 늘리면 기초대사량이 올라갑니다. 근력 운동과 충분한 단백질 섭취가 도움이 됩니다.',
+  },
+];
 ---
 
 <CalculatorLayout calculator={calculator}>
@@ -50,26 +85,87 @@ const calculator = getCalculator('bmr')!;
   </section>
 
   <section>
-    <h2>사용법</h2>
-    <p>성별·나이·키·몸무게·활동 수준을 입력하면 기초대사량과 하루 권장 칼로리를 계산합니다.</p>
+    <h2>기초대사량(BMR)이란?</h2>
+    <p>
+      아무 활동 없이 <strong>생명 유지에만 쓰이는 하루 최소 칼로리</strong>입니다. 호흡, 체온 유지,
+      장기 활동 등에 소비되며, 하루 총 소비 칼로리의 60~70%를 차지합니다.
+    </p>
   </section>
 
   <section>
-    <h2>용어</h2>
-    <ul>
-      <li><strong>기초대사량(BMR)</strong>: 아무 활동 없이 생명 유지에만 쓰이는 하루 최소 칼로리.</li>
-      <li><strong>활동대사량(TDEE)</strong>: BMR에 활동량을 곱한 값. 체중을 <strong>유지</strong>하는 데 필요한 하루 칼로리.</li>
-      <li>감량 목표는 유지 칼로리 − 500kcal, 증량 목표는 + 500kcal (주 약 0.45kg 변화 기준).</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>계산 방법</h2>
+    <h2>기초대사량 계산 공식</h2>
     <p>Mifflin-St Jeor 공식을 사용합니다.</p>
     <ul>
       <li>남성: BMR = 10 × 체중(kg) + 6.25 × 키(cm) − 5 × 나이 + 5</li>
       <li>여성: BMR = 10 × 체중(kg) + 6.25 × 키(cm) − 5 × 나이 − 161</li>
-      <li>TDEE = BMR × 활동계수 (1.2 ~ 1.9)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>활동대사량(TDEE)이란?</h2>
+    <p>
+      BMR에 활동량을 곱한 값으로, <strong>체중을 유지하는 데 필요한 하루 칼로리</strong>입니다. 실제
+      먹어야 하는 양의 기준이 됩니다.
+    </p>
+    <p>TDEE = BMR × 활동계수</p>
+  </section>
+
+  <section>
+    <h2>활동량별 계수</h2>
+    <table>
+      <thead><tr><th>활동 수준</th><th>계수</th></tr></thead>
+      <tbody>
+        <tr><td>거의 운동 안 함 (좌식)</td><td>1.2</td></tr>
+        <tr><td>가벼운 운동 (주 1~3회)</td><td>1.375</td></tr>
+        <tr><td>보통 운동 (주 3~5회)</td><td>1.55</td></tr>
+        <tr><td>활발한 운동 (주 6~7회)</td><td>1.725</td></tr>
+        <tr><td>매우 활발 (육체노동/선수)</td><td>1.9</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>계산 예시</h2>
+    <p>남성 30세 · 175cm · 70kg · 좌식 생활:</p>
+    <ul>
+      <li>BMR = 10 × 70 + 6.25 × 175 − 5 × 30 + 5 = {kcal(ex.bmr)}</li>
+      <li>TDEE = BMR × 1.2 = <strong>{kcal(ex.tdee)}</strong> (유지 칼로리)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>대표 프로필별 하루 권장 칼로리</h2>
+    <p>활동 수준 "보통(주 3~5회 운동)" 기준:</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>프로필</th><th>기초대사량</th><th>유지</th><th>감량</th><th>증량</th></tr>
+        </thead>
+        <tbody>
+          {
+            profileRows.map((r) => (
+              <tr>
+                <td>{r.label}</td>
+                <td>{kcal(r.bmr)}</td>
+                <td>
+                  <strong>{kcal(r.tdee)}</strong>
+                </td>
+                <td>{kcal(r.loseWeight)}</td>
+                <td>{kcal(r.gainWeight)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>결과값 활용</h2>
+    <ul>
+      <li><strong>유지</strong>: 현재 체중을 유지하려면 이만큼 먹습니다.</li>
+      <li><strong>감량</strong>: 유지 − 500kcal. 주 약 0.45kg 감량이 목표입니다.</li>
+      <li><strong>증량</strong>: 유지 + 500kcal. 근육 증가를 노린다면 근력 운동을 병행합니다.</li>
     </ul>
   </section>
 
@@ -81,6 +177,8 @@ const calculator = getCalculator('bmr')!;
     </p>
     <p>근거: Mifflin-St Jeor 공식(1990).</p>
   </section>
+
+  <Faq items={FAQ} />
 </CalculatorLayout>
 
 <script>
