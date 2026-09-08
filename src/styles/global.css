@@ -345,6 +345,44 @@ th {
   margin-left: auto;
 }
 
+/* 자주 묻는 질문 (docs/23-content-guide.md §1.5) */
+.faq details {
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-2);
+}
+.faq summary {
+  padding: var(--space-3) var(--space-4);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  list-style: none;
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: '+';
+  float: right;
+  color: var(--color-text-muted);
+}
+.faq details[open] summary::after {
+  content: '−';
+}
+.faq summary:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+.faq .faq__a {
+  padding: 0 var(--space-4) var(--space-3);
+  color: var(--color-text-muted);
+}
+.faq .faq__a p {
+  margin: 0 0 var(--space-2);
+}
+.faq .faq__a p:last-child {
+  margin-bottom: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -174,6 +174,7 @@
 | `.calc-result` | 결과 박스. 안에 `<dl>`(항목/값) 지원 — 값은 오른쪽 정렬 + tabular-nums |
 | `.calc-error` | 빨간 오류 문구. `--color-danger`, `--fs-sm` |
 | `.stepper` | 빠른 증감 버튼 줄. 버튼은 알약형(`--radius-full`), 최소 높이 36px, `--color-primary` 글자. `.stepper__clear`(C 버튼)는 `--color-text-muted` + 오른쪽 정렬 |
+| `.faq details / summary / .faq__a` | 자주 묻는 질문 아코디언(`<details>`). 테두리 `--radius-sm`, summary 오른쪽에 +/− 표시, 답변은 `--color-text-muted`. `<Faq>` 컴포넌트가 사용 (docs/23-content-guide.md §1.5) |
 
 ### 모서리 / 그림자 / 테두리
 

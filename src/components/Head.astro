@@ -10,14 +10,23 @@ interface Props {
   description: string;
   /** 현재 페이지 경로. 예: "/calc/bmi" (앞 슬래시 포함, 끝 슬래시 없음) */
   path: string;
+  /**
+   * 검색결과용 제목. 있으면 <title> 에 그대로 쓴다 (사이트명 안 붙임).
+   * 키워드를 담아야 하는 페이지(연봉·세금 등)에서 사용. (docs/23-content-guide.md §1.7)
+   */
+  seoTitle?: string;
   /** 색인 제외할 페이지만 true */
   noindex?: boolean;
   ogImage?: string;
 }
 
-const { title, description, path, noindex = false, ogImage = SITE.ogImage } = Astro.props;
+const { title, description, path, seoTitle, noindex = false, ogImage = SITE.ogImage } = Astro.props;
 
-const pageTitle = path === '/' ? `${SITE.name} - 생활 계산기 모음` : `${title}｜${SITE.name}`;
+const pageTitle = seoTitle
+  ? seoTitle
+  : path === '/'
+    ? `${SITE.name} - 생활 계산기 모음`
+    : `${title}｜${SITE.name}`;
 const canonical = new URL(path, SITE.url).href;
 const ogImageUrl = new URL(ogImage, SITE.url).href;
 

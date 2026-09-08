@@ -15,18 +15,20 @@ interface Props {
   title: string;
   description: string;
   path: string;
+  /** 검색결과용 제목 (docs/23-content-guide.md §1.7) */
+  seoTitle?: string;
   noindex?: boolean;
   /** 넓은 컨테이너(홈 등)를 쓸지 여부 */
   wide?: boolean;
 }
 
-const { title, description, path, noindex, wide = false } = Astro.props;
+const { title, description, path, seoTitle, noindex, wide = false } = Astro.props;
 ---
 
 <!doctype html>
 <html lang={SITE.lang}>
   <head>
-    <Head title={title} description={description} path={path} noindex={noindex} />
+    <Head title={title} description={description} path={path} seoTitle={seoTitle} noindex={noindex} />
     <Analytics />
   </head>
   <body>
