@@ -23,17 +23,21 @@ const { calculator } = Astro.props;
     background: var(--color-bg);
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     text-decoration: none;
     color: var(--color-text);
-    transition: box-shadow var(--transition), border-color var(--transition);
+    transition: box-shadow var(--transition), border-color var(--transition),
+      transform var(--transition);
   }
   .card:hover {
     border-color: var(--color-primary);
     box-shadow: var(--shadow-md);
     color: var(--color-text);
+    transform: translateY(-2px);
   }
   .card__title {
     font-weight: var(--fw-bold);
+    color: var(--color-primary);
   }
   .card__desc {
     font-size: var(--fs-sm);

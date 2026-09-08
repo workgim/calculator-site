@@ -6,8 +6,9 @@
 
 :root {
   /* ---- 색상 (라이트) : docs/30 §2 ---- */
-  --color-bg: #ffffff;
-  --color-surface: #f7f8fa;
+  --color-page: #f2f3f5; /* 페이지 캔버스 (본문 배경). 카드는 --color-bg 로 띄움 */
+  --color-bg: #ffffff; /* 올라온 표면: 카드·입력창·결과·표 */
+  --color-surface: #f7f8fa; /* 보조 표면: 표 헤더·줄무늬, FAQ */
   --color-surface-2: #eef0f3;
   --color-border: #e3e6ea;
   --color-text: #1a1d21;
@@ -72,6 +73,33 @@
   color-scheme: light;
 }
 
+/* ---- 색상 (다크) : docs/30 §2 ----
+   prefers-color-scheme 기준 자동 전환. 토큰 값만 재정의한다. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --color-page: #0f1216;
+    --color-bg: #171b21;
+    --color-surface: #1e232b;
+    --color-surface-2: #262c35;
+    --color-border: #2c333d;
+    --color-text: #e6e9ee;
+    --color-text-muted: #9aa4b2; /* #171b21 대비 약 5.9:1 */
+    --color-primary: #5b9dff; /* 링크·강조. 다크 표면 대비 약 6:1 */
+    --color-primary-hover: #7fb3ff;
+    --color-primary-contrast: #0b1524; /* primary 버튼 위 글자 */
+    --color-success: #48c774;
+    --color-warning: #d99a3d;
+    --color-danger: #f0777e;
+    --color-focus-ring: #5b9dff;
+    --color-ad-bg: #1b2027;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.6);
+  }
+}
+
 /* ---- 리셋(최소) ---- */
 *,
 *::before,
@@ -85,7 +113,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--color-bg);
+  background: var(--color-page);
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: var(--fs-base);
@@ -173,6 +201,11 @@ select {
   background: var(--color-bg);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-sm);
+  transition: border-color var(--transition);
+}
+input:hover,
+select:hover {
+  border-color: var(--color-text-muted);
 }
 
 input:focus-visible,
@@ -202,11 +235,15 @@ button {
   background: var(--color-primary);
   border: 0;
   border-radius: var(--radius-md);
-  transition: background var(--transition);
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition), transform var(--transition);
 }
 .btn:hover {
   background: var(--color-primary-hover);
   color: var(--color-primary-contrast);
+}
+.btn:active {
+  transform: translateY(1px);
 }
 
 table {
@@ -214,15 +251,34 @@ table {
   border-collapse: collapse;
   margin: 0 0 var(--space-4);
   font-size: var(--fs-sm);
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
 }
 th,
 td {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-3);
   border-bottom: var(--border-width) solid var(--color-border);
   text-align: left;
+  vertical-align: top;
 }
-th {
+tbody tr:last-child th,
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+td {
+  font-variant-numeric: tabular-nums;
+}
+thead th {
   background: var(--color-surface);
+  border-bottom-width: 2px;
+  font-weight: var(--fw-medium);
+}
+tbody tr:nth-child(even) th,
+tbody tr:nth-child(even) td {
+  background: var(--color-surface);
+}
+.table-scroll table {
+  margin: 0;
 }
 
 /* ---- 공통 유틸 ---- */
@@ -262,9 +318,10 @@ th {
 /* ---- 계산기 폼 공통 UI (docs/12-page-structure.md §5) ---- */
 .calc-box {
   padding: var(--space-5);
-  background: var(--color-surface);
+  background: var(--color-bg);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 .calc-field {
   margin-bottom: var(--space-4);
@@ -285,9 +342,12 @@ th {
   font-weight: var(--fw-regular);
   margin-bottom: 0;
 }
-/* 폼 안의 [계산하기] 버튼: 위 입력·증감 버튼과 간격 확보 */
+/* 폼 안의 [계산하기] 버튼: 가로 꽉 차게 + 위 입력·증감 버튼과 간격 확보 */
 .calc-box form button[type='submit'] {
-  margin-top: var(--space-2);
+  width: 100%;
+  margin-top: var(--space-4);
+  min-height: 48px;
+  font-size: var(--fs-lg);
 }
 .calc-hint {
   display: block;
@@ -310,6 +370,7 @@ th {
   padding: var(--space-4);
   background: var(--color-bg);
   border: var(--border-width) solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
   border-radius: var(--radius-sm);
 }
 .calc-result strong {
@@ -365,6 +426,16 @@ th {
 /* 콘텐츠 섹션 공통 (docs/23-content-guide.md) */
 .table-scroll {
   overflow-x: auto;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.table-scroll table {
+  border: 0;
+}
+/* 계산기 본문 H2: 스캔하기 쉽게 얇은 밑줄 */
+.calc-content h2 {
+  padding-bottom: var(--space-2);
+  border-bottom: var(--border-width) solid var(--color-border);
 }
 .terms {
   display: grid;
@@ -391,6 +462,7 @@ th {
 
 /* 자주 묻는 질문 (docs/23-content-guide.md §1.5) */
 .faq details {
+  background: var(--color-bg);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-sm);
   margin-bottom: var(--space-2);
@@ -400,6 +472,9 @@ th {
   font-weight: var(--fw-medium);
   cursor: pointer;
   list-style: none;
+}
+.faq summary:hover {
+  color: var(--color-primary);
 }
 .faq summary::-webkit-details-marker {
   display: none;

@@ -30,9 +30,10 @@
 
 | 변수 | 값 | 용도 |
 |------|-----|------|
-| `--color-bg` | `#ffffff` | 페이지 배경 |
-| `--color-surface` | `#f7f8fa` | 카드·결과 박스 배경 |
-| `--color-surface-2` | `#eef0f3` | 입력창 배경, 구분된 영역 |
+| `--color-page` | `#f2f3f5` | 페이지 캔버스(본문 배경). 카드·입력창·결과·표는 `--color-bg`로 그 위에 띄운다 |
+| `--color-bg` | `#ffffff` | 올라온 표면: 카드·입력창·결과 박스·표 |
+| `--color-surface` | `#f7f8fa` | 보조 표면: 표 헤더·짝수 행 줄무늬, FAQ 닫힘 |
+| `--color-surface-2` | `#eef0f3` | 입력창 배경(대체), 더 눌린 영역 |
 | `--color-border` | `#e3e6ea` | 테두리·구분선 |
 | `--color-text` | `#1a1d21` | 본문 글자 |
 | `--color-text-muted` | `#5b6470` | 보조 설명, 캡션 (흰 배경 대비 약 5.6:1) |
@@ -45,23 +46,30 @@
 | `--color-focus-ring` | `#2563eb` | 키보드 포커스 윤곽 |
 | `--color-ad-bg` | `#f0f2f5` | 광고 영역 배경(본문과 구분) |
 
-> 대비 참고: `--color-primary`(#2563eb)와 `--color-text-muted`(#5b6470)는 흰 배경에서 각각 약 4.9:1, 5.6:1로 본문 기준(4.5:1)을 통과한다. 색을 바꾸면 §8 기준으로 다시 검증한다.
+> 대비 참고: `--color-primary`(#2563eb)·`--color-text-muted`(#5b6470)는 흰 카드 위에서 약 4.9:1·5.6:1, 캔버스(#f2f3f5) 위에서 약 4.7:1·4.9:1로 모두 본문 기준(4.5:1)을 통과한다. 색을 바꾸면 §8 기준으로 다시 검증한다.
 
-### 다크 (나중에 값 채움 — 구조만)
+### 다크 (구현됨 — 2026-09-08)
 
-| 변수 | 예정 값(초안) |
-|------|---------------|
-| `--color-bg` | `#0f1216` |
-| `--color-surface` | `#171b21` |
-| `--color-surface-2` | `#1f242c` |
-| `--color-border` | `#2a303a` |
-| `--color-text` | `#e6e9ee` |
-| `--color-text-muted` | `#9aa4b2` |
-| `--color-primary` | `#3b82f6` |
-| `--color-primary-hover` | `#60a5fa` |
-| `--color-primary-contrast` | `#0f1216` |
+`@media (prefers-color-scheme: dark)`에서 `:root`의 색 토큰만 재정의한다(`global.css` 상단). OS 설정에 따라 자동 전환. 별도 토글 UI는 없음. `color-scheme: dark`도 같이 지정해 `<input type="date">` 등 네이티브 위젯도 어둡게.
 
-적용 방식(나중): `@media (prefers-color-scheme: dark)` 또는 `<html data-theme="dark">`에서 위 변수만 재정의.
+| 변수 | 값 | 비고 |
+|------|-----|------|
+| `--color-page` | `#0f1216` | 캔버스(가장 어두움) |
+| `--color-bg` | `#171b21` | 올라온 표면 |
+| `--color-surface` | `#1e232b` | 보조 표면 |
+| `--color-surface-2` | `#262c35` | |
+| `--color-border` | `#2c333d` | |
+| `--color-text` | `#e6e9ee` | |
+| `--color-text-muted` | `#9aa4b2` | `#171b21` 대비 약 6.6:1 |
+| `--color-primary` | `#5b9dff` | 링크·강조. 다크 표면 대비 약 6.4:1 |
+| `--color-primary-hover` | `#7fb3ff` | |
+| `--color-primary-contrast` | `#0b1524` | primary 버튼 위 글자 (약 7:1) |
+| `--color-success` | `#48c774` | |
+| `--color-warning` | `#d99a3d` | |
+| `--color-danger` | `#f0777e` | |
+| `--color-focus-ring` | `#5b9dff` | |
+| `--color-ad-bg` | `#1b2027` | |
+| `--shadow-sm` / `--shadow-md` | 알파 0.5 / 0.6 | 어두운 배경에서 그림자가 약해 alpha를 올림 |
 
 ---
 
@@ -250,7 +258,8 @@
 | 컴포넌트별 세부 스타일 | 각 `.astro` 파일의 `<style>` (토큰 변수만 사용, 하드코딩 값 금지) |
 | 금액 입력 UI(콤마·증감 버튼) | `src/components/AmountInput.astro` + `src/scripts/enhance-inputs.ts` |
 | 브레이크포인트 수치 | 각 미디어쿼리에 직접(`48rem` 등). 기준값은 이 문서 §5 |
-| 다크 모드 | (나중) `global.css`의 `@media (prefers-color-scheme: dark)` 블록 |
+| 다크 모드 | `global.css` `:root` 바로 뒤 `@media (prefers-color-scheme: dark)` 블록 — 색 토큰 + shadow 재정의 |
+| 표면 층위 | 캔버스 `--color-page`(body) → 카드 `--color-bg`(`.calc-box`·`.card`·`table`·`.calc-result`·`.faq details`) → 보조 `--color-surface`(표 헤더·줄무늬) |
 
 > 원칙: `.astro` 파일 안에서 색·간격을 **숫자로 직접 쓰지 않는다.** 항상 `var(--...)`.
 > 새 값이 필요하면 먼저 이 문서에 토큰을 추가하고 `global.css`에 정의한 뒤 쓴다.
@@ -263,3 +272,4 @@
 |------|-----------|
 | 2026-09-07 | 최초 작성. 색/타이포/여백/레이아웃/컴포넌트/접근성/광고영역 토큰 정의. 시스템 폰트 사용, 다크모드는 구조만 |
 | 2026-09-07 | 구현 반영: §6 계산기 폼 공통 클래스 + `.stepper`(빠른 증감 버튼, 36px 예외) 추가, §10 매핑에 `enhance-inputs.ts`·`AmountInput.astro` |
+| 2026-09-08 | 디자인 보강("앱 느낌" 중간 강도): `--color-page` 캔버스 토큰 도입(body 회색, 카드는 흰색으로 띄움), `.calc-box`·`table`·카드에 그림자, `[계산하기]` 버튼 가로 꽉·48px·lg, 결과 박스 좌측 primary 라인, 표 짝수 행 줄무늬+`.table-scroll` 라운드 테두리, 본문 H2 얇은 밑줄, 헤더 그림자+로고 primary, 내비 알약 hover, 카드 제목 primary+호버 리프트. **다크 모드 구현**(prefers-color-scheme, 토큰만 재정의) |
