@@ -1,9 +1,68 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
 import AmountInput from '../../components/AmountInput.astro';
+import Faq from '../../components/Faq.astro';
 import { getCalculator } from '../../data/calculators';
+import { calcSavings } from '../../lib/savings';
 
 const calculator = getCalculator('savings')!;
+
+const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+// 적금 월 30만원 / 12개월 / 단리 / 일반과세
+const instRows = [2, 2.5, 3, 3.5, 4, 5].map((rate) => ({
+  rate,
+  ...calcSavings({
+    type: 'installment',
+    amount: 300_000,
+    annualRatePct: rate,
+    months: 12,
+    method: 'simple',
+    tax: 'normal',
+  }),
+}));
+// 예금 1,000만원 / 12개월 / 단리 / 일반과세
+const depRows = [2, 3, 4, 5].map((rate) => ({
+  rate,
+  ...calcSavings({
+    type: 'deposit',
+    amount: 10_000_000,
+    annualRatePct: rate,
+    months: 12,
+    method: 'simple',
+    tax: 'normal',
+  }),
+}));
+const exInst = calcSavings({
+  type: 'installment',
+  amount: 500_000,
+  annualRatePct: 3,
+  months: 12,
+  method: 'simple',
+  tax: 'normal',
+});
+
+const FAQ = [
+  {
+    q: '적금 월 50만원 1년이면 이자가 얼마인가요?',
+    a: `연 3% 단리·일반과세 기준 세전 이자는 ${won(exInst.pretaxInterest)}, 이자소득세 ${won(exInst.tax)}를 뗀 세후 이자는 ${won(exInst.aftertaxInterest)}입니다.`,
+  },
+  {
+    q: '예금과 적금 중 어느 게 이자가 많나요?',
+    a: '같은 금리·같은 총 납입액이면 예금이 더 많습니다. 예금은 목돈 전체가 전 기간 이자를 받지만, 적금은 나중에 넣은 돈일수록 이자가 붙는 기간이 짧기 때문입니다.',
+  },
+  {
+    q: '이자소득세 15.4%는 어떻게 떼나요?',
+    a: '이자를 줄 때 은행이 원천징수합니다. 소득세 14% + 지방소득세 1.4%로, 이자가 10만원이면 15,400원을 떼고 84,600원을 받습니다.',
+  },
+  {
+    q: '단리와 복리 차이가 큰가요?',
+    a: '기간이 짧으면 차이가 작지만, 몇 년 이상 길어지면 복리가 눈에 띄게 유리해집니다.',
+  },
+  {
+    q: '비과세 적금은 무엇인가요?',
+    a: '비과세종합저축 등 일정 요건(고령자·장애인 등)을 갖춘 사람이 가입하는 상품으로, 이자소득세가 면제됩니다.',
+  },
+];
 ---
 
 <CalculatorLayout calculator={calculator}>
@@ -73,15 +132,7 @@ const calculator = getCalculator('savings')!;
   </section>
 
   <section>
-    <h2>사용법</h2>
-    <p>
-      예금/적금 종류를 고르고 금액·연이율·기간을 입력하세요. 예금은 <strong>예치 원금</strong>,
-      적금은 <strong>매월 납입액</strong>을 넣습니다.
-    </p>
-  </section>
-
-  <section>
-    <h2>예금과 적금의 차이</h2>
+    <h2>예금과 적금의 이자 계산 방식 차이</h2>
     <ul>
       <li><strong>예금(거치식)</strong>: 목돈을 한 번에 넣고 만기까지 둡니다. 전체 기간 이자가 붙습니다.</li>
       <li>
@@ -92,23 +143,90 @@ const calculator = getCalculator('savings')!;
   </section>
 
   <section>
-    <h2>계산 방법</h2>
-    <p>월이율 <em>i</em> = 연이율 ÷ 12 로 둡니다.</p>
+    <h2>예금 이자 계산</h2>
+    <p>월이율 <em>i</em> = 연이율 ÷ 12.</p>
     <ul>
-      <li>예금 단리: 이자 = 원금 × 연이율 × (개월 ÷ 12)</li>
-      <li>예금 월복리: 만기금액 = 원금 × (1 + i)<sup>개월</sup></li>
-      <li>적금 단리: 이자 = 월납입액 × i × (개월 × (개월 + 1) ÷ 2)</li>
-      <li>적금 월복리: 만기금액 = 월납입액 × (1 + i) × ((1 + i)<sup>개월</sup> − 1) ÷ i</li>
+      <li>단리: 이자 = 원금 × 연이율 × (개월 ÷ 12)</li>
+      <li>월복리: 만기금액 = 원금 × (1 + i)<sup>개월</sup></li>
     </ul>
+  </section>
+
+  <section>
+    <h2>적금 이자 계산</h2>
+    <ul>
+      <li>단리: 이자 = 월납입액 × i × (개월 × (개월 + 1) ÷ 2)</li>
+      <li>월복리: 만기금액 = 월납입액 × (1 + i) × ((1 + i)<sup>개월</sup> − 1) ÷ i</li>
+    </ul>
+    <p>회차마다 이자가 붙는 기간이 달라서, 매달 같은 금액을 넣어도 계산이 예금보다 복잡합니다.</p>
   </section>
 
   <section>
     <h2>이자소득세</h2>
     <p>
       이자에는 이자소득세가 붙습니다. 일반과세는 <strong>15.4%</strong>(소득세 14% + 지방소득세
-      1.4%), 세금우대저축은 9.5%, 비과세종합저축 등은 0% 입니다. 이 계산기는 이자에 선택한 세율을
+      1.4%), 세금우대저축은 9.5%, 비과세종합저축 등은 0%입니다. 이 계산기는 이자에 선택한 세율을
       적용해 세후 수령액을 보여줍니다.
     </p>
+  </section>
+
+  <section>
+    <h2>계산 예시</h2>
+    <p>적금 월 50만원 · 연 3% · 12개월 · 단리 · 일반과세:</p>
+    <ul>
+      <li>총 납입 원금 {won(exInst.principal)}</li>
+      <li>세전 이자 {won(exInst.pretaxInterest)} − 이자소득세 {won(exInst.tax)}</li>
+      <li><strong>세후 만기 수령액 {won(exInst.maturityAmount)}</strong></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>금리별 이자 예시</h2>
+    <p><strong>적금</strong> — 월 30만원 · 12개월 · 단리 · 일반과세(15.4%):</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>연이율</th><th>세전 이자</th><th>세금</th><th>세후 이자</th><th>세후 수령액</th></tr>
+        </thead>
+        <tbody>
+          {
+            instRows.map((r) => (
+              <tr>
+                <td>{r.rate}%</td>
+                <td>{won(r.pretaxInterest)}</td>
+                <td>{won(r.tax)}</td>
+                <td>{won(r.aftertaxInterest)}</td>
+                <td>
+                  <strong>{won(r.maturityAmount)}</strong>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p><strong>예금</strong> — 1,000만원 · 12개월 · 단리 · 일반과세(15.4%):</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>연이율</th><th>세전 이자</th><th>세금</th><th>세후 이자</th><th>세후 수령액</th></tr>
+        </thead>
+        <tbody>
+          {
+            depRows.map((r) => (
+              <tr>
+                <td>{r.rate}%</td>
+                <td>{won(r.pretaxInterest)}</td>
+                <td>{won(r.tax)}</td>
+                <td>{won(r.aftertaxInterest)}</td>
+                <td>
+                  <strong>{won(r.maturityAmount)}</strong>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section>
@@ -119,6 +237,8 @@ const calculator = getCalculator('savings')!;
     </p>
     <p>근거: 이자소득세율(소득세법), 단리·복리 표준 공식.</p>
   </section>
+
+  <Faq items={FAQ} />
 </CalculatorLayout>
 
 <script>

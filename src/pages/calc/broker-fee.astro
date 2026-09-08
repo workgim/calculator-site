@@ -1,9 +1,47 @@
 ---
 import CalculatorLayout from '../../layouts/CalculatorLayout.astro';
 import AmountInput from '../../components/AmountInput.astro';
+import Faq from '../../components/Faq.astro';
 import { getCalculator } from '../../data/calculators';
+import { calcBrokerFee } from '../../lib/brokerFee';
 
 const calculator = getCalculator('broker-fee')!;
+
+const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+const eok = (p: number) => `${(p / 100_000_000).toLocaleString()}억`;
+const saleRows = [
+  300_000_000, 500_000_000, 700_000_000, 900_000_000, 1_200_000_000, 1_500_000_000,
+].map((p) => ({ label: eok(p), ...calcBrokerFee({ dealType: 'sale', price: p }) }));
+const leaseRows = [100_000_000, 300_000_000, 500_000_000, 700_000_000].map((p) => ({
+  label: eok(p),
+  ...calcBrokerFee({ dealType: 'lease', price: p }),
+}));
+const monthlyEx = calcBrokerFee({ dealType: 'monthly', deposit: 10_000_000, monthlyRent: 500_000 });
+const sale5 = calcBrokerFee({ dealType: 'sale', price: 500_000_000 });
+const lease3 = calcBrokerFee({ dealType: 'lease', price: 300_000_000 });
+
+const FAQ = [
+  {
+    q: '5억 아파트 매매 복비는 얼마인가요?',
+    a: `거래금액 5억원은 0.4% 구간(한도 없음)으로, 중개보수 상한은 ${won(sale5.fee)}입니다. 실제로는 이 한도 안에서 협의합니다.`,
+  },
+  {
+    q: '전세 3억 복비는 얼마인가요?',
+    a: `전세보증금 3억원은 0.3% 구간으로 상한 ${won(lease3.fee)}입니다.`,
+  },
+  {
+    q: '중개보수에 부가세가 붙나요?',
+    a: '중개사무소가 일반과세자면 중개보수의 10%가 부가세로 별도 부과됩니다. 간이과세자는 부가율이 다릅니다.',
+  },
+  {
+    q: '상한요율보다 적게 낼 수 있나요?',
+    a: '네. 표의 요율은 "상한"이며 그 안에서 협의합니다. 상한을 초과해 요구하는 것은 위법입니다.',
+  },
+  {
+    q: '오피스텔·상가도 이 요율인가요?',
+    a: '아닙니다. 주택 외 부동산(상가·토지)은 별도 요율(0.9% 이내 협의)입니다. 오피스텔은 전용 85㎡ 이하 주거용이면 주택 요율에 준하는 별도 기준이 적용됩니다.',
+  },
+];
 ---
 
 <CalculatorLayout calculator={calculator}>
@@ -59,10 +97,11 @@ const calculator = getCalculator('broker-fee')!;
   </section>
 
   <section>
-    <h2>사용법</h2>
+    <h2>부동산 중개보수란?</h2>
     <p>
-      거래 유형을 고르고 금액을 입력하세요. 월세는 보증금과 월 차임을 각각 입력합니다. 결과는
-      법에서 정한 <strong>상한액</strong>이며, 실제 보수는 이 한도 안에서 협의합니다.
+      부동산 거래를 중개한 공인중개사에게 지급하는 수수료입니다. 흔히 <strong>복비</strong>라고
+      부릅니다. 공인중개사법이 거래금액 구간별로 <strong>상한요율</strong>을 정해두었고, 실제
+      보수는 그 한도 안에서 중개사와 협의합니다.
     </p>
   </section>
 
@@ -104,6 +143,62 @@ const calculator = getCalculator('broker-fee')!;
   </section>
 
   <section>
+    <h2>계산 예시</h2>
+    <p>매매가 5억원 (부가세 별도):</p>
+    <ul>
+      <li>거래금액 5억원 → 2억~9억 구간, 요율 {sale5.ratePct}%</li>
+      <li><strong>중개보수 상한 {won(sale5.fee)}</strong></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>거래금액별 중개보수</h2>
+    <p>부가세 별도, 상한액 기준입니다.</p>
+    <p><strong>매매</strong></p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>매매가</th><th>요율</th><th>중개보수 상한</th></tr></thead>
+        <tbody>
+          {
+            saleRows.map((r) => (
+              <tr>
+                <td>{r.label}</td>
+                <td>{r.ratePct}%{r.cap != null ? ` (한도 ${won(r.cap)})` : ''}</td>
+                <td>
+                  <strong>{won(r.fee)}</strong>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p><strong>전세</strong></p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>전세보증금</th><th>요율</th><th>중개보수 상한</th></tr></thead>
+        <tbody>
+          {
+            leaseRows.map((r) => (
+              <tr>
+                <td>{r.label}</td>
+                <td>{r.ratePct}%</td>
+                <td>
+                  <strong>{won(r.fee)}</strong>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p>
+      <strong>월세</strong> 예시 — 보증금 1,000만원 / 월세 50만원 → 거래금액
+      {won(monthlyEx.transactionAmount)}, 요율 {monthlyEx.ratePct}%, 상한 {won(monthlyEx.fee)}
+    </p>
+  </section>
+
+  <section>
     <h2>주의사항</h2>
     <ul>
       <li>주택 기준입니다. <strong>오피스텔·상가·토지</strong>는 요율이 다릅니다.</li>
@@ -112,6 +207,8 @@ const calculator = getCalculator('broker-fee')!;
     </ul>
     <p>근거: 공인중개사법 시행규칙 별표1 (2021-10-19 개정).</p>
   </section>
+
+  <Faq items={FAQ} />
 </CalculatorLayout>
 
 <script>

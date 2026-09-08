@@ -168,7 +168,7 @@
 | 클래스 | 용도 |
 |--------|------|
 | `.calc-box` | 입력 영역을 감싸는 카드 (`--color-surface` 배경, `--radius-md`) |
-| `.calc-field` | 라벨 + 입력 한 묶음. 아래 여백 `--space-4` (마지막은 0) |
+| `.calc-field` | 라벨 + 입력 한 묶음. 아래 여백 `--space-4`. 폼 안의 `[type=submit]` 버튼은 위에 `--space-2` 추가 여백(증감 버튼과 안 겹치게) |
 | `.calc-row` | 한 줄에 입력 2개 이상 (flex, 각 칸 `flex: 1 1 8rem`) |
 | `.calc-hint` | 입력 아래 작은 설명. `--fs-xs`, `--color-text-muted` |
 | `.calc-result` | 결과 박스. 안에 `<dl>`(항목/값) 지원 — 값은 오른쪽 정렬 + tabular-nums |

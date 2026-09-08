@@ -269,8 +269,9 @@ th {
 .calc-field {
   margin-bottom: var(--space-4);
 }
-.calc-field:last-of-type {
-  margin-bottom: 0;
+/* 폼 안의 [계산하기] 버튼: 위 입력·증감 버튼과 간격 확보 */
+.calc-box form button[type='submit'] {
+  margin-top: var(--space-2);
 }
 .calc-hint {
   display: block;

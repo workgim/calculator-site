@@ -110,7 +110,7 @@
 
 주차별(참고 / 진행 현황):
 - 1주차: **✅ 완료 (2026-09-08)** — `salary-net` `hourly-wage` `loan` `vat` `severance-pay` 개편 + `related` 필드 + `<Faq>`·`.faq`·`.terms`·`.table-scroll` + 빌드타임 표
-- 2주차: `broker-fee` `pyeong` `acquisition-tax` `savings`
+- 2주차: **✅ 완료 (2026-09-08)** — `broker-fee` `pyeong` `acquisition-tax` `savings` + 폼 `[계산하기]` 버튼 위 여백 수정
 - 3주차: `bmi` `bmr` `age` `dday` `date-add`
 - 4주차: `percentage` `char-count` + Search Console 노출어 분석 → 다음 콘텐츠 결정
 
