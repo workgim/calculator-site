@@ -26,7 +26,7 @@ export const SITE = {
    * 값이 있으면 Analytics.astro 가 스크립트를 삽입하고, privacy.astro 에 쿠키 고지가 나온다.
    * 비워두면 분석 코드가 전혀 로드되지 않는다.
    */
-  gaId: 'G-64XL4FTB03',
+  gaId: 'G-HC8HX39ETH',
   /**
    * 공개 문의용 이메일. 개인 메일 대신 전용 주소 권장 (예: lifecalcmate.help@gmail.com).
    * 비워두면 /contact 에 "준비 중"으로 표시된다.
