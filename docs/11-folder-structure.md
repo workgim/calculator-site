@@ -36,7 +36,7 @@ calculator-site/
 │  │  ├─ AdSlot.astro          #  광고 자리 (빈 상자 + "광고" 라벨, 높이 예약)
 │  │  ├─ CalculatorCard.astro  #  홈 목록 카드
 │  │  ├─ Breadcrumb.astro      #  홈 > 카테고리 > 계산기 (+ BreadcrumbList JSON-LD)
-│  │  ├─ Analytics.astro       #  GA4 지연 로드 (site.ts gaId 있을 때만)
+│  │  ├─ Analytics.astro       #  GA4 표준 async 태그 (site.ts gaId 있을 때만)
 │  │  └─ AmountInput.astro     #  금액(원) 입력 필드: 세 자리 콤마 + 빠른 증감 버튼
 │  │     (Faq.astro 는 아직 미작성 — 후순위. 계산기 페이지에 일반 텍스트로 사용법/공식/주의)
 │  │

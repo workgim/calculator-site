@@ -7,7 +7,7 @@
 - 진행 상황(2026-09-08): 1~12단계 완료. **계산기 16개** (추천 순서 1~12 + Tier 2~3: 날짜/평↔㎡/글자수/기초대사량).
   카테고리 5개(finance/realestate/health/date/living).
   인프라: 금액칸 콤마·증감 버튼, 관련 계산기 내부 링크, sitemap lastmod, 커스텀 도메인,
-  GA4(`G-HC8HX39ETH`, 지연 로드), about/contact/privacy, Vitest(`npm test`, 137케이스), Lighthouse 모바일 100.
+  GA4(`G-HC8HX39ETH`, 표준 async 태그), about/contact/privacy, Vitest(`npm test`, 137케이스), Lighthouse 모바일 100.
 - 2026-09-08 완료: **16개 페이지 콘텐츠·SEO 개편**(H2 섹션 + `<Faq>` + 빌드타임 표 + `related`),
   **디자인 보강**(캔버스/카드 층위·그림자·결과 강조·표 손질) + **다크 모드**(자동 + 헤더 토글).
 - **다음(2026-09-09~)**: 계산기 종류 확대. 그다음 Search Console 노출어 관찰(10월 초). → [01-roadmap.md](./01-roadmap.md)

@@ -92,7 +92,7 @@
 | 19 | 내부 링크 | breadcrumb + 홈↔계산기 + 같은 분류 관련 계산기 | `Nav.astro`, `Breadcrumb.astro`, `index.astro`, `CalculatorLayout.astro`(관련 계산기) | ✅ |
 | 20 | 페이지당 h1 | 정확히 1개 | `CalculatorLayout`(자동 1개) / 정적 페이지 각각 1개 | ✅ |
 | 21 | 모바일 대응 | 반응형, 가로 스크롤 없음, 터치 타겟 | `global.css` — [30-design-guide.md](./30-design-guide.md) | ✅ |
-| 22 | 성능(CWV) | §6 목표치 | 시스템 폰트, JS 최소, `AdSlot` 높이 예약, **GA4 지연 로드**(`Analytics.astro`) | ✅ 2026-09-07 Lighthouse 모바일 100 (가벼운 페이지). 실사용자 CWV 는 Search Console 로 추적 |
+| 22 | 성능(CWV) | §6 목표치 | 시스템 폰트, JS 최소, `AdSlot` 높이 예약, GA4 표준 async 태그(`Analytics.astro`) | ✅ 2026-09-07 Lighthouse 모바일 100. 2026-09-10 GA4 지연 로드 → 표준 태그로 되돌림(검증 편의). 재측정 필요. 실사용자 CWV 는 Search Console 로 추적 |
 | 23 | 언어/지역 | 한국어 단일 | — | 해당 없음 |
 
 ---

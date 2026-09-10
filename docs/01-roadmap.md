@@ -11,7 +11,7 @@
 - **1~12단계** (환경 세팅 → Astro 프로젝트 → 공통 레이아웃 → 홈 → 배포 → 커스텀 도메인 `lifecalcmate.com` → 검색엔진 등록)
 - **계산기 16개** — 추천 제작 순서 1~12 + Tier 2~3 일부(날짜/평↔㎡/글자수/기초대사량). 카테고리 5개.
 - **인프라**: 금액칸 콤마·빠른 증감 버튼(`AmountInput`), 관련 계산기 내부 링크, sitemap `lastmod`,
-  기본 OG 이미지, GA4(`G-HC8HX39ETH`, 지연 로드), `about`/`contact`/`privacy`,
+  기본 OG 이미지, GA4(`G-HC8HX39ETH`, 표준 async 태그), `about`/`contact`/`privacy`,
   Vitest 테스트(`npm test`, 137케이스), Lighthouse 모바일 100.
 - **콘텐츠·SEO 개편 (2026-09-08, 옛 B-2·C)** — 16개 페이지 전부 [23-content-guide.md](./23-content-guide.md) 스펙대로.
   공통: `Head.astro` `seoTitle`, `calculators.ts` `related`/`getRelated()`, `<Faq>` 컴포넌트(`<details>`, JSON-LD 없음), `.terms`/`.table-scroll`.
