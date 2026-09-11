@@ -536,10 +536,16 @@ tbody tr:nth-child(even) td {
 .table-scroll table {
   border: 0;
 }
-/* 계산기 본문 H2: 스캔하기 쉽게 얇은 밑줄 */
+/* 계산기 본문 H2: 전역 h2(데스크톱 28px)보다 작게 — 섹션이 많아 과함.
+   22px 고정 + 얇은 밑줄, 섹션 간 여백도 축소 */
 .calc-content h2 {
+  font-size: var(--fs-xl);
+  margin-top: var(--space-6);
   padding-bottom: var(--space-2);
   border-bottom: var(--border-width) solid var(--color-border);
+}
+.calc-content > section:first-child h2 {
+  margin-top: var(--space-5);
 }
 .terms {
   display: grid;

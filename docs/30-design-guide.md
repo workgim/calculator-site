@@ -115,9 +115,9 @@
 | `--fs-sm` | `0.875rem` (14px) | 보조 텍스트 |
 | `--fs-base` | `1rem` (16px) | **본문 기본** |
 | `--fs-lg` | `1.125rem` (18px) | 리드 문장 |
-| `--fs-xl` | `1.375rem` (22px) | h3 |
-| `--fs-2xl` | `1.75rem` (28px) | h2 |
-| `--fs-3xl` | `2.25rem` (36px) | h1 (모바일에선 `--fs-2xl`로 줄임) |
+| `--fs-xl` | `1.375rem` (22px) | h3, **계산기 본문 섹션 h2**(`.calc-content h2` — 섹션이 많아 전역 h2는 과함) |
+| `--fs-2xl` | `1.75rem` (28px) | h2(데스크톱), h1(모바일) |
+| `--fs-3xl` | `2.25rem` (36px) | h1(데스크톱) |
 
 ### 굵기 · 줄간격 · 자간
 
@@ -305,4 +305,5 @@
 | 2026-09-08 | 디자인 보강("앱 느낌" 중간 강도): `--color-page` 캔버스 토큰 도입(body 회색, 카드는 흰색으로 띄움), `.calc-box`·`table`·카드에 그림자, `[계산하기]` 버튼 가로 꽉·48px·lg, 결과 박스 좌측 primary 라인, 표 짝수 행 줄무늬+`.table-scroll` 라운드 테두리, 본문 H2 얇은 밑줄, 헤더 그림자+로고 primary, 내비 알약 hover, 카드 제목 primary+호버 리프트. **다크 모드 구현**(prefers-color-scheme, 토큰만 재정의) |
 | 2026-09-08 | 웹 내 테마 토글 추가: 헤더 `ThemeToggle`(시스템→라이트→다크), `<html data-theme>` + `localStorage`, `<head>` 인라인 스크립트로 FOUC 방지. 다크 토큰이 두 블록(미디어쿼리 + `[data-theme='dark']`)으로 중복됨 |
 | 2026-09-08 | 마감 손질: 모바일에서 헤더 내비 가로 스크롤 한 줄(`.nav` shrink + `overflow-x`), `.table-scroll` 좌우 안쪽 경계 그림자(`--edge-fade` 토큰)로 스크롤 암시, `.calc-result` 강조 크기 분리(`dd strong`=2xl / 한 문장형 `>strong`=lg+primary), 홈 카테고리 구분선+여백 정리 |
-| 2026-09-11 | **아이콘 시스템 + 내비 드롭다운 + 관련 계산기 카드화**: Lucide 기반 `Icon.astro`/`IconBadge.astro`, `calculators.ts`·`categories.ts` 에 `icon` 필드, `--cat-*` 카테고리 색 토큰(라이트+다크). 헤더 내비를 카테고리 드롭다운(데스크톱 hover / 터치·키보드 클릭)으로 — 내비는 다시 wrap(모바일). 홈 카드·카테고리 제목·관련 계산기에 아이콘 배지. 관련 계산기 링크 목록 → 2열 미니 카드(`.related-card`) |
+| 2026-09-11 | **아이콘 시스템 + 내비 드롭다운 + 관련 계산기 카드화**: Lucide 기반 `Icon.astro`/`IconBadge.astro`, `calculators.ts`·`categories.ts` 에 `icon` 필드, `--cat-*` 카테고리 색 토큰(라이트+다크). 헤더 내비를 카테고리 드롭다운(데스크톱 hover / 터치·키보드 클릭)으로. 홈 카드·카테고리 제목·관련 계산기에 아이콘 배지. 관련 계산기 링크 목록 → 2열 미니 카드(`.related-card`) |
+| 2026-09-11 | 후속 조정: 모바일 내비는 가로 스크롤 스트립 유지(드롭다운 패널은 `.nav__item` static 으로 클리핑 회피). 헤더를 `[로고+토글] 바 + 내비` 로 분리 — 토글이 로고와 같은 줄, 데스크톱은 `display:contents`+`order` 로 한 줄. 계산기 본문 섹션 h2 를 22px(`--fs-xl`)로 축소 + 위 여백 `--space-6` |
