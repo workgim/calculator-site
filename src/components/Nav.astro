@@ -46,11 +46,12 @@ import IconBadge from './IconBadge.astro';
     margin: 0;
     padding: 0;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: var(--space-1);
   }
   .nav li {
     margin: 0;
+    flex: none;
   }
   .nav__item {
     position: relative;
@@ -153,8 +154,20 @@ import IconBadge from './IconBadge.astro';
     color: var(--color-primary);
   }
 
-  /* 좁은 화면: 패널을 내비 전체 폭으로 */
-  @media (max-width: 48rem) {
+  /* 좁은 화면: 내비를 옆으로 드래그하는 한 줄 스트립 + 패널은 내비 전체 폭 */
+  @media (max-width: 47.99rem) {
+    .nav ul {
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      /* 패널이 아래로 나올 공간(스크롤바 없이도 눌리지 않게) */
+      padding-bottom: 2px;
+    }
+    .nav ul::-webkit-scrollbar {
+      display: none;
+    }
+    /* .nav__item 을 static 으로 두면 패널의 기준(containing block)이
+       스크롤 스트립(.nav ul) 이 아니라 .nav 가 되어 잘리지 않는다 */
     .nav__item {
       position: static;
     }
@@ -165,11 +178,8 @@ import IconBadge from './IconBadge.astro';
       max-width: none;
     }
   }
-  /* 넓은 화면: 한 줄, 오른쪽 끝 카테고리는 패널을 오른쪽 정렬 */
+  /* 넓은 화면: 오른쪽 끝 카테고리는 패널을 오른쪽 정렬 */
   @media (min-width: 48rem) {
-    .nav ul {
-      flex-wrap: nowrap;
-    }
     .nav__item:nth-last-child(-n + 2) .nav__panel {
       left: auto;
       right: 0;
