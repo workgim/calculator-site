@@ -1,0 +1,19 @@
+---
+/**
+ * 카테고리 색으로 물든 둥근 사각 배지 안에 아이콘.
+ * 색은 data-cat(카테고리 id)으로 결정 — 토큰은 global.css `--cat-*`.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  name: string;
+  cat?: string;
+  size?: 'md' | 'sm';
+}
+const { name, cat, size = 'md' } = Astro.props;
+const iconSize = size === 'sm' ? 16 : 20;
+---
+
+<span class:list={['icon-badge', size === 'sm' && 'icon-badge--sm']} data-cat={cat}>
+  <Icon name={name} size={iconSize} />
+</span>

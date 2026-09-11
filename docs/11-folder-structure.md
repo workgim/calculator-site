@@ -32,13 +32,16 @@ calculator-site/
 │  │
 │  ├─ components/
 │  │  ├─ Head.astro            #  <title>·meta·canonical·OG·소유확인·전역 JSON-LD
-│  │  ├─ Header.astro / Footer.astro / Nav.astro
+│  │  ├─ Header.astro / Footer.astro / Nav.astro   #  Nav = 카테고리 드롭다운
+│  │  ├─ ThemeToggle.astro     #  시스템/라이트/다크 전환 버튼
+│  │  ├─ Icon.astro            #  Lucide path 맵 (인라인 SVG, currentColor)
+│  │  ├─ IconBadge.astro       #  카테고리 색 배지 + Icon
 │  │  ├─ AdSlot.astro          #  광고 자리 (빈 상자 + "광고" 라벨, 높이 예약)
-│  │  ├─ CalculatorCard.astro  #  홈 목록 카드
+│  │  ├─ CalculatorCard.astro  #  홈 목록 카드 (아이콘 배지 + 제목 + 한 줄)
 │  │  ├─ Breadcrumb.astro      #  홈 > 카테고리 > 계산기 (+ BreadcrumbList JSON-LD)
+│  │  ├─ Faq.astro             #  자주 묻는 질문 아코디언 (<details>, JSON-LD 없음)
 │  │  ├─ Analytics.astro       #  GA4 표준 async 태그 (site.ts gaId 있을 때만)
 │  │  └─ AmountInput.astro     #  금액(원) 입력 필드: 세 자리 콤마 + 빠른 증감 버튼
-│  │     (Faq.astro 는 아직 미작성 — 후순위. 계산기 페이지에 일반 텍스트로 사용법/공식/주의)
 │  │
 │  ├─ pages/                   # ★ 파일 = URL  (astro.config: trailingSlash 'never', build.format 'file')
 │  │  ├─ index.astro  about.astro  contact.astro  privacy.astro  404.astro
@@ -128,10 +131,12 @@ calculator-site/
      값은 `parseAmount(el.value)` 로 읽는다. (콤마·빠른 증감 버튼 자동)
 3. **`src/data/calculators.ts`** — 배열에 항목 한 개 추가
    ```
-   { slug: 'example', title: '예시 계산기', description: '...',
-     category: 'living', keywords: ['예시 계산기', ...], updated: '2026-09-07' }
+   { slug: 'example', title: '예시 계산기', icon: 'calculator',
+     shortDescription: '...', description: '...', category: 'living',
+     related: ['...'], keywords: ['예시 계산기', ...], updated: '2026-09-11' }
    ```
-   → 이 한 줄로 **홈 목록 카드**, **사이트맵 포함**, **내비게이션**에 자동 반영된다.
+   → 이 한 줄로 **홈 목록 카드**, **사이트맵 포함**, **내비게이션 드롭다운**, **관련 계산기**에 자동 반영된다.
+   `icon` 은 `Icon.astro` 의 이름(없으면 `calculator` 폴백). 새 아이콘은 [Lucide](https://lucide.dev)에서 골라 `Icon.astro` 의 `PATHS` 에 추가.
 
 **건드리지 않아도 되는 것**: 헤더, 푸터, 광고 자리, SEO 태그 틀, 디자인, `astro.config.mjs`.
 이게 "확장하기 쉬운 구조"의 핵심이다. — 절차 체크리스트는 나중에 `14-workflow.md`로 분리.

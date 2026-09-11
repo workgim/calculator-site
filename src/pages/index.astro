@@ -5,6 +5,7 @@ import { CATEGORIES } from '../data/categories';
 import { getCalculatorsByCategory } from '../data/calculators';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CalculatorCard from '../components/CalculatorCard.astro';
+import IconBadge from '../components/IconBadge.astro';
 ---
 
 <BaseLayout title={SITE.name} description={SITE.description} path="/" wide>
@@ -20,7 +21,10 @@ import CalculatorCard from '../components/CalculatorCard.astro';
       if (list.length === 0) return null;
       return (
         <section id={category.id} class="cat">
-          <h2>{category.name}</h2>
+          <h2 class="cat__title">
+            <IconBadge name={category.icon} cat={category.id} size="sm" />
+            {category.name}
+          </h2>
           <p class="cat__desc">{category.description}</p>
           <div class="grid">
             {list.map((calc) => (
@@ -44,7 +48,10 @@ import CalculatorCard from '../components/CalculatorCard.astro';
     padding-top: 0;
     border-top: 0;
   }
-  .cat h2 {
+  .cat__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
     margin: 0 0 var(--space-1);
   }
   .cat__desc {

@@ -13,6 +13,7 @@ import { SITE } from '../config/site';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import AdSlot from '../components/AdSlot.astro';
+import IconBadge from '../components/IconBadge.astro';
 
 interface Props {
   calculator: Calculator;
@@ -65,12 +66,20 @@ const jsonLd = {
 
   <nav class="related" aria-label="관련 계산기">
     <h2>{curated ? '함께 쓰면 좋은 계산기' : `${category?.name ?? ''} 계산기 더 보기`}</h2>
-    <ul>
+    <ul class="related__grid">
       {related.map((c) => (
-        <li><a href={`/calc/${c.slug}`}>{c.title}</a></li>
+        <li>
+          <a class="related-card" href={`/calc/${c.slug}`}>
+            <IconBadge name={c.icon} cat={c.category} size="sm" />
+            <span>
+              <span class="related-card__title">{c.title}</span>
+              <span class="related-card__desc">{c.shortDescription}</span>
+            </span>
+          </a>
+        </li>
       ))}
-      <li><a href="/">전체 계산기 목록</a></li>
     </ul>
+    <p class="related__all"><a href="/">전체 계산기 목록 →</a></p>
   </nav>
 
   <p class="calc-updated">최종 업데이트: {calculator.updated}</p>
@@ -90,16 +99,6 @@ const jsonLd = {
   .related h2 {
     margin-top: 0;
     font-size: var(--fs-lg);
-  }
-  .related ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-4);
-  }
-  .related li {
-    margin: 0;
   }
   .calc-updated {
     margin-top: var(--space-6);

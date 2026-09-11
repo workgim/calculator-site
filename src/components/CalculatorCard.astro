@@ -1,6 +1,7 @@
 ---
 /** 홈 목록에 뿌리는 계산기 카드. (docs/12-page-structure.md §6) */
 import type { Calculator } from '../data/calculators';
+import IconBadge from './IconBadge.astro';
 
 interface Props {
   calculator: Calculator;
@@ -9,7 +10,10 @@ const { calculator } = Astro.props;
 ---
 
 <a class="card" href={`/calc/${calculator.slug}`}>
-  <span class="card__title">{calculator.title}</span>
+  <span class="card__head">
+    <IconBadge name={calculator.icon} cat={calculator.category} />
+    <span class="card__title">{calculator.title}</span>
+  </span>
   <span class="card__desc">{calculator.shortDescription}</span>
 </a>
 
@@ -34,6 +38,11 @@ const { calculator } = Astro.props;
     box-shadow: var(--shadow-md);
     color: var(--color-text);
     transform: translateY(-2px);
+  }
+  .card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
   }
   .card__title {
     font-weight: var(--fw-bold);

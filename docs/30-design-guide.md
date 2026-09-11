@@ -46,6 +46,16 @@
 | `--color-focus-ring` | `#2563eb` | 키보드 포커스 윤곽 |
 | `--color-ad-bg` | `#f0f2f5` | 광고 영역 배경(본문과 구분) |
 
+**카테고리 색 (아이콘 배지)** — 각 카테고리에 `bg`(연한 배경)·`fg`(아이콘 색) 한 쌍. `IconBadge` 가 `data-cat=<id>` 로 선택. 라이트/다크 각각 정의(다크는 두 다크 블록에 함께).
+
+| 카테고리 | 라이트 bg / fg | 다크 bg / fg |
+|---|---|---|
+| finance | `#eef4ff` / `#1d4ed8` | `#1a2942` / `#8fb6f9` |
+| realestate | `#fff4ec` / `#c2410c` | `#39271b` / `#f0a476` |
+| health | `#eafaf0` / `#15803d` | `#17291e` / `#63cc86` |
+| date | `#f2effe` / `#6d28d9` | `#241f3c` / `#b096f2` |
+| living | `#e8fafc` / `#0e7490` | `#123033` / `#4ac3ce` |
+
 > 대비 참고: `--color-primary`(#2563eb)·`--color-text-muted`(#5b6470)는 흰 카드 위에서 약 4.9:1·5.6:1, 캔버스(#f2f3f5) 위에서 약 4.7:1·4.9:1로 모두 본문 기준(4.5:1)을 통과한다. 색을 바꾸면 §8 기준으로 다시 검증한다.
 
 ### 다크 (구현됨 — 2026-09-08)
@@ -190,7 +200,16 @@
 | `.stepper` | 빠른 증감 버튼 줄. 버튼은 알약형(`--radius-full`), 최소 높이 36px, `--color-primary` 글자. `.stepper__clear`(C 버튼)는 `--color-text-muted` + 오른쪽 정렬 |
 | `.faq details / summary / .faq__a` | 자주 묻는 질문 아코디언(`<details>`). 테두리 `--radius-sm`, summary 오른쪽에 +/− 표시, 답변은 `--color-text-muted`. `<Faq>` 컴포넌트가 사용 (docs/23-content-guide.md §1.5) |
 | `.terms` | "계산에 사용되는 용어" 정의 목록(`<dl>`). 2열 그리드(용어/설명), 좁은 화면에서 1열. (docs/23-content-guide.md §Part2) |
-| `.table-scroll` | 넓은 표를 감싸 가로 스크롤. `<table>` 을 `<div class="table-scroll">` 로 감쌈 |
+| `.table-scroll` | 넓은 표를 감싸 가로 스크롤. `<table>` 을 `<div class="table-scroll">` 로 감쌈. 좌우 안쪽 경계 그림자(`--edge-fade`)로 스크롤 암시 |
+| `.icon-badge` / `.icon-badge--sm` | 카테고리 색 둥근 사각 배지 + 아이콘. `IconBadge.astro` 가 사용, 색은 `[data-cat=<id>]` → `--cat-*` 토큰. 기본 2.25rem / sm 1.75rem |
+| `.related__grid` / `.related-card` | 계산기 페이지 하단 "관련 계산기" — 아이콘 배지 + 제목 + 한 줄 설명의 2열 카드. `CalculatorLayout` 이 사용 |
+
+### 내비게이션 드롭다운 (`Nav.astro`, 2026-09-11)
+
+- 헤더의 각 카테고리는 `<button>` + `.nav__panel`(그 카테고리 계산기 목록 + "전체 보기" 링크).
+- **데스크톱**: `:hover` 로 열림(버튼–패널 사이 `::before` 투명 다리로 hover 유지). **터치·키보드**: 버튼 클릭/Enter 로 `[data-open]` 토글, 바깥 클릭·Esc 로 닫힘(JS ~25줄). `aria-expanded`/`aria-controls`.
+- 좁은 화면(`< 48rem`)은 `.nav__item` 을 `position: static` 으로 두고 패널을 내비 전체 폭으로. 넓은 화면은 오른쪽 끝 2개 카테고리만 패널 우측 정렬.
+- 계산기·카테고리 아이콘 이름은 데이터에 있음: `calculators.ts` 의 `icon`, `categories.ts` 의 `icon`.
 
 ### 모서리 / 그림자 / 테두리
 
@@ -224,6 +243,7 @@
 |------|------|
 | favicon | `public/favicon.svg` 1개(단색, 단순 형태) |
 | 기본 OG 이미지 | `public/images/og-default.png`, 1200×630, 사이트명 + 짧은 문구 |
+| UI 아이콘 | `Icon.astro` — [Lucide](https://lucide.dev)(ISC) 아이콘의 path 데이터만 인라인. 24×24 viewBox, `stroke="currentColor" stroke-width="1.8"`. 외부 요청 0. 새 아이콘은 Lucide에서 `<svg>` 안쪽만 복사해 `PATHS` 에 추가. 계산기별 아이콘 이름은 `calculators.ts` 의 `icon`, 카테고리는 `categories.ts` 의 `icon` |
 | 본문 이미지 | 되도록 안 씀. 쓰면 `width`/`height` 지정 + `loading="lazy"` + `alt` |
 | 일러스트/사진 | 1차 없음. 필요하면 라이선스 확인된 것만 |
 
@@ -267,6 +287,8 @@
 | 브레이크포인트 수치 | 각 미디어쿼리에 직접(`48rem` 등). 기준값은 이 문서 §5 |
 | 다크 모드 | `global.css` `:root` 바로 뒤: `@media (prefers-color-scheme: dark) :root:not([data-theme])` + `:root[data-theme='dark']` (색·shadow 토큰 두 벌) |
 | 테마 토글 | `src/components/ThemeToggle.astro`(헤더, 시스템↔라이트↔다크 순환) + `BaseLayout` `<head>` 맨 앞 FOUC 방지 인라인 스크립트 + `global.css` `.theme-toggle` |
+| 아이콘 | `src/components/Icon.astro`(Lucide path 맵) + `src/components/IconBadge.astro`(카테고리 색 배지). `global.css` `--cat-*` 토큰 + `.icon-badge` |
+| 내비 드롭다운 | `src/components/Nav.astro` — 스코프 `<style>` + 스코프 `<script>`(약 25줄). §6 참고 |
 | 표면 층위 | 캔버스 `--color-page`(body) → 카드 `--color-bg`(`.calc-box`·`.card`·`table`·`.calc-result`·`.faq details`) → 보조 `--color-surface`(표 헤더·줄무늬) |
 
 > 원칙: `.astro` 파일 안에서 색·간격을 **숫자로 직접 쓰지 않는다.** 항상 `var(--...)`.
@@ -283,3 +305,4 @@
 | 2026-09-08 | 디자인 보강("앱 느낌" 중간 강도): `--color-page` 캔버스 토큰 도입(body 회색, 카드는 흰색으로 띄움), `.calc-box`·`table`·카드에 그림자, `[계산하기]` 버튼 가로 꽉·48px·lg, 결과 박스 좌측 primary 라인, 표 짝수 행 줄무늬+`.table-scroll` 라운드 테두리, 본문 H2 얇은 밑줄, 헤더 그림자+로고 primary, 내비 알약 hover, 카드 제목 primary+호버 리프트. **다크 모드 구현**(prefers-color-scheme, 토큰만 재정의) |
 | 2026-09-08 | 웹 내 테마 토글 추가: 헤더 `ThemeToggle`(시스템→라이트→다크), `<html data-theme>` + `localStorage`, `<head>` 인라인 스크립트로 FOUC 방지. 다크 토큰이 두 블록(미디어쿼리 + `[data-theme='dark']`)으로 중복됨 |
 | 2026-09-08 | 마감 손질: 모바일에서 헤더 내비 가로 스크롤 한 줄(`.nav` shrink + `overflow-x`), `.table-scroll` 좌우 안쪽 경계 그림자(`--edge-fade` 토큰)로 스크롤 암시, `.calc-result` 강조 크기 분리(`dd strong`=2xl / 한 문장형 `>strong`=lg+primary), 홈 카테고리 구분선+여백 정리 |
+| 2026-09-11 | **아이콘 시스템 + 내비 드롭다운 + 관련 계산기 카드화**: Lucide 기반 `Icon.astro`/`IconBadge.astro`, `calculators.ts`·`categories.ts` 에 `icon` 필드, `--cat-*` 카테고리 색 토큰(라이트+다크). 헤더 내비를 카테고리 드롭다운(데스크톱 hover / 터치·키보드 클릭)으로 — 내비는 다시 wrap(모바일). 홈 카드·카테고리 제목·관련 계산기에 아이콘 배지. 관련 계산기 링크 목록 → 2열 미니 카드(`.related-card`) |

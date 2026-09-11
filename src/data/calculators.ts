@@ -24,6 +24,8 @@ export interface Calculator {
   /** <meta name="description"> 용. 1~2문장 (docs/23-content-guide.md Part 2) */
   description: string;
   category: CategoryId;
+  /** Icon.astro 의 아이콘 이름 */
+  icon: string;
   /** 함께 쓰면 좋은 계산기 slug (2~4개, 카테고리 교차 허용). 없으면 같은 카테고리 자동 링크. (docs/23-content-guide.md §1.6) */
   related?: string[];
   /** 이 페이지가 노리는 검색어 (docs/02-calculator-catalog.md) */
@@ -35,6 +37,7 @@ export interface Calculator {
 export const CALCULATORS: Calculator[] = [
   {
     slug: 'bmi',
+    icon: 'gauge',
     title: 'BMI 계산기',
     shortDescription: '키와 몸무게로 체질량지수(BMI)와 비만도를 계산합니다.',
     description:
@@ -46,6 +49,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'percentage',
+    icon: 'percent',
     title: '퍼센트 계산기',
     shortDescription: '전체의 몇 %, 비율, 증가율·감소율을 한 번에 계산합니다.',
     description:
@@ -57,6 +61,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'salary-net',
+    icon: 'wallet',
     title: '연봉 실수령액 계산기',
     seoTitle: '연봉 실수령액 계산기 | 2026년 월급 실수령액',
     shortDescription: '세전 연봉에서 4대보험과 세금을 공제한 월·연 실수령액을 계산합니다.',
@@ -69,6 +74,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'hourly-wage',
+    icon: 'clock',
     title: '시급·주휴수당 계산기',
     seoTitle: '주휴수당 계산기 | 2026년 시급·근무시간별 주휴수당',
     shortDescription: '시급과 1주 근무시간으로 주휴수당·주급·월급 환산액을 계산합니다.',
@@ -81,6 +87,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'broker-fee',
+    icon: 'handshake',
     title: '부동산 중개보수(복비) 계산기',
     seoTitle: '부동산 중개보수 계산기 | 매매·전세·월세 복비',
     shortDescription: '매매·전세·월세 거래금액으로 법정 중개보수 상한액을 계산합니다.',
@@ -93,6 +100,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'acquisition-tax',
+    icon: 'landmark',
     title: '취득세 계산기',
     seoTitle: '취득세 계산기 | 2026년 주택 취득세·지방교육세',
     shortDescription: '주택 취득가액으로 취득세·지방교육세·농특세와 합계를 계산합니다.',
@@ -105,6 +113,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'date-add',
+    icon: 'calendar-days',
     title: '날짜 계산기',
     shortDescription: '기준일에 년·개월·주·일을 더하거나 빼서 결과 날짜와 요일을 계산합니다.',
     description:
@@ -116,6 +125,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'pyeong',
+    icon: 'ruler',
     title: '평 ↔ 제곱미터 변환기',
     seoTitle: '평수 계산기 | 평 ↔ 제곱미터(㎡) 변환',
     shortDescription: '평과 제곱미터(㎡)를 서로 변환합니다. 1평 ≈ 3.3058㎡.',
@@ -128,6 +138,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'char-count',
+    icon: 'type',
     title: '글자 수 세기',
     seoTitle: '글자수 세기 | 공백 포함·제외·바이트 계산',
     shortDescription: '공백 포함/제외 글자 수와 UTF-8·EUC-KR 바이트를 실시간으로 셉니다.',
@@ -139,6 +150,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'bmr',
+    icon: 'flame',
     title: '기초대사량·권장 칼로리 계산기',
     seoTitle: '기초대사량 계산기 | BMR·하루 권장 칼로리(TDEE)',
     shortDescription: '성별·나이·체중·활동량으로 기초대사량(BMR)과 하루 권장 칼로리를 계산합니다.',
@@ -151,6 +163,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'age',
+    icon: 'cake',
     title: '만 나이 계산기',
     shortDescription: '생년월일로 만 나이, 연 나이, 다음 생일까지 남은 일수를 계산합니다.',
     description:
@@ -162,6 +175,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'vat',
+    icon: 'receipt',
     title: '부가가치세(VAT) 계산기',
     seoTitle: '부가세 계산기 | 부가가치세 포함·별도 금액 계산',
     shortDescription: '공급가액·합계금액·부가세액 중 하나만 넣으면 나머지를 계산합니다.',
@@ -174,6 +188,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'dday',
+    icon: 'hourglass',
     title: 'D-day 계산기',
     shortDescription: '목표 날짜까지 남은 일수, 시작일부터 며칠째, 두 날짜 사이 일수를 계산합니다.',
     description:
@@ -185,6 +200,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'savings',
+    icon: 'piggy-bank',
     title: '예금·적금 이자 계산기',
     seoTitle: '예금·적금 이자 계산기 | 세전·세후 만기 수령액',
     shortDescription: '예금·적금의 만기 이자와 이자소득세를 뗀 세후 수령액을 계산합니다.',
@@ -197,6 +213,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'severance-pay',
+    icon: 'briefcase',
     title: '퇴직금 계산기',
     seoTitle: '퇴직금 계산기 | 평균임금 기준 퇴직금 예상액',
     shortDescription: '입사일·퇴사일과 퇴직 전 3개월 임금으로 법정 퇴직금을 계산합니다.',
@@ -209,6 +226,7 @@ export const CALCULATORS: Calculator[] = [
   },
   {
     slug: 'loan',
+    icon: 'hand-coins',
     title: '대출 이자 계산기',
     seoTitle: '대출 이자 계산기 | 원리금균등·원금균등 월 상환액',
     shortDescription: '원리금균등·원금균등·만기일시 상환 방식별 월 상환액과 총 이자를 계산합니다.',
