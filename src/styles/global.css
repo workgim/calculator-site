@@ -21,6 +21,7 @@
   --color-danger: #b91c1c;
   --color-focus-ring: #2563eb;
   --color-ad-bg: #f0f2f5;
+  --color-primary-tint: #eef4ff; /* primary 연한 배경 (번호 배지 등) */
 
   /* ---- 카테고리 색 (아이콘 배지) : docs/30 §2 ----
      각 카테고리 bg/fg 쌍. 다크값은 아래 두 다크 블록에도 같이 둔다. */
@@ -111,6 +112,7 @@
     --color-danger: #f0777e;
     --color-focus-ring: #5b9dff;
     --color-ad-bg: #1b2027;
+    --color-primary-tint: #1a2942;
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
     --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.6);
@@ -146,6 +148,7 @@
   --color-danger: #f0777e;
   --color-focus-ring: #5b9dff;
   --color-ad-bg: #1b2027;
+  --color-primary-tint: #1a2942;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.6);
@@ -363,11 +366,22 @@ td {
 thead th {
   background: var(--color-surface);
   border-bottom-width: 2px;
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
 }
 tbody tr:nth-child(even) th,
 tbody tr:nth-child(even) td {
   background: var(--color-surface);
+}
+/* 첫 칸(항목 이름) 강조 */
+tbody td:first-child {
+  font-weight: var(--fw-medium);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+tbody tr:hover th,
+tbody tr:hover td {
+  background: var(--color-surface-2);
 }
 .table-scroll table {
   margin: 0;
@@ -536,13 +550,37 @@ tbody tr:nth-child(even) td {
 .table-scroll table {
   border: 0;
 }
-/* 계산기 본문 H2: 전역 h2(데스크톱 28px)보다 작게 — 섹션이 많아 과함.
-   22px 고정 + 얇은 밑줄, 섹션 간 여백도 축소 */
+/* 계산기 본문: 섹션마다 번호 배지(primary 통일) + 22px 제목 + 얇은 밑줄.
+   전역 h2(데스크톱 28px)는 섹션이 많아 과하므로 여기서 축소. */
+.calc-content {
+  counter-reset: sec;
+}
+.calc-content > section:not(.faq) {
+  counter-increment: sec;
+}
 .calc-content h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   font-size: var(--fs-xl);
   margin-top: var(--space-6);
   padding-bottom: var(--space-2);
   border-bottom: var(--border-width) solid var(--color-border);
+}
+.calc-content > section:not(.faq) > h2::before {
+  content: counter(sec);
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+  border-radius: var(--radius-md);
 }
 .calc-content > section:first-child h2 {
   margin-top: var(--space-5);

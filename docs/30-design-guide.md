@@ -45,6 +45,7 @@
 | `--color-danger` | `#b91c1c` | 입력 오류 메시지 |
 | `--color-focus-ring` | `#2563eb` | 키보드 포커스 윤곽 |
 | `--color-ad-bg` | `#f0f2f5` | 광고 영역 배경(본문과 구분) |
+| `--color-primary-tint` | `#eef4ff` (다크 `#1a2942`) | primary 연한 배경 — 계산기 본문 섹션 번호 배지 등 |
 
 **카테고리 색 (아이콘 배지)** — 각 카테고리에 `bg`(연한 배경)·`fg`(아이콘 색) 한 쌍. `IconBadge` 가 `data-cat=<id>` 로 선택. 라이트/다크 각각 정의(다크는 두 다크 블록에 함께).
 
@@ -307,3 +308,4 @@
 | 2026-09-08 | 마감 손질: 모바일에서 헤더 내비 가로 스크롤 한 줄(`.nav` shrink + `overflow-x`), `.table-scroll` 좌우 안쪽 경계 그림자(`--edge-fade` 토큰)로 스크롤 암시, `.calc-result` 강조 크기 분리(`dd strong`=2xl / 한 문장형 `>strong`=lg+primary), 홈 카테고리 구분선+여백 정리 |
 | 2026-09-11 | **아이콘 시스템 + 내비 드롭다운 + 관련 계산기 카드화**: Lucide 기반 `Icon.astro`/`IconBadge.astro`, `calculators.ts`·`categories.ts` 에 `icon` 필드, `--cat-*` 카테고리 색 토큰(라이트+다크). 헤더 내비를 카테고리 드롭다운(데스크톱 hover / 터치·키보드 클릭)으로. 홈 카드·카테고리 제목·관련 계산기에 아이콘 배지. 관련 계산기 링크 목록 → 2열 미니 카드(`.related-card`) |
 | 2026-09-11 | 후속 조정: 모바일 내비는 가로 스크롤 스트립 유지(드롭다운 패널은 `.nav__item` static 으로 클리핑 회피). 헤더를 `[로고+토글] 바 + 내비` 로 분리 — 토글이 로고와 같은 줄, 데스크톱은 `display:contents`+`order` 로 한 줄. 계산기 본문 섹션 h2 를 22px(`--fs-xl`)로 축소 + 위 여백 `--space-6` |
+| 2026-09-11 | 계산기 본문 정리(레퍼런스 참고): 섹션마다 **번호 배지**(CSS counter, primary 통일색 `--color-primary-tint`) — `.calc-content > section:not(.faq) > h2::before`. 표: 헤더 `--fw-bold`, 첫 칸(항목명) 강조, 행 hover 배경(`--color-surface-2`) |
