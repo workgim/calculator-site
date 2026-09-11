@@ -1,6 +1,6 @@
 # 30. 디자인 가이드
 
-- 최종 수정일: 2026-09-07
+- 최종 수정일: 2026-09-11
 - 관련: [12-page-structure.md](./12-page-structure.md), [10-tech-stack.md](./10-tech-stack.md)
 
 이 문서는 디자인 "결정"을 **토큰(값)** 으로 고정한다.
@@ -204,6 +204,8 @@
 | `.table-scroll` | 넓은 표를 감싸 가로 스크롤. `<table>` 을 `<div class="table-scroll">` 로 감쌈. 좌우 안쪽 경계 그림자(`--edge-fade`)로 스크롤 암시 |
 | `.icon-badge` / `.icon-badge--sm` | 카테고리 색 둥근 사각 배지 + 아이콘. `IconBadge.astro` 가 사용, 색은 `[data-cat=<id>]` → `--cat-*` 토큰. 기본 2.25rem / sm 1.75rem |
 | `.related__grid` / `.related-card` | 계산기 페이지 하단 "관련 계산기" — 아이콘 배지 + 제목 + 한 줄 설명의 2열 카드. `CalculatorLayout` 이 사용 |
+| `.calc-content` 섹션 번호 | `.calc-content` 가 `counter-reset: sec`, `> section:not(.faq)` 가 `counter-increment`. `> section:not(.faq) > h2::before` 에 번호 배지 — **32px 둥근 사각(`--radius-md`), 숫자 `--fs-xl`(22px) 볼드, `--color-primary` on `--color-primary-tint`**. FAQ 섹션은 번호 없음. h2 자체는 `--fs-xl` + 얇은 밑줄 |
+| 표(`table`) | `--color-bg` + 테두리. `thead th` = `--color-surface` 배경·`--fw-bold`·2px 하단선. 짝수 행 줄무늬(`--color-surface`), 첫 칸(항목명) `--fw-medium` 강조, 행 hover `--color-surface-2` |
 
 ### 내비게이션 드롭다운 (`Nav.astro`, 2026-09-11)
 
@@ -308,4 +310,4 @@
 | 2026-09-08 | 마감 손질: 모바일에서 헤더 내비 가로 스크롤 한 줄(`.nav` shrink + `overflow-x`), `.table-scroll` 좌우 안쪽 경계 그림자(`--edge-fade` 토큰)로 스크롤 암시, `.calc-result` 강조 크기 분리(`dd strong`=2xl / 한 문장형 `>strong`=lg+primary), 홈 카테고리 구분선+여백 정리 |
 | 2026-09-11 | **아이콘 시스템 + 내비 드롭다운 + 관련 계산기 카드화**: Lucide 기반 `Icon.astro`/`IconBadge.astro`, `calculators.ts`·`categories.ts` 에 `icon` 필드, `--cat-*` 카테고리 색 토큰(라이트+다크). 헤더 내비를 카테고리 드롭다운(데스크톱 hover / 터치·키보드 클릭)으로. 홈 카드·카테고리 제목·관련 계산기에 아이콘 배지. 관련 계산기 링크 목록 → 2열 미니 카드(`.related-card`) |
 | 2026-09-11 | 후속 조정: 모바일 내비는 가로 스크롤 스트립 유지(드롭다운 패널은 `.nav__item` static 으로 클리핑 회피). 헤더를 `[로고+토글] 바 + 내비` 로 분리 — 토글이 로고와 같은 줄, 데스크톱은 `display:contents`+`order` 로 한 줄. 계산기 본문 섹션 h2 를 22px(`--fs-xl`)로 축소 + 위 여백 `--space-6` |
-| 2026-09-11 | 계산기 본문 정리(레퍼런스 참고): 섹션마다 **번호 배지**(CSS counter, primary 통일색 `--color-primary-tint`) — `.calc-content > section:not(.faq) > h2::before`. 표: 헤더 `--fw-bold`, 첫 칸(항목명) 강조, 행 hover 배경(`--color-surface-2`) |
+| 2026-09-11 | 계산기 본문 정리(레퍼런스 참고): 섹션마다 **번호 배지**(CSS counter, primary 통일색 `--color-primary-tint`) — `.calc-content > section:not(.faq) > h2::before`, 최종 32px 박스 / 숫자 22px. 표: 헤더 `--fw-bold`, 첫 칸(항목명) 강조, 행 hover 배경(`--color-surface-2`) |

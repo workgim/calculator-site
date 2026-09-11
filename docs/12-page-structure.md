@@ -1,6 +1,6 @@
 # 12. 웹 페이지 / HTML 문서 구조
 
-- 최종 수정일: 2026-09-07
+- 최종 수정일: 2026-09-11
 - 관련: [11-folder-structure.md](./11-folder-structure.md), [20-seo-google.md](./20-seo-google.md), [30-design-guide.md](./30-design-guide.md)
 
 이 문서는 "페이지 한 장이 어떤 뼈대로 이루어지는가"를 정한다.
@@ -119,10 +119,10 @@ title/description(→ `BaseLayout`), breadcrumb, `<h1>`, 리드 문장, `Softwar
 | 3 | 한 줄 소개 | `CalculatorLayout` (`<p class="lead">`) | `calculator.shortDescription` | 자동 |
 | 4 | **계산기 본체** | 페이지 → `<... slot="calculator">` | `.calc-box` 안에 `<form>`(입력 + [계산] 버튼) + `.calc-result` + `.calc-error` | 페이지 |
 | 5 | 광고 자리 | `CalculatorLayout` (`<AdSlot position="afterResult" />`) | 결과 바로 아래 | 빈 상자 |
-| 6~9 | 사용법 / 계산 방법 / 계산 예시 / 주의사항·근거 | 페이지 → 기본 `<slot>` (`<section><h2>…`) | 짧은 설명 텍스트 + 공식 출처 | 페이지 |
-| 10 | 최종 업데이트 날짜 | `CalculatorLayout` | `calculator.updated` | 자동 |
-| 11 | FAQ | 페이지 (일반 `<section>`, `Faq.astro` 아직 없음) | 자주 묻는 질문 2~5개 | 일부 페이지 |
-| 12 | 관련 계산기 | `CalculatorLayout` (`<nav aria-label="관련 계산기">`) | 같은 분류 계산기 링크 + "전체 계산기 목록" | ✅ 자동 |
+| 6~N | 설명 섹션들 (`<section><h2>…`) | 페이지 → 기본 `<slot>` | H2 구조화 본문 + "자주 찾는 값" 표 + 공식 출처. 섹션마다 번호 배지(FAQ 제외). [23-content-guide.md](./23-content-guide.md) §1.2 | ✅ 16개 |
+| N+1 | FAQ | 페이지 → `<Faq items={FAQ} />` (`Faq.astro`, `<details>` 아코디언, `FAQPage` JSON-LD 없음) | 자주 묻는 질문 4~6개 | ✅ 16개 |
+| 마지막-1 | 관련 계산기 | `CalculatorLayout` | `calculator.related`(큐레이션) → 아이콘 + 제목 + 한 줄의 2열 미니 카드, 없으면 같은 카테고리 폴백 | ✅ 자동 |
+| 마지막 | 최종 업데이트 날짜 | `CalculatorLayout` | `calculator.updated` | 자동 |
 
 > 6~9번의 "설명 텍스트"는 SEO·신뢰도·애드센스 심사에 중요하다. 위젯만 있고 글이 없는 페이지는 검색에서 약하다.
 

@@ -1,6 +1,6 @@
 # 11. 폴더 구조
 
-- 최종 수정일: 2026-09-07
+- 최종 수정일: 2026-09-11
 - 전제 스택: Astro ([10-tech-stack.md](./10-tech-stack.md))
 
 핵심 규칙 한 줄: **`src/pages/` 안의 파일 경로가 그대로 웹사이트 주소(URL)가 된다.**
@@ -62,8 +62,8 @@ calculator-site/
 │  │  └─ enhance-inputs.ts     #  data-money 콤마 포맷 + .stepper 버튼 처리 (페이지가 import)
 │  │
 │  ├─ data/
-│  │  ├─ calculators.ts        #  계산기 목록·메타데이터 배열 (홈·사이트맵·breadcrumb 이 참조)
-│  │  └─ categories.ts         #  카테고리 정의 (finance / health / date / living)
+│  │  ├─ calculators.ts        #  계산기 목록·메타데이터 배열 (slug·title·icon·category·related·keywords…). 홈·내비·사이트맵·관련 계산기가 참조
+│  │  └─ categories.ts         #  카테고리 정의 5개 (finance / realestate / health / date / living) + icon
 │  │
 │  ├─ styles/
 │  │  └─ global.css            #  디자인 토큰(CSS 변수) + 기본 요소 + 계산기 폼 공통 클래스 + .stepper
