@@ -1,5 +1,5 @@
 ---
-/** 사이트 상단: 로고(홈 링크) + 내비게이션. 모든 페이지 공통. */
+/** 사이트 상단: 로고(홈 링크) + 테마 토글 + 내비게이션. 모든 페이지 공통. */
 import { SITE } from '../config/site';
 import Nav from './Nav.astro';
 import ThemeToggle from './ThemeToggle.astro';
@@ -7,9 +7,11 @@ import ThemeToggle from './ThemeToggle.astro';
 
 <header class="site-header">
   <div class="container container--wide site-header__inner">
-    <a href="/" class="site-header__logo">{SITE.name}</a>
+    <div class="site-header__bar">
+      <a href="/" class="site-header__logo">{SITE.name}</a>
+      <ThemeToggle />
+    </div>
     <Nav />
-    <ThemeToggle />
   </div>
 </header>
 
@@ -21,10 +23,16 @@ import ThemeToggle from './ThemeToggle.astro';
   }
   .site-header__inner {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-block: var(--space-3);
+  }
+  /* 모바일: 로고와 테마 토글을 같은 줄(양끝), 내비는 아래 스크롤 스트립 */
+  .site-header__bar {
+    display: flex;
     align-items: center;
-    gap: var(--space-3) var(--space-6);
-    padding-block: var(--space-4);
+    justify-content: space-between;
+    gap: var(--space-4);
   }
   .site-header__logo {
     font-size: var(--fs-lg);
@@ -32,5 +40,27 @@ import ThemeToggle from './ThemeToggle.astro';
     color: var(--color-primary);
     text-decoration: none;
     white-space: nowrap;
+  }
+
+  /* 데스크톱: 로고 · 내비 · 토글 한 줄 */
+  @media (min-width: 48rem) {
+    .site-header__inner {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-6);
+      padding-block: var(--space-4);
+    }
+    .site-header__bar {
+      display: contents;
+    }
+    .site-header__logo {
+      order: 1;
+    }
+    .site-header__inner :global(.nav) {
+      order: 2;
+    }
+    .site-header__inner :global(.theme-toggle) {
+      order: 3;
+    }
   }
 </style>
