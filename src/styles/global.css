@@ -573,9 +573,10 @@ tbody tr:hover td {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  font-size: var(--fs-lg);
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: var(--fs-xl);
+  line-height: 1;
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
   color: var(--color-primary);
